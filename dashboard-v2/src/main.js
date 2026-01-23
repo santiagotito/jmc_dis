@@ -204,47 +204,50 @@ const App = {
     const filterAcc = this.state.selectedAccount;
     const filterCP = this.state.selectedCPType;
     const filterMetric = this.state.metricFilter;
+    const tiposFilter = this.state.selectedTiposDoc || [];
+    const searchTerm = (this.state.searchDocumento || '').toLowerCase().trim();
 
-    // Aggregations
+    // 1. Filtrado Base (Afecta a todo: KPIs, Gráficos y Tabla)
+    const baseFiltered = data.detalle.filter(d => {
+      // Filtro de Año
+      if (!years.includes(d.anio)) return false;
+      // Filtro de Cuenta
+      if (filterAcc && d.cuenta !== filterAcc) return false;
+      // Filtro de Tipo de Documento
+      if (tiposFilter.length > 0) {
+        const tipoDocStr = d.tipo_doc || '';
+        if (!tiposFilter.some(t => tipoDocStr.includes(t))) return false;
+      }
+      // Filtro de Búsqueda de Documento
+      if (searchTerm && !(d.documentos && d.documentos.toLowerCase().includes(searchTerm))) return false;
+      // Filtro de Métrica (Debe/Haber) desde KPIs
+      if (filterMetric && !(filterMetric === 'debe' ? d.debe > 0 : filterMetric === 'haber' ? d.haber > 0 : true)) return false;
+      return true;
+    });
+
+    // 2. Agregaciones para Donut (Cruce de Cuentas)
+    // El donut debe mostrar el desglose de lo que está filtrado por base
+    const cpAggGeneral = {};
+    baseFiltered.forEach(d => {
+      const type = d.tipo_cp || 'OTROS';
+      if (!cpAggGeneral[type]) cpAggGeneral[type] = { debe: 0, haber: 0 };
+      cpAggGeneral[type].debe += d.debe;
+      cpAggGeneral[type].haber += d.haber;
+    });
+
+    // 3. Filtrado Final para KPIs y Ranking (Aplica también el filtro del Donut)
+    const finalFiltered = baseFiltered.filter(d => !filterCP || d.tipo_cp === filterCP);
+
     let totalDebe = 0;
     let totalHaber = 0;
     const accountAgg = {};
-    const cpAggGeneral = {};
     const accountsSet = new Set();
 
-    // 1. First, aggregate CP Breakdown (always filtered by selectedAccount)
-    // This populates the Donut chart and breakdown list regardless of selectedCPType
-    Object.entries(data.cp_breakdown).forEach(([acc, yearsData]) => {
-      if (filterAcc && acc !== filterAcc) return;
-      years.forEach(y => {
-        if (yearsData[y]) {
-          Object.entries(yearsData[y]).forEach(([type, metrics]) => {
-            if (!cpAggGeneral[type]) cpAggGeneral[type] = { debe: 0, haber: 0 };
-            cpAggGeneral[type].debe += metrics.debe;
-            cpAggGeneral[type].haber += metrics.haber;
-          });
-        }
-      });
-    });
-
-    // 2. Then, calculate KPIs and Ranking based on BOTH filters
-    Object.entries(data.cp_breakdown).forEach(([acc, yearsData]) => {
-      // Filter by account if selected
-      if (filterAcc && acc !== filterAcc) return;
-
-      years.forEach(y => {
-        if (yearsData[y]) {
-          Object.entries(yearsData[y]).forEach(([type, metrics]) => {
-            // Filter by CP Type if selected
-            if (filterCP && type !== filterCP) return;
-
-            totalDebe += metrics.debe;
-            totalHaber += metrics.haber;
-            accountAgg[acc] = (accountAgg[acc] || 0) + metrics.debe;
-            accountsSet.add(acc);
-          });
-        }
-      });
+    finalFiltered.forEach(d => {
+      totalDebe += d.debe;
+      totalHaber += d.haber;
+      accountAgg[d.cuenta] = (accountAgg[d.cuenta] || 0) + d.debe;
+      accountsSet.add(d.cuenta);
     });
 
     const netValue = totalDebe - totalHaber;
@@ -379,8 +382,7 @@ const App = {
             this.state.selectedTiposDoc.push(type);
           }
           console.log('Tipos seleccionados:', this.state.selectedTiposDoc);
-          this.populateDocFilters();
-          this.createHierarchicalTable();
+          this.render();
         };
       });
     }
@@ -391,7 +393,7 @@ const App = {
       input.value = this.state.searchDocumento || '';
       input.oninput = (e) => {
         this.state.searchDocumento = e.target.value;
-        this.createHierarchicalTable();
+        this.render();
       };
     }
 
@@ -402,8 +404,7 @@ const App = {
         this.state.selectedTiposDoc = [];
         this.state.searchDocumento = '';
         if (input) input.value = '';
-        this.populateDocFilters();
-        this.createHierarchicalTable();
+        this.render();
       };
     }
   },
