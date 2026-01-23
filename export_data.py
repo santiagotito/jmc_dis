@@ -91,30 +91,59 @@ def process_promocion(df):
                     "haber": h_val
                 }
 
-    # Recent Transactions for Table
+    # Recent Transactions for Table - ALL lines of journal entries
     detalle = []
-    cols = ['FECHA', 'ID_ASIENTO', 'DETALLE', 'DEBE', 'HABER', '7. cuentas promocion', 
-            'ANIO', 'CONTRAPARTIDA_NOMBRE', 'CONTRAPARTIDA_TIPO', 'TIPO_DOCUMENTO', 'NUMERO_DOCUMENTO']
-    existing_cols = [c for c in cols if c in promo_df.columns]
     
-    top_rows = promo_df.sort_values('FECHA', ascending=False)
-    for _, row in top_rows[existing_cols].iterrows():
-        cp_name = str(row.get('CONTRAPARTIDA_NOMBRE', 'N/A'))
-        cp_type = get_cp_category(cp_name, row.get('CONTRAPARTIDA_TIPO', 'N/A'))
-
-        detalle.append({
-            "fecha": str(row.get('FECHA', ''))[:10],
-            "asiento": str(row.get('ID_ASIENTO', '')),
-            "cuenta": str(row.get(acc_col, 'Otros')),
-            "detalle": str(row.get('DETALLE', ''))[:100],
-            "debe": float(row.get('DEBE', 0)),
-            "haber": float(row.get('HABER', 0)),
-            "anio": str(int(row.get('ANIO', 0))),
-            "contrapartida": cp_name,
-            "tipo_cp": cp_type,
-            "tipo_doc": str(row.get('TIPO_DOCUMENTO', 'N/A')),
-            "num_doc": str(row.get('NUMERO_DOCUMENTO', ''))
-        })
+    # Get all unique journal entries from promotion transactions
+    asientos_promo = promo_df['ID_ASIENTO'].dropna().unique()
+    
+    # For each journal entry, export ALL lines as separate rows
+    for asiento_id in asientos_promo:
+        asiento_lines = df[df['ID_ASIENTO'] == asiento_id].copy()
+        
+        # Get the promotion line to extract metadata
+        promo_line = asiento_lines[asiento_lines['ES_PROMOCION'] == True].iloc[0] if len(asiento_lines[asiento_lines['ES_PROMOCION'] == True]) > 0 else asiento_lines.iloc[0]
+        
+        # Get main client/provider name and type
+        cp_name = str(promo_line.get('CONTRAPARTIDA_NOMBRE', 'N/A'))
+        cp_type = get_cp_category(cp_name, promo_line.get('CONTRAPARTIDA_TIPO', 'N/A'))
+        cuenta_promo = str(promo_line.get(acc_col, 'Otros'))
+        fecha = str(promo_line.get('FECHA', ''))[:10]
+        anio = str(int(promo_line.get('ANIO', 0)))
+        
+        # Export ALL lines of this journal entry
+        for _, line in asiento_lines.iterrows():
+            # Get document info
+            factura = str(line.get('FACTURA', '')).strip()
+            tipo_doc = str(line.get('TIPO_DOCUMENTO', 'N/A')).strip()
+            num_doc = str(line.get('NUMERO_DOCUMENTO', '')).strip()
+            
+            # Format documents
+            docs_list = []
+            if factura and factura != 'nan':
+                docs_list.append(f"FA-{factura}")
+            if num_doc and num_doc != 'nan':
+                docs_list.append(f"{num_doc}")
+            
+            detalle.append({
+                "fecha": fecha,
+                "asiento": str(asiento_id),
+                "cuenta": cuenta_promo,  # Main promotion account
+                "cuenta_linea": str(line.get('CUENTA', 'N/A')),  # Account code of this specific line
+                "nombre_cuenta_linea": str(line.get('NOMBRE', 'N/A')),  # Account NAME of this line
+                "detalle": str(line.get('DETALLE', '')),  # Full detail, no truncation
+                "debe": float(line.get('DEBE', 0)),
+                "haber": float(line.get('HABER', 0)),
+                "anio": anio,
+                "contrapartida": cp_name,  # Main client/provider
+                "tipo_cp": cp_type,
+                "tipo_doc": tipo_doc,
+                "documentos": ', '.join(docs_list) if docs_list else 'N/A',
+                "es_linea_promo": bool(line.get('ES_PROMOCION', False))
+            })
+    
+    # Sort by date descending, then by asiento
+    detalle = sorted(detalle, key=lambda x: (x['fecha'], x['asiento']), reverse=True)
         
     return {
         "by_account": by_account,

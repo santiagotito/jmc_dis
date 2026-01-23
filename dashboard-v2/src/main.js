@@ -45,7 +45,7 @@ const App = {
     document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
     document.querySelector(`.menu-item[data-page="${pageId}"]`).classList.add('active');
 
-    const titles = { resumen: 'Resumen General', promocion: 'Promoción & Marketing' };
+    const titles = { resumen: 'Resumen General', promocion: 'Promoción & Publicidad' };
     document.getElementById('page-title').innerText = titles[pageId] || 'Panel';
 
     this.render();
@@ -405,10 +405,8 @@ const App = {
     const hierarchy = {};
     filtered.forEach(d => {
       if (!hierarchy[d.cuenta]) hierarchy[d.cuenta] = {};
-      if (!hierarchy[d.cuenta][d.contrapartida]) hierarchy[d.cuenta][d.contrapartida] = {};
-      const docType = d.tipo_doc || 'OTROS';
-      if (!hierarchy[d.cuenta][d.contrapartida][docType]) hierarchy[d.cuenta][d.contrapartida][docType] = [];
-      hierarchy[d.cuenta][d.contrapartida][docType].push(d);
+      if (!hierarchy[d.cuenta][d.contrapartida]) hierarchy[d.cuenta][d.contrapartida] = [];
+      hierarchy[d.cuenta][d.contrapartida].push(d);
     });
 
     const container = document.getElementById('promo-hierarchical-table');
@@ -418,63 +416,70 @@ const App = {
     }
 
     container.innerHTML = Object.entries(hierarchy).map(([acc, cpGroup]) => {
-      const accTotal = Object.values(cpGroup).reduce((s, docGroups) =>
-        s + Object.values(docGroups).reduce((s2, rows) => s2 + rows.reduce((s3, r) => s3 + r.debe - r.haber, 0), 0), 0);
+      const accTotals = Object.values(cpGroup).reduce((s, rows) => {
+        rows.forEach(r => { s.debe += r.debe; s.haber += r.haber; });
+        return s;
+      }, { debe: 0, haber: 0 });
+      const accNeto = accTotals.debe - accTotals.haber;
 
       return `
         <details class="h-details h-level-1 h-group-main">
           <summary class="h-header">
             <i class="ri-bookmark-3-line"></i> <strong>${acc}</strong>
-            <span style="margin-left: auto; font-weight: 700; color: var(--primary);">Neto: $${accTotal.toLocaleString()}</span>
+            <span style="margin-left: auto; display: flex; gap: 15px; font-weight: 600;">
+              <span style="color: var(--primary);">Debe: $${accTotals.debe.toLocaleString()}</span>
+              <span style="color: var(--danger);">Haber: $${accTotals.haber.toLocaleString()}</span>
+              <span style="color: ${accNeto >= 0 ? 'var(--success)' : 'var(--warning)'};">Neto: $${accNeto.toLocaleString()}</span>
+            </span>
             <i class="ri-arrow-down-s-line h-arrow"></i>
           </summary>
           <div class="h-content">
-            ${Object.entries(cpGroup).map(([cp, docGroups]) => {
-        const cpTotal = Object.values(docGroups).reduce((s, rows) => s + rows.reduce((s2, r) => s2 + r.debe - r.haber, 0), 0);
+            ${Object.entries(cpGroup).map(([cp, rows]) => {
+        const cpTotals = rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
+        const cpNeto = cpTotals.debe - cpTotals.haber;
         return `
                 <details class="h-details h-level-2">
                   <summary class="h-header">
-                    <i class="ri-user-follow-line"></i> <span>CP: ${cp}</span>
-                    <span style="margin-left: auto; font-weight: 600;">$${cpTotal.toLocaleString()}</span>
+                    <i class="ri-user-follow-line"></i> <span>Cliente: ${cp}</span>
+                    <span style="margin-left: auto; display: flex; gap: 12px; font-size: 0.85rem;">
+                      <span style="color: var(--primary);">$${cpTotals.debe.toLocaleString()}</span>
+                      <span style="color: var(--danger);">$${cpTotals.haber.toLocaleString()}</span>
+                      <span style="color: ${cpNeto >= 0 ? 'var(--success)' : 'var(--warning)'};">$${cpNeto.toLocaleString()}</span>
+                    </span>
                     <i class="ri-arrow-down-s-line h-arrow"></i>
                   </summary>
-                  <div class="h-content" style="padding-left: 1.5rem;">
-                    ${Object.entries(docGroups).map(([docType, rows]) => {
-          const docTotal = rows.reduce((s, r) => s + r.debe - r.haber, 0);
+                  <div class="h-content" style="padding: 1rem;">
+                    <table class="h-table">
+                      <thead>
+                        <tr>
+                          <th>Fecha</th>
+                          <th>Asiento</th>
+                          <th>Documentos</th>
+                          <th>Cuenta</th>
+                          <th>Tipo Doc</th>
+                          <th>Detalle</th>
+                          <th style="text-align: right;">Debe</th>
+                          <th style="text-align: right;">Haber</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${rows.map(row => {
+          const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
           return `
-                        <details class="h-details h-level-3">
-                          <summary class="h-header">
-                            <i class="ri-file-list-3-line"></i> <span>${docType}</span>
-                            <span style="margin-left: auto; opacity: 0.8;">$${docTotal.toLocaleString()}</span>
-                            <i class="ri-arrow-down-s-line h-arrow"></i>
-                          </summary>
-                          <div class="h-content">
-                            <table class="h-table">
-                              <thead>
-                                <tr>
-                                  <th>Fecha</th>
-                                  <th>Documento</th>
-                                  <th>Detalle</th>
-                                  <th style="text-align: right;">Debe</th>
-                                  <th style="text-align: right;">Haber</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                ${rows.map(row => `
-                                  <tr>
-                                    <td style="width: 90px;"><small>${row.fecha}</small></td>
-                                    <td style="width: 120px;"><span class="badge bg-label-secondary">${row.num_doc}</span></td>
-                                    <td><small>${row.detalle}</small></td>
-                                    <td style="text-align: right; width: 90px; color: var(--primary); font-weight: 600;">$${row.debe.toLocaleString()}</td>
-                                    <td style="text-align: right; width: 90px; color: var(--danger);">$${row.haber.toLocaleString()}</td>
-                                  </tr>
-                                `).join('')}
-                              </tbody>
-                            </table>
-                          </div>
-                        </details>
-                      `;
+                          <tr class="${rowClass}">
+                            <td style="width: 85px;"><small>${row.fecha}</small></td>
+                            <td style="width: 130px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.asiento}</small></td>
+                            <td style="width: 140px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.documentos}</small></td>
+                            <td style="width: 150px;"><small title="${row.cuenta_linea}">${row.nombre_cuenta_linea || row.cuenta_linea}</small></td>
+                            <td style="width: 100px;"><small>${row.tipo_doc}</small></td>
+                            <td><small>${row.detalle}</small></td>
+                            <td style="text-align: right; width: 90px; color: var(--primary); font-weight: 600;">$${row.debe.toLocaleString()}</td>
+                            <td style="text-align: right; width: 90px; color: var(--danger); font-weight: 600;">$${row.haber.toLocaleString()}</td>
+                          </tr>
+                        `;
         }).join('')}
+                      </tbody>
+                    </table>
                   </div>
                 </details>
               `;
