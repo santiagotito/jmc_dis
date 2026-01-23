@@ -10,7 +10,9 @@ const App = {
     selectedYears: [],
     selectedAccount: null,
     selectedCPType: null, // Filter by CP Type from Donut
-    metricFilter: null // 'debe' or 'haber' filter from KPIs
+    metricFilter: null, // 'debe' or 'haber' filter from KPIs
+    selectedTiposDoc: [], // Filter by document types (multiple)
+    searchDocumento: '' // Search by document number (factura, NC, etc)
   },
 
   async init() {
@@ -305,13 +307,24 @@ const App = {
       </div>
 
       <div class="card">
-        <h5 style="color: var(--text-heading); margin-bottom: 1.5rem;">Auditoría Jerárquica (Gasto > Contrapartida > Asiento)</h5>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <h5 style="color: var(--text-heading); margin: 0;">Auditoría Jerárquica (Gasto > Contrapartida > Asiento)</h5>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <div id="filter-tipos-doc" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+            <input type="text" id="filter-documento" placeholder="Buscar documento (ej: 2047)"
+              style="padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 180px; font-size: 0.85rem;">
+            <button id="btn-clear-doc-filters" style="padding: 6px 12px; background: var(--border-color); border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+              <i class="ri-close-line"></i> Limpiar
+            </button>
+          </div>
+        </div>
         <div id="promo-hierarchical-table" class="hierarchical-table"></div>
       </div>
     `;
 
     this.renderRankingChart(sortedAccounts);
     this.renderCPChart(cpAggGeneral);
+    this.populateDocFilters();
     this.createHierarchicalTable();
 
     // Bind Events
@@ -323,6 +336,76 @@ const App = {
         this.render();
       };
     });
+  },
+
+  populateDocFilters() {
+    const data = this.state.data.promocion.detalle;
+    const years = this.state.selectedYears;
+
+    // Get unique individual document types from filtered data
+    const tiposDoc = new Set();
+    data.forEach(d => {
+      if (years.includes(d.anio) && d.tipo_doc) {
+        d.tipo_doc.split(', ').forEach(t => {
+          if (t && t !== 'OTROS') tiposDoc.add(t);
+        });
+      }
+    });
+
+    // Create checkboxes for document types
+    const container = document.getElementById('filter-tipos-doc');
+    if (container) {
+      const selectedTypes = this.state.selectedTiposDoc || [];
+      container.innerHTML = Array.from(tiposDoc).sort().map(t => {
+        const isChecked = selectedTypes.includes(t);
+        return `
+          <label class="chip-checkbox ${isChecked ? 'active' : ''}" style="cursor: pointer; padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.75rem; display: flex; align-items: center; gap: 4px; ${isChecked ? 'background: var(--primary); color: white; border-color: var(--primary);' : ''}">
+            <input type="checkbox" value="${t}" ${isChecked ? 'checked' : ''} style="display: none;">
+            ${t}
+          </label>
+        `;
+      }).join('');
+
+      // Bind checkbox events
+      container.querySelectorAll('label.chip-checkbox').forEach(label => {
+        label.onclick = (e) => {
+          e.preventDefault();
+          const cb = label.querySelector('input[type="checkbox"]');
+          const type = cb.value;
+          const idx = this.state.selectedTiposDoc.indexOf(type);
+          if (idx > -1) {
+            this.state.selectedTiposDoc.splice(idx, 1);
+          } else {
+            this.state.selectedTiposDoc.push(type);
+          }
+          console.log('Tipos seleccionados:', this.state.selectedTiposDoc);
+          this.populateDocFilters();
+          this.createHierarchicalTable();
+        };
+      });
+    }
+
+    // Document search input
+    const input = document.getElementById('filter-documento');
+    if (input) {
+      input.value = this.state.searchDocumento || '';
+      input.oninput = (e) => {
+        this.state.searchDocumento = e.target.value;
+        this.createHierarchicalTable();
+      };
+    }
+
+    // Clear button
+    const clearBtn = document.getElementById('btn-clear-doc-filters');
+    if (clearBtn) {
+      clearBtn.onclick = () => {
+        this.state.selectedTiposDoc = [];
+        this.state.searchDocumento = '';
+        if (input) input.value = '';
+        this.populateDocFilters();
+        this.createHierarchicalTable();
+      };
+    }
   },
 
   renderCPChart(cpData) {
@@ -391,16 +474,53 @@ const App = {
   },
 
   createHierarchicalTable() {
+    const container = document.getElementById('promo-hierarchical-table');
+
+    // Show loading indicator
+    container.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <div class="loading-spinner" style="width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+        <div>Procesando datos...</div>
+      </div>
+    `;
+
+    // Use setTimeout to allow UI to update before heavy processing
+    setTimeout(() => {
+      this._renderHierarchicalTable();
+    }, 10);
+  },
+
+  _renderHierarchicalTable() {
+    const container = document.getElementById('promo-hierarchical-table');
     const data = this.state.data.promocion.detalle;
     const years = this.state.selectedYears;
-    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter } = this.state;
+    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter, selectedTiposDoc, searchDocumento } = this.state;
 
-    const filtered = data.filter(d =>
-      years.includes(d.anio) &&
-      (!filterAcc || d.cuenta === filterAcc) &&
-      (!filterCP || d.tipo_cp === filterCP) &&
-      (!metricFilter || (metricFilter === 'debe' ? d.debe > 0 : metricFilter === 'haber' ? d.haber > 0 : true))
-    );
+    const searchTerm = (searchDocumento || '').toLowerCase().trim();
+    const tiposFilter = selectedTiposDoc || [];
+
+    console.log('Filtros activos:', { tiposFilter, searchTerm, years });
+
+    const filtered = data.filter(d => {
+      // Year filter
+      if (!years.includes(d.anio)) return false;
+      // Account filter
+      if (filterAcc && d.cuenta !== filterAcc) return false;
+      // CP Type filter
+      if (filterCP && d.tipo_cp !== filterCP) return false;
+      // Metric filter
+      if (metricFilter && !(metricFilter === 'debe' ? d.debe > 0 : metricFilter === 'haber' ? d.haber > 0 : true)) return false;
+      // Document types filter (multiple) - check if ANY selected type is in the record's tipos
+      if (tiposFilter.length > 0) {
+        const tipoDocStr = d.tipo_doc || '';
+        // Check if any selected type is contained in the record's tipo_doc string
+        const hasMatchingType = tiposFilter.some(t => tipoDocStr.includes(t));
+        if (!hasMatchingType) return false;
+      }
+      // Document search
+      if (searchTerm && !(d.documentos && d.documentos.toLowerCase().includes(searchTerm))) return false;
+      return true;
+    });
 
     const hierarchy = {};
     filtered.forEach(d => {
@@ -409,7 +529,6 @@ const App = {
       hierarchy[d.cuenta][d.contrapartida].push(d);
     });
 
-    const container = document.getElementById('promo-hierarchical-table');
     if (filtered.length === 0) {
       container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-muted);">Sin datos para los filtros seleccionados</div>`;
       return;

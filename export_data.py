@@ -6,6 +6,7 @@ Processes Parquet data from 'datos/' and generates 'dashboard_v2_data.json'.
 import pandas as pd
 import json
 import os
+import re
 from pathlib import Path
 
 # Paths
@@ -113,18 +114,84 @@ def process_promocion(df):
         
         # Export ALL lines of this journal entry
         for _, line in asiento_lines.iterrows():
-            # Get document info
-            factura = str(line.get('FACTURA', '')).strip()
+            # Get document info from DETALLE field (more accurate)
+            detalle_text = str(line.get('DETALLE', ''))
             tipo_doc = str(line.get('TIPO_DOCUMENTO', 'N/A')).strip()
-            num_doc = str(line.get('NUMERO_DOCUMENTO', '')).strip()
-            
-            # Format documents
+
+            # Extract documents from DETALLE using regex
+            # Patterns: FA -001006-6015857, FA-160307, NC-AUTO-1281, Ret.001012-5889
+            # Note: Some have space after FA (FA -001013-2047)
             docs_list = []
-            if factura and factura != 'nan':
-                docs_list.append(f"FA-{factura}")
-            if num_doc and num_doc != 'nan':
-                docs_list.append(f"{num_doc}")
+
+            # Facturas con establecimiento: FA -001006-6015857 or FA-001006-6015857 → tomar último número
+            fa_estab = re.findall(r'FA\s?-(\d+)-(\d+)', detalle_text)
+            if fa_estab:
+                for match in fa_estab:
+                    if f"FA-{match[1]}" not in docs_list:
+                        docs_list.append(f"FA-{match[1]}")
+
+            # Facturas simples: FA-259515 or FA -259515 (5+ dígitos, sin segundo guion)
+            fa_simple = re.findall(r'FA\s?-(\d{5,})(?!\d*-)', detalle_text)
+            for num in fa_simple:
+                if f"FA-{num}" not in docs_list:
+                    docs_list.append(f"FA-{num}")
+
+            # Notas de Crédito: NC-AUTO-1281, NC -AUTO-1281, NC-1281
+            nc_matches = re.findall(r'NC\s?-(?:AUTO\s?-)?(\d+)', detalle_text)
+            for num in nc_matches:
+                if f"NC-{num}" not in docs_list:
+                    docs_list.append(f"NC-{num}")
+
+            # Retenciones: Ret.001012-5889 or Ret 001012-5889 → tomar último número
+            ret_estab = re.findall(r'Ret[.\s]?(\d+)-(\d+)', detalle_text)
+            if ret_estab:
+                for match in ret_estab:
+                    if f"Ret-{match[1]}" not in docs_list:
+                        docs_list.append(f"Ret-{match[1]}")
+            else:
+                ret_simple = re.findall(r'Ret[.\s]?(\d{4,})', detalle_text)
+                for num in ret_simple:
+                    if f"Ret-{num}" not in docs_list:
+                        docs_list.append(f"Ret-{num}")
             
+            # Determine document types based on extracted documents AND detalle text
+            tipos_doc_list = []
+
+            # From extracted documents
+            for doc in docs_list:
+                if doc.startswith('FA-'):
+                    if 'FACTURA' not in tipos_doc_list:
+                        tipos_doc_list.append('FACTURA')
+                elif doc.startswith('NC-'):
+                    if 'NOTA DE CREDITO' not in tipos_doc_list:
+                        tipos_doc_list.append('NOTA DE CREDITO')
+                elif doc.startswith('Ret-'):
+                    if 'RETENCION' not in tipos_doc_list:
+                        tipos_doc_list.append('RETENCION')
+
+            # From detalle text patterns
+            detalle_upper = detalle_text.upper()
+
+            # Cheques: CH/8916, CH-1234
+            if re.search(r'CH[/\-]\d+', detalle_text):
+                if 'CHEQUE' not in tipos_doc_list:
+                    tipos_doc_list.append('CHEQUE')
+
+            # Reposición
+            if 'REPOSICION' in detalle_upper or 'REPOSICIÓN' in detalle_upper:
+                if 'REPOSICION' not in tipos_doc_list:
+                    tipos_doc_list.append('REPOSICION')
+
+            # Ajuste: REG. AJUSTE, ND-AC, ND-CP
+            if 'REG. AJUSTE' in detalle_upper or 'REG.AJUSTE' in detalle_upper or 'ND-AC' in detalle_text or 'ND-CP' in detalle_text:
+                if 'AJUSTE' not in tipos_doc_list:
+                    tipos_doc_list.append('AJUSTE')
+
+            # Robo
+            if 'ROBO' in detalle_upper:
+                if 'ROBO' not in tipos_doc_list:
+                    tipos_doc_list.append('ROBO')
+
             detalle.append({
                 "fecha": fecha,
                 "asiento": str(asiento_id),
@@ -137,7 +204,7 @@ def process_promocion(df):
                 "anio": anio,
                 "contrapartida": cp_name,  # Main client/provider
                 "tipo_cp": cp_type,
-                "tipo_doc": tipo_doc,
+                "tipo_doc": ', '.join(tipos_doc_list) if tipos_doc_list else 'OTROS',
                 "documentos": ', '.join(docs_list) if docs_list else 'N/A',
                 "es_linea_promo": bool(line.get('ES_PROMOCION', False))
             })
