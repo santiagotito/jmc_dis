@@ -1,0 +1,944 @@
+table 'B1. MAYORES 2019 - 2023'
+	lineageTag: a9b2845a-b920-4306-8345-d347fdbe300f
+
+	measure '1. Facturas Únicas' = DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[5. Factura])
+		formatString: #,0
+		displayFolder: 1. MEDIDAS
+		lineageTag: c7801975-bbdd-462b-b576-7823b3a2fbb2
+
+	measure 'PROMO_Total Gasto' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[7. cuentas promocion] <> "otros"
+		)
+		formatString: \$#,0.00
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-001-total-gasto
+
+	measure 'PROMO_Asientos Únicos' =
+		CALCULATE(
+			DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[ID_ASIENTO]),
+			'B1. MAYORES 2019 - 2023'[7. cuentas promocion] <> "otros"
+		)
+		formatString: #,0
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-002-asientos
+
+	measure 'PROMO_Clientes Beneficiados' =
+		CALCULATE(
+			DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[CLIENTE_PROMOCION]),
+			'B1. MAYORES 2019 - 2023'[CLIENTE_PROMOCION] <> ""
+		)
+		formatString: #,0
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-003-clientes
+
+	measure 'PROMO_Promedio por Asiento' =
+		DIVIDE([PROMO_Total Gasto], [PROMO_Asientos Únicos], 0)
+		formatString: \$#,0.00
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-004-promedio
+
+	measure 'PROMO_% vs Total Gastos' =
+		VAR TotalPromo = [PROMO_Total Gasto]
+		VAR TotalGastos = CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			LEFT('B1. MAYORES 2019 - 2023'[CUENTA], 1) = "5"
+		)
+		RETURN DIVIDE(TotalPromo, TotalGastos, 0)
+		formatString: 0.00%
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-005-porcentaje
+
+	measure 'PROMO_Registros Sospechosos' =
+		CALCULATE(
+			COUNTROWS('B1. MAYORES 2019 - 2023'),
+			'B1. MAYORES 2019 - 2023'[7. cuentas promocion] <> "otros",
+			OR(
+				'B1. MAYORES 2019 - 2023'[CONTRAPARTIDA_TIPO] = "",
+				'B1. MAYORES 2019 - 2023'[CONTRAPARTIDA_TIPO] = "OTRA"
+			)
+		)
+		formatString: #,0
+		displayFolder: 2. PROMOCION Y PUBLICIDAD
+		lineageTag: promo-006-sospechosos
+
+	measure 'CXP_Total Debe' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE()
+		)
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-001-debe
+
+	measure 'CXP_Total Haber' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE()
+		)
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-002-haber
+
+	measure 'CXP_Saldo Pendiente' =
+		[CXP_Total Haber] - [CXP_Total Debe]
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-003-saldo
+
+	measure 'CXP_Proveedores Únicos' =
+		CALCULATE(
+			DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[PROVEEDOR]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE()
+		)
+		formatString: #,0
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-004-proveedores
+
+	measure 'CXP_Pagos por Cheque' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[FORMA_PAGO] = "CHEQUE"
+		)
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-005-cheque
+
+	measure 'CXP_Pagos por Transferencia' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[FORMA_PAGO] = "TRANSFERENCIA"
+		)
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-006-transferencia
+
+	measure 'CXP_Pagos por NC' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[FORMA_PAGO] = "NOTA_CREDITO"
+		)
+		formatString: \$#,0.00
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-007-nc
+
+	measure 'CXP_Registros' =
+		CALCULATE(
+			COUNTROWS('B1. MAYORES 2019 - 2023'),
+			'B1. MAYORES 2019 - 2023'[ES_CXP] = TRUE()
+		)
+		formatString: #,0
+		displayFolder: 3. CUENTAS POR PAGAR
+		lineageTag: cxp-008-registros
+
+	measure 'CXC_Total Facturado' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO] = "FACTURA"
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-001-facturado
+
+	measure 'CXC_Total Cobrado' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE()
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-002-cobrado
+
+	measure 'CXC_Saldo Cartera' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[DEBE]) - SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE()
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-003-cartera
+
+	measure 'CXC_Clientes Únicos' =
+		CALCULATE(
+			DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[CLIENTE]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE()
+		)
+		formatString: #,0
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-004-clientes
+
+	measure 'CXC_Facturas Únicas' =
+		CALCULATE(
+			DISTINCTCOUNT('B1. MAYORES 2019 - 2023'[FACTURA]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[FACTURA] <> ""
+		)
+		formatString: #,0
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-005-facturas
+
+	measure 'CXC_Recaudos' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO] = "RECAUDO"
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-006-recaudos
+
+	measure 'CXC_Notas Crédito' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO] = "NOTA DE CREDITO"
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-007-nc
+
+	measure 'CXC_Devoluciones' =
+		CALCULATE(
+			SUM('B1. MAYORES 2019 - 2023'[HABER]),
+			'B1. MAYORES 2019 - 2023'[ES_CXC] = TRUE(),
+			'B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO] = "DEVOLUCIÓN"
+		)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-008-devoluciones
+
+	measure 'CXC_% Recuperación' =
+		DIVIDE([CXC_Total Cobrado], [CXC_Total Facturado], 0)
+		formatString: 0.00%
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-009-recuperacion
+
+	measure 'CXC_Ticket Promedio' =
+		DIVIDE([CXC_Total Facturado], [CXC_Facturas Únicas], 0)
+		formatString: \$#,0.00
+		displayFolder: 4. CUENTAS POR COBRAR
+		lineageTag: cxc-010-ticket
+
+	column GRUPO
+		dataType: string
+		lineageTag: 6a754f6c-1c33-450d-be1d-6331e933b1a4
+		summarizeBy: none
+		sourceColumn: GRUPO
+
+		annotation SummarizationSetBy = Automatic
+
+	column CUENTA
+		dataType: string
+		lineageTag: 80c80d7e-09e8-4f9f-8b16-a7a9c776c1b7
+		summarizeBy: none
+		sourceColumn: CUENTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column FECHA
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7f0971a6-b2fd-4868-9314-687664f6a91c
+		summarizeBy: none
+		sourceColumn: FECHA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ANIO
+		dataType: int64
+		formatString: 0
+		lineageTag: eb6b5dc0-3b97-4a9b-9541-127d2b39bcf7
+		summarizeBy: sum
+		sourceColumn: ANIO
+
+		annotation SummarizationSetBy = Automatic
+
+	column MES
+		dataType: int64
+		formatString: 0
+		lineageTag: 31ef8ba6-2b32-47ce-9d15-0f04aa733078
+		summarizeBy: sum
+		sourceColumn: MES
+
+		annotation SummarizationSetBy = Automatic
+
+	column TIPO
+		dataType: string
+		lineageTag: 33cb60b7-85c9-45c8-8fc5-eed0c9fd654c
+		summarizeBy: none
+		sourceColumn: TIPO
+
+		annotation SummarizationSetBy = Automatic
+
+	column NUMERO
+		dataType: string
+		lineageTag: d6eb1f74-97d9-493b-9d50-22d864d0dd62
+		summarizeBy: none
+		sourceColumn: NUMERO
+
+		annotation SummarizationSetBy = Automatic
+
+	column REGISTRO
+		dataType: int64
+		formatString: 0
+		lineageTag: ed6e0e15-63ff-4bc5-89a2-a9db8c366afb
+		summarizeBy: sum
+		sourceColumn: REGISTRO
+
+		annotation SummarizationSetBy = Automatic
+
+	column DEBE
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 999bccc2-5c4e-4326-8067-44fad7abf9d4
+		summarizeBy: sum
+		sourceColumn: DEBE
+
+		annotation SummarizationSetBy = Automatic
+
+	column HABER
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: edfb5cb2-3ecd-444c-b450-a102f19adc22
+		summarizeBy: sum
+		sourceColumn: HABER
+
+		annotation SummarizationSetBy = Automatic
+
+	column SALDO
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 46251d22-0c3e-442a-8a0e-964227168c35
+		summarizeBy: sum
+		sourceColumn: SALDO
+
+		annotation SummarizationSetBy = Automatic
+
+	column DETALLE
+		dataType: string
+		lineageTag: 2c06bca5-4657-4091-a81c-6750d6d2c776
+		summarizeBy: none
+		sourceColumn: DETALLE
+
+		annotation SummarizationSetBy = Automatic
+
+	column DESCRIPCION
+		dataType: string
+		lineageTag: 8a085132-3a95-4a38-a7a0-f402300fcd75
+		summarizeBy: none
+		sourceColumn: DESCRIPCION
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOMBRE
+		dataType: string
+		lineageTag: 94ec690a-c814-4fe4-b5e0-01014929112b
+		summarizeBy: none
+		sourceColumn: NOMBRE
+
+		annotation SummarizationSetBy = Automatic
+
+	column TIPO_DOCUMENTO
+		dataType: string
+		lineageTag: c0acdb7f-70f1-409a-a0b5-2b19535ba9d3
+		summarizeBy: none
+		sourceColumn: TIPO_DOCUMENTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column NUMERO_DOCUMENTO
+		dataType: string
+		lineageTag: 45b8316f-af89-46c7-80b0-f694c7ae6122
+		summarizeBy: none
+		sourceColumn: NUMERO_DOCUMENTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column FECHA_DOCUMENTO
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 954dec04-5c5e-4363-b654-2d55b5c46051
+		summarizeBy: none
+		sourceColumn: FECHA_DOCUMENTO
+
+
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NUMERO_CLIENTE
+		dataType: string
+		lineageTag: 54021bb2-3294-4863-8ad7-304cf5c35bf1
+		summarizeBy: none
+		sourceColumn: NUMERO_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOMBRE_CLIENTE
+		dataType: string
+		lineageTag: 23d62ea5-6534-4644-8556-e5e331439a9f
+		summarizeBy: none
+		sourceColumn: NOMBRE_CLIENTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column FACTURA
+		dataType: string
+		lineageTag: 9bfe4e82-ac51-42e1-b7ed-fc2b024efd4a
+		summarizeBy: none
+		sourceColumn: FACTURA
+
+		annotation SummarizationSetBy = Automatic
+
+	column PROMOCION =
+			
+			IF(
+			    'B1. MAYORES 2019 - 2023'[NOMBRE] IN {
+			        "Promociones Ventas Lago",
+			        "Promociones Ventas Portoviejo",
+			        "Promociones Ventas Quevedo",
+			        "Promociones Ventas Sto. Dgo."
+			    },
+			    'B1. MAYORES 2019 - 2023'[DEBE],
+			    0
+			)
+		lineageTag: e4e49f20-5d26-4580-9342-ae8f9235e6cc
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column '3. Numero de Documento' = ```
+			
+			VAR TipoDoc = [2. Tipo]
+			VAR Detalle = 'B1. MAYORES 2019 - 2023'[DETALLE]
+			VAR DocumentoTexto = 
+			    SWITCH(
+			        TipoDoc,
+			        "AC", 
+			            IFERROR(
+			                IF(
+			                    CONTAINSSTRING(Detalle, "NC-AC"),
+			                    LEFT(
+			                        MID(Detalle, SEARCH("-", Detalle, SEARCH("NC-AC", Detalle) + 4) + 1, 20),
+			                        SEARCH(" ", MID(Detalle, SEARCH("-", Detalle, SEARCH("NC-AC", Detalle) + 4) + 1, 20)) - 1
+			                    ),
+			                    IF(
+			                        CONTAINSSTRING(Detalle, "ND-AC"),
+			                        LEFT(
+			                            MID(Detalle, SEARCH("-", Detalle, SEARCH("ND-AC", Detalle) + 4) + 1, 20),
+			                            SEARCH(" ", MID(Detalle, SEARCH("-", Detalle, SEARCH("ND-AC", Detalle) + 4) + 1, 20)) - 1
+			                        ),
+			                        ""
+			                    )
+			                ), ""
+			            ),
+			            
+			        "AUTO",
+			            IFERROR(
+			                MID(Detalle, 
+			                    SEARCH("NC-AUTO-", Detalle) + 8,
+			                    SEARCH(" [", Detalle, SEARCH("NC-AUTO-", Detalle) + 8) - (SEARCH("NC-AUTO-", Detalle) + 8)
+			                ), ""
+			            ),
+			        "CP",
+			            IFERROR(
+			                MID(Detalle, 
+			                    SEARCH("-", Detalle, SEARCH("ND-CP", Detalle) + 4) + 1,
+			                    SEARCH(" [", Detalle, SEARCH("-", Detalle, SEARCH("ND-CP", Detalle) + 4) + 1) - (SEARCH("-", Detalle, SEARCH("ND-CP", Detalle) + 4) + 1)
+			                ), ""
+			            ),
+			        "EO",
+			            IFERROR(
+			                IF(
+			                    CONTAINSSTRING(Detalle, "NC-EO"),
+			                    LEFT(
+			                        MID(Detalle, SEARCH("-", Detalle, SEARCH("NC-EO", Detalle) + 4) + 1, 20),
+			                        SEARCH(" ", MID(Detalle, SEARCH("-", Detalle, SEARCH("NC-EO", Detalle) + 4) + 1, 20)) - 1
+			                    ),
+			                    IF(
+			                        CONTAINSSTRING(Detalle, "ND-EO"),
+			                        LEFT(
+			                            MID(Detalle, SEARCH("-", Detalle, SEARCH("ND-EO", Detalle) + 4) + 1, 20),
+			                            SEARCH(" ", MID(Detalle, SEARCH("-", Detalle, SEARCH("ND-EO", Detalle) + 4) + 1, 20)) - 1
+			                        ),
+			                        ""
+			                    )
+			                ), ""
+			            ),
+			        "DESC",
+			            IFERROR(
+			                SUBSTITUTE(
+			                    IF(
+			                        CONTAINSSTRING(Detalle, " FA-"),
+			                        MID(Detalle, 
+			                            SEARCH("NC-DESC-", Detalle) + 8,
+			                            SEARCH(" FA-", Detalle, SEARCH("NC-DESC-", Detalle) + 8) - (SEARCH("NC-DESC-", Detalle) + 8)
+			                        ),
+			                        LEFT(
+			                            MID(Detalle, SEARCH("NC-DESC-", Detalle) + 8, 30),
+			                            SEARCH(" ", MID(Detalle, SEARCH("NC-DESC-", Detalle) + 8, 30)) - 1
+			                        )
+			                    ),
+			                    "+", ""
+			                ), ""
+			            ),
+			        "DESCT",
+			            IFERROR(
+			                MID(Detalle, 
+			                    SEARCH("NC-DESCT-", Detalle) + 9,
+			                    SEARCH(" ", Detalle, SEARCH("NC-DESCT-", Detalle) + 14) - (SEARCH("NC-DESCT-", Detalle) + 9)
+			                ), ""
+			            ),
+			        "DEV",
+			            IFERROR(
+			                MID(Detalle, 
+			                    SEARCH("NC-DEV-", Detalle) + 7,
+			                    SEARCH(" FA-", Detalle, SEARCH("NC-DEV-", Detalle) + 7) - (SEARCH("NC-DEV-", Detalle) + 7)
+			                ), ""
+			            ),
+			        "DEVO",
+			            IFERROR(
+			                IF(
+			                    CONTAINSSTRING(Detalle, " FA-"),
+			                    MID(Detalle, 
+			                        SEARCH("NC-DEVO-", Detalle) + 8,
+			                        SEARCH(" FA-", Detalle, SEARCH("NC-DEVO-", Detalle) + 8) - (SEARCH("NC-DEVO-", Detalle) + 8)
+			                    ),
+			                    LEFT(
+			                        MID(Detalle, SEARCH("NC-DEVO-", Detalle) + 8, 30),
+			                        SEARCH(" ", MID(Detalle, SEARCH("NC-DEVO-", Detalle) + 8, 30)) - 1
+			                    )
+			                ), ""
+			            ),
+			        "DEVOL",
+			            IFERROR(
+			                MID(Detalle, 
+			                    SEARCH("NC-DEVOL-", Detalle) + 9,
+			                    SEARCH(" FA-", Detalle, SEARCH("NC-DEVOL-", Detalle) + 9) - (SEARCH("NC-DEVOL-", Detalle) + 9)
+			                ), ""
+			            ),
+			        ""
+			    )
+			RETURN
+			    IF(
+			        DocumentoTexto = "",
+			        IF([7. cuentas promocion] <> "otros", "SIN DOCUMENTO", BLANK()),
+			        DocumentoTexto
+			    )
+			```
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: 43a5d675-e368-41cd-923a-2bc0d345ac0c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '4. Numero de registro' = ```
+			
+			    IFERROR(
+			        VALUE(
+			            MID(
+			                'B1. MAYORES 2019 - 2023'[DETALLE], 
+			                SEARCH("[", 'B1. MAYORES 2019 - 2023'[DETALLE]) + 1, 
+			                SEARCH("]", 'B1. MAYORES 2019 - 2023'[DETALLE]) - SEARCH("[", 'B1. MAYORES 2019 - 2023'[DETALLE]) - 1
+			            )
+			        ),
+			        BLANK()
+			    )
+			```
+		formatString: 0
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: 1e5cf2de-f693-45fe-8b06-b3223c62b28f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+
+	column '6. Fecha' = ```
+			
+			    IFERROR(
+			        MID(
+			            'B1. MAYORES 2019 - 2023'[DETALLE], 
+			            SEARCH("FA-", 'B1. MAYORES 2019 - 2023'[DETALLE], 1) + 9, 
+			            10
+			        ),
+			        ""
+			    )
+			```
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: e7700e52-45c4-4b12-9089-87a544b87c7e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. Tipo' = ```
+			
+			VAR StartPos = 
+			    IF(
+			        CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "NC-"),
+			        SEARCH("NC-", 'B1. MAYORES 2019 - 2023'[DETALLE]) + 3,
+			        IF(
+			            CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "ND-"),
+			            SEARCH("ND-", 'B1. MAYORES 2019 - 2023'[DETALLE]) + 3,
+			            BLANK()
+			        )
+			    )
+			VAR EndPos = 
+			    IFERROR(
+			        SEARCH("-", 'B1. MAYORES 2019 - 2023'[DETALLE], StartPos),
+			        BLANK()
+			    )
+			VAR TipoTexto = 
+			    IF(
+			        NOT ISBLANK(StartPos) && NOT ISBLANK(EndPos),
+			        MID('B1. MAYORES 2019 - 2023'[DETALLE], StartPos, EndPos - StartPos),
+			        BLANK()
+			    )
+			VAR SinEspacios = 
+			    IF(
+			        ISBLANK(TipoTexto),
+			        BLANK(),
+			        SUBSTITUTE(TipoTexto, " ", "")
+			    )
+			VAR SoloLetras = 
+			    IF(
+			        ISBLANK(SinEspacios),
+			        BLANK(),
+			        SUBSTITUTE(
+			            SUBSTITUTE(
+			                SUBSTITUTE(
+			                    SUBSTITUTE(
+			                        SUBSTITUTE(
+			                            SUBSTITUTE(
+			                                SUBSTITUTE(
+			                                    SUBSTITUTE(
+			                                        SUBSTITUTE(
+			                                            SUBSTITUTE(SinEspacios,
+			            "0", ""), "1", ""), "2", ""), "3", ""), "4", ""), "5", ""), "6", ""), "7", ""), "8", ""), "9", "")
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(SoloLetras) || SoloLetras = "",
+			        IF(
+			            CONTAINSSTRING('B1. MAYORES 2019 - 2023'[1. Documento], "FACTURA"),
+			            "VENTA",
+			            "Otros"
+			        ),
+			        SoloLetras
+			    )
+			```
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: fc42d6e0-8f69-4ec1-aaea-05a3cc38689a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1. Documento' = ```
+			
+			IF(
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "NC-"), 
+			    "Nota Credito",
+			    IF(
+			        CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "ND-"), 
+			        "Nota Debito", 
+			        IF(
+			        CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CxP-"), 
+			        "CXP",
+			            IF(
+			            CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "Reposicion"), 
+			            "REPOSICIÓN",
+			                IF(
+			                CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "AJUSTE"), 
+			                "AJUSTE",
+			                    IF(
+			                    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "FACT-"), 
+			                    "FACTURA",
+			            "Otros"
+			    )
+			)))))
+			```
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: 4953c2c1-b2e8-4312-af9f-041b9121ed69
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column '8. TIPO FACTURA' =
+			
+			SWITCH(
+			    TRUE(),
+			    NOT(ISBLANK('B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO])), 'B1. MAYORES 2019 - 2023'[TIPO_DOCUMENTO],
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CXC"), "CXC",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CXP"), "CXP",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CANJE"), "CANJE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "SALDOS INICIALES"), "SALDOS INICIALES",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "ND-"), "NOTA DEBITO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "DES"), "DESCUENTO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CRUCE"), "CRUCE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "CH"), "CHEQUE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "ANTICIPO"), "ANTICIPO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "ANULADO"), "ANULADO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "DEPO"), "DEPÓSITO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "PAGO"), "PAGO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "REG"), "REGISTRO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "TRANSFERENCIA"), "TRANSFERENCIA",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "TRANFERENCIA"), "TRANSFERENCIA",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "DEVOLUC"), "DEVOLUCIÓN",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "SOBRANTE"), "SOBRANTE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "AJUSTE"), "AJUSTE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "RETCLI"), "RETENCIÓN CLIENTE",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "MEMO"), "MEMO",
+			    CONTAINSSTRING('B1. MAYORES 2019 - 2023'[DETALLE], "REV"), "REVERSO",
+			    "OTROS"
+			)
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: edc091f3-027d-40eb-ade0-decf28182a0c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '9. FACTURA GENERAL' =
+			
+			SWITCH(
+			    TRUE(),
+			    NOT(ISBLANK('B1. MAYORES 2019 - 2023'[FACTURA])), 'B1. MAYORES 2019 - 2023'[FACTURA],
+			    'B1. MAYORES 2019 - 2023'[8. TIPO FACTURA] = "SALDOS INICIALES", "SALDOS INICIALES",
+			    "OTROS"
+			)
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: 70dcfd68-2cac-49ab-abd3-b8ea0091cfbe
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column MES_FECHA = MONTH('B1. MAYORES 2019 - 2023'[FECHA])
+		formatString: 0
+		lineageTag: a9db57d6-5adb-493a-90d7-1b48809b4946
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'AÑO FECHA' = YEAR('B1. MAYORES 2019 - 2023'[FECHA])
+		formatString: 0
+		lineageTag: bca70577-627b-47fa-8520-bddae8b0737f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column MES_FECHA_TEXT = ```
+			
+			SWITCH(
+			    MONTH('B1. MAYORES 2019 - 2023'[FECHA]),
+			    1, "ENE",
+			    2, "FEB", 
+			    3, "MAR",
+			    4, "ABR",
+			    5, "MAY",
+			    6, "JUN",
+			    7, "JUL",
+			    8, "AGO",
+			    9, "SEP",
+			    10, "OCT",
+			    11, "NOV",
+			    12, "DIC",
+			    BLANK()
+			)
+			```
+		lineageTag: 35f003c7-7d8c-48d1-b690-10461e5469c8
+		summarizeBy: none
+		sortByColumn: MES_FECHA
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column '10. cod_ini_fact' =
+			
+			IF(
+			    FIND("-", [5. Factura], 1, 0) > 0,
+			    LEFT([5. Factura], FIND("-", [5. Factura]) - 1),
+			    ""
+			)
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: e2c04ec7-a86b-4689-b6e0-7dd0822e35ff
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '11. Fact' = ```
+			
+			VAR FacturaBase = 
+			    SWITCH(
+			        TRUE(),
+			        NOT(ISBLANK('B1. MAYORES 2019 - 2023'[FACTURA])), 'B1. MAYORES 2019 - 2023'[FACTURA],
+			        'B1. MAYORES 2019 - 2023'[8. TIPO FACTURA] = "SALDOS INICIALES", "SALDOS INICIALES",
+			        "OTROS"
+			    )
+			VAR FacturaFinal = 
+			    IF(
+			        FIND("-", FacturaBase, 1, 0) > 0,
+			        RIGHT(FacturaBase, LEN(FacturaBase) - FIND("-", FacturaBase)),
+			        FacturaBase
+			    )
+			RETURN
+			    FacturaFinal
+			```
+		displayFolder: 1. NOTAS DE CREDITO
+		lineageTag: b4eb5111-af26-4999-a946-4f1a5a686214
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'FECHA Jerarquía'
+		lineageTag: 7922d064-3938-4094-8e71-4b4787cafcb0
+
+		level FECHA
+			lineageTag: db4902de-f2a8-4a8d-bfbd-a94f3e2a3ea2
+			column: FECHA
+
+		level 'AÑO FECHA'
+			lineageTag: e38dfc2b-785d-4801-b08f-fc61f6065a6f
+			column: 'AÑO FECHA'
+
+		level MES_FECHA
+			lineageTag: b0c802a8-4fa3-472f-b699-f090facaa22a
+			column: MES_FECHA
+
+		level MES_FECHA_TEXT
+			lineageTag: 32977487-6e4b-4579-be1b-d6229c3a69d6
+			column: MES_FECHA_TEXT
+
+	partition 'B1. MAYORES 2019 - 2023' = m
+		mode: import
+		source = ```
+				let
+				    Source = Parquet.Document(File.Contents("c:\Users\Santi\OneDrive\HERRAMIENTAS\8. DISOR - POWER BI\datos\MAYORES_CONSOLIDADO.parquet")),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Source,{{"FECHA", type date}, {"FECHA_DOCUMENTO", type date}, {"ANIO", Int64.Type}, {"MES", Int64.Type}, {"REGISTRO", Int64.Type}, {"DEBE", type number}, {"HABER", type number}, {"SALDO", type number}})
+				in
+				    #"Tipo cambiado"
+				```
+
+	annotation PBI_NavigationStepName = Navegación
+
+	column '5. Factura'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: "5. Factura"
+
+	column '7. cuentas promocion'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: "7. cuentas promocion"
+
+	column CUENTA_STR
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CUENTA_STR
+		lineageTag: etl-col-cuenta-str
+
+	column ES_CXC
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: ES_CXC
+		lineageTag: etl-col-es-cxc
+
+	column ES_CXP
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: ES_CXP
+		lineageTag: etl-col-es-cxp
+
+	column ES_BANCO
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: ES_BANCO
+		lineageTag: etl-col-es-banco
+
+	column ES_PROMOCION
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: ES_PROMOCION
+		lineageTag: etl-col-es-promocion
+
+	column FORMA_PAGO
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FORMA_PAGO
+		lineageTag: etl-col-forma-pago
+
+	column CLIENTE
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CLIENTE
+		lineageTag: etl-col-cliente
+
+	column PROVEEDOR
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PROVEEDOR
+		lineageTag: etl-col-proveedor
+
+	column ID_ASIENTO
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ID_ASIENTO
+		lineageTag: etl-col-id-asiento
+
+	column NATURALEZA
+		dataType: string
+		summarizeBy: none
+		sourceColumn: NATURALEZA
+		lineageTag: etl-col-naturaleza
+
+	column FACTOR_NAT
+		dataType: int64
+		formatString: 0
+		summarizeBy: sum
+		sourceColumn: FACTOR_NAT
+		lineageTag: etl-col-factor-nat
+
+	column MOVIMIENTO_NETO
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		summarizeBy: sum
+		sourceColumn: MOVIMIENTO_NETO
+		lineageTag: etl-col-mov-neto
+
+	column CONTRAPARTIDA_CUENTA
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CONTRAPARTIDA_CUENTA
+		lineageTag: etl-col-contra-cuenta
+
+	column CONTRAPARTIDA_NOMBRE
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CONTRAPARTIDA_NOMBRE
+		lineageTag: etl-col-contra-nombre
+
+	column CONTRAPARTIDA_TIPO
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CONTRAPARTIDA_TIPO
+		lineageTag: etl-col-contra-tipo
+
+	column CLIENTE_PROMOCION
+		dataType: string
+		summarizeBy: none
+		sourceColumn: CLIENTE_PROMOCION
+		lineageTag: etl-col-cliente-promo
+
+	annotation PBI_ResultType = Table
+

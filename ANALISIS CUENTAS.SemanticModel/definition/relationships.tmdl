@@ -1,0 +1,23 @@
+
+relationship 8f23beed-9c86-f092-474e-ea4fd29be8a2
+	fromColumn: 'B1. MAYORES 2019 - 2023'.FECHA
+	toColumn: 'R1. Tabla de Fechas'.Date
+
+relationship 414174ab-cb84-bb10-f0a2-76ca42e035cc
+	fromColumn: 'B1. MAYORES 2019 - 2023'.CUENTA
+	toColumn: 'T1. DIM_CUENTAS'.CUENTA
+
+relationship b6bc563f-0735-e47b-9b6b-31bbe8f93aa9
+	fromColumn: 'B1. MAYORES 2019 - 2023'.'5. Factura'
+	toColumn: 'B2. Tabla_Facturas_Unicas'.Factura_FILTRO
+
+relationship dd2ab0e1-060b-5416-7d5d-1f56d6c381cf
+	fromColumn: 'B1. MAYORES 2019 - 2023'.NUMERO
+	toColumn: 'B3. Tabla_AC_Unicos'.'Número AC_FILTRO'
+
+relationship b61f894b-0e74-8f1b-1583-3cb50b0680cf
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'BALANCE GENERAL'.CODIGO
+	toColumn: 'B1. MAYORES 2019 - 2023'.CUENTA
+

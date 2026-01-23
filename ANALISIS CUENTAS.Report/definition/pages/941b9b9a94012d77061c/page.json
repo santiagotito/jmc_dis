@@ -1,0 +1,80 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "941b9b9a94012d77061c",
+  "displayName": "PROMOCIÓN",
+  "displayOption": "ActualSize",
+  "height": 3200,
+  "width": 1425,
+  "visualInteractions": [
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "2fdc43312e4228456ab8",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "3f20000793bc8b5b0672",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "c4f90d96c669978edda3",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "c765ea1b3d6c04785315",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "689ef6aaa3400321b81a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "2fdc43312e4228456ab8",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "3f20000793bc8b5b0672",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "c4f90d96c669978edda3",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "c765ea1b3d6c04785315",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "689ef6aaa3400321b81a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7d4d7cbd081d4c0761d9",
+      "target": "833b0702460e6e5c7141",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3a1a3544719d1e9b4503",
+      "target": "833b0702460e6e5c7141",
+      "type": "NoFilter"
+    },
+    {
+      "source": "800886ec190a1577d527",
+      "target": "833b0702460e6e5c7141",
+      "type": "NoFilter"
+    },
+    {
+      "source": "69dbf80582061fd4748c",
+      "target": "833b0702460e6e5c7141",
+      "type": "DataFilter"
+    }
+  ]
+}

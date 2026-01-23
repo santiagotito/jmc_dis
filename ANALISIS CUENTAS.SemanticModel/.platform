@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ANALISIS CUENTAS"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "eea7ad8b-5c69-49d4-8e5f-e44be18e6357"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxc_table",
+  "position": {
+    "x": 20,
+    "y": 440,
+    "z": 5,
+    "height": 260,
+    "width": 870,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CLIENTE"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CLIENTE",
+              "nativeQueryRef": "CLIENTE"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "FACTURA"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.FACTURA",
+              "nativeQueryRef": "FACTURA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "TIPO_DOCUMENTO"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.TIPO_DOCUMENTO",
+              "nativeQueryRef": "TIPO_DOCUMENTO"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "DEBE"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.DEBE)",
+              "nativeQueryRef": "DEBE"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "HABER"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.HABER)",
+              "nativeQueryRef": "HABER"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "filter_cxc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "B1. MAYORES 2019 - 2023"
+              }
+            },
+            "Property": "ES_CXC"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "b",
+              "Entity": "B1. MAYORES 2019 - 2023",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "b"
+                          }
+                        },
+                        "Property": "ES_CXC"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "true"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

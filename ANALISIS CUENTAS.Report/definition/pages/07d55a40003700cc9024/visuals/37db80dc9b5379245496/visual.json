@@ -1,0 +1,211 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "37db80dc9b5379245496",
+  "position": {
+    "x": 12.5,
+    "y": 1405,
+    "z": 15000,
+    "height": 332.5,
+    "width": 1475,
+    "tabOrder": 15000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B2. Tabla_Facturas_Unicas"
+                    }
+                  },
+                  "Property": "Factura_FILTRO"
+                }
+              },
+              "queryRef": "B2. Tabla_Facturas_Unicas.Factura_FILTRO",
+              "nativeQueryRef": "FACTURA",
+              "active": true,
+              "displayName": "FACTURA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "NOMBRE"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.NOMBRE",
+              "nativeQueryRef": "NOMBRE",
+              "active": false
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "DEBE"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.DEBE)",
+              "nativeQueryRef": "DEBE",
+              "displayName": "DEBE"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "HABER"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.HABER)",
+              "nativeQueryRef": "HABER",
+              "displayName": "HABER"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "SALDO"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.SALDO)",
+              "nativeQueryRef": "SALDO",
+              "displayName": "SALDO"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "B1. MAYORES 2019 - 2023"
+                      }
+                    },
+                    "Property": "DEBE"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "B2. Tabla_Facturas_Unicas.Factura_FILTRO"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B2. Tabla_Facturas_Unicas"
+                    }
+                  },
+                  "Property": "Factura_FILTRO"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "B1. MAYORES 2019 - 2023.NOMBRE"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {}
+      }
+    ],
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "75433b2aed7050e8de02",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "B1. MAYORES 2019 - 2023"
+              }
+            },
+            "Property": "7. cuentas promocion"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

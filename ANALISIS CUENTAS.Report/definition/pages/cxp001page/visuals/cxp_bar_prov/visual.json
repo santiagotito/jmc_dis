@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxp_bar_prov",
+  "position": {
+    "x": 20,
+    "y": 140,
+    "z": 2,
+    "height": 280,
+    "width": 400,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "PROVEEDOR"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.PROVEEDOR",
+              "nativeQueryRef": "PROVEEDOR"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CXP_Saldo Pendiente"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CXP_Saldo Pendiente",
+              "nativeQueryRef": "CXP_Saldo Pendiente"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "07d55a40003700cc9024",
+  "displayName": "ASIENTO CONTABLE",
+  "displayOption": "ActualSize",
+  "height": 2500,
+  "width": 1500,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "919cbce5e3d7076134a5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "B3. Tabla_AC_Unicos"
+              }
+            },
+            "Property": "Número AC_FILTRO"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": " ",
+              "Entity": "B3. Tabla_AC_Unicos",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": " "
+                              }
+                            },
+                            "Property": "Número AC_FILTRO"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "null"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "ce0750d350d4b0a71832",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "B2. Tabla_Facturas_Unicas"
+              }
+            },
+            "Property": "Factura_FILTRO"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "a972e1300897730e0924",
+      "target": "2573e91750acdd0b4027",
+      "type": "DataFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "ac0549f736146074162c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "a972e1300897730e0924",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a972e1300897730e0924",
+      "target": "d25116a27c8324588b7d",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "a972e1300897730e0924",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "ac0549f736146074162c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a972e1300897730e0924",
+      "target": "582b3957a24300176a01",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "ac0549f736146074162c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "a972e1300897730e0924",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a972e1300897730e0924",
+      "target": "dc488f4f01b9947e0cd2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2a708fbce10069505480",
+      "target": "d25116a27c8324588b7d",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2a708fbce10069505480",
+      "target": "dc488f4f01b9947e0cd2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2a708fbce10069505480",
+      "target": "582b3957a24300176a01",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2a708fbce10069505480",
+      "target": "2573e91750acdd0b4027",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "2a708fbce10069505480",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "e07c74ee168ae5e11008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "2a708fbce10069505480",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "e07c74ee168ae5e11008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "2a708fbce10069505480",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "e07c74ee168ae5e11008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2573e91750acdd0b4027",
+      "target": "e07c74ee168ae5e11008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2573e91750acdd0b4027",
+      "target": "2a708fbce10069505480",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2573e91750acdd0b4027",
+      "target": "a972e1300897730e0924",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2573e91750acdd0b4027",
+      "target": "ac0549f736146074162c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e07c74ee168ae5e11008",
+      "target": "d25116a27c8324588b7d",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e07c74ee168ae5e11008",
+      "target": "dc488f4f01b9947e0cd2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e07c74ee168ae5e11008",
+      "target": "582b3957a24300176a01",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e07c74ee168ae5e11008",
+      "target": "2573e91750acdd0b4027",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ac0549f736146074162c",
+      "target": "d25116a27c8324588b7d",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ac0549f736146074162c",
+      "target": "dc488f4f01b9947e0cd2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ac0549f736146074162c",
+      "target": "582b3957a24300176a01",
+      "type": "NoFilter"
+    },
+    {
+      "source": "ac0549f736146074162c",
+      "target": "2573e91750acdd0b4027",
+      "type": "NoFilter"
+    },
+    {
+      "source": "80eff61b9b9d79e13387",
+      "target": "d25116a27c8324588b7d",
+      "type": "DataFilter"
+    },
+    {
+      "source": "80eff61b9b9d79e13387",
+      "target": "dc488f4f01b9947e0cd2",
+      "type": "DataFilter"
+    },
+    {
+      "source": "80eff61b9b9d79e13387",
+      "target": "582b3957a24300176a01",
+      "type": "DataFilter"
+    },
+    {
+      "source": "80eff61b9b9d79e13387",
+      "target": "2573e91750acdd0b4027",
+      "type": "DataFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "80eff61b9b9d79e13387",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "80eff61b9b9d79e13387",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "80eff61b9b9d79e13387",
+      "type": "NoFilter"
+    },
+    {
+      "source": "2573e91750acdd0b4027",
+      "target": "80eff61b9b9d79e13387",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d25116a27c8324588b7d",
+      "target": "c4f0df0c502460098462",
+      "type": "NoFilter"
+    },
+    {
+      "source": "582b3957a24300176a01",
+      "target": "c4f0df0c502460098462",
+      "type": "NoFilter"
+    },
+    {
+      "source": "dc488f4f01b9947e0cd2",
+      "target": "c4f0df0c502460098462",
+      "type": "NoFilter"
+    }
+  ]
+}

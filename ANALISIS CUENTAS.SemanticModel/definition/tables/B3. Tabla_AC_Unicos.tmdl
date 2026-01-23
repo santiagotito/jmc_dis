@@ -1,0 +1,27 @@
+table 'B3. Tabla_AC_Unicos'
+	lineageTag: ef859b6f-e91a-4d28-bcf5-e81c6db1dfaa
+
+	column 'Número AC_FILTRO'
+		lineageTag: 7a1a17ce-a775-4625-9fb6-f944661aae43
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Número AC_FILTRO]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'B3. Tabla_AC_Unicos' = calculated
+		mode: import
+		source =
+				
+				DISTINCT(
+				    SELECTCOLUMNS(
+				        FILTER(
+				            'B1. MAYORES 2019 - 2023',
+				            [7. cuentas promocion] <> "otros" && NOT(ISBLANK([NUMERO]))
+				        ),
+				        "Número AC_FILTRO", [NUMERO]
+				    )
+				)
+
+	annotation PBI_Id = 6e67bedb4e9f4d2a91510fe30aacafde
+

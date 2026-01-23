@@ -1,0 +1,25 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-MX
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["MAYORES 2020","MAYORES 2021","MAYORES 2022","MAYORES 2023","B1. MAYORES 2019 - 2023","BALANCE GENERAL"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
+
+
+ref table 'B1. MAYORES 2019 - 2023'
+ref table 'R1. Tabla de Fechas'
+
+ref table 'T1. DIM_CUENTAS'
+ref table 'B2. Tabla_Facturas_Unicas'
+ref table 'B3. Tabla_AC_Unicos'
+ref table 'BALANCE GENERAL'
+
+ref cultureInfo es-ES
+

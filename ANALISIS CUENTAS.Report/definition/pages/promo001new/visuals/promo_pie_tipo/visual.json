@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "promo_pie_tipo",
+  "position": {
+    "x": 440,
+    "y": 140,
+    "z": 4,
+    "height": 280,
+    "width": 350,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CONTRAPARTIDA_TIPO"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CONTRAPARTIDA_TIPO",
+              "nativeQueryRef": "CONTRAPARTIDA_TIPO"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "PROMO_Total Gasto"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.PROMO_Total Gasto",
+              "nativeQueryRef": "PROMO_Total Gasto"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

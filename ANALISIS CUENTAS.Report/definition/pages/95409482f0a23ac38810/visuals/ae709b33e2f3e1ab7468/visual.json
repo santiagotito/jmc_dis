@@ -1,0 +1,137 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "ae709b33e2f3e1ab7468",
+  "position": {
+    "x": 31.428571428571431,
+    "y": 1305.7142857142858,
+    "z": 14000,
+    "height": 415.71428571428572,
+    "width": 1370,
+    "tabOrder": 14000
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "R1. Tabla de Fechas"
+                        }
+                      },
+                      "Hierarchy": "Date Jerarquía"
+                    }
+                  },
+                  "Level": "1. Año"
+                }
+              },
+              "queryRef": "R1. Tabla de Fechas.Date Jerarquía.1. Año",
+              "nativeQueryRef": "Date Jerarquía 1. Año",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "T1. DIM_CUENTAS"
+                    }
+                  },
+                  "Property": "NOMBRE_CUENTA"
+                }
+              },
+              "queryRef": "T1. DIM_CUENTAS.NOMBRE_CUENTA",
+              "nativeQueryRef": "NOMBRE CUENTA:",
+              "displayName": "NOMBRE CUENTA:"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "B1. MAYORES 2019 - 2023"
+                        }
+                      },
+                      "Property": "SALDO"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(B1. MAYORES 2019 - 2023.SALDO)",
+              "nativeQueryRef": "SALDO",
+              "displayName": "SALDO"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "B1. MAYORES 2019 - 2023"
+                      }
+                    },
+                    "Property": "DEBE"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BottomCenter'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

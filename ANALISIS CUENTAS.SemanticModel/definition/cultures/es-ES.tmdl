@@ -1,0 +1,5798 @@
+cultureInfo es-ES
+
+	linguisticMetadata =
+			{
+			  "Version": "4.1.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "mayores_2020": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "mayores 2020": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "mayore 2020": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "mayores_2020.fecha.jerarquía_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "jerarquía de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.fecha.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.fecha.trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "trimestre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.fecha.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.fecha.día": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Día"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "día": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha día": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.anio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "ANIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "anio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "MES"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "TIPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "tipo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.numero": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "NUMERO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "numero": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "REGISTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.debe": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "DEBE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "debe": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.haber": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "HABER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "haber": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.saldo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "SALDO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "saldo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.detalle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "DETALLE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "detalle": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2020.descripcion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2020",
+			          "ConceptualProperty": "DESCRIPCION"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "descripcion": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "mayores 2021": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "mayore 2021": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "mayores_2021.fecha.jerarquía_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "jerarquía de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.fecha.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.fecha.trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "trimestre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.fecha.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.fecha.día": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Día"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "día": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha día": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.anio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "ANIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "anio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "MES"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "TIPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "tipo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.numero": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "NUMERO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "numero": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "REGISTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.debe": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "DEBE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "debe": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.haber": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "HABER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "haber": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.saldo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "SALDO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "saldo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2021.detalle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2021",
+			          "ConceptualProperty": "DETALLE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "detalle": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "mayores 2022": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "mayore 2022": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.nombre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "NOMBRE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "nombre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "mayores_2022.fecha.jerarquía_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "jerarquía de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.fecha.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.fecha.trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "trimestre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.fecha.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.fecha.día": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Día"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "día": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha día": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.anio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "ANIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "anio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "MES"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "TIPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "tipo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.numero": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "NUMERO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "numero": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "REGISTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.debe": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "DEBE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "debe": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.haber": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "HABER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "haber": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.saldo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "SALDO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "saldo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2022.detalle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2022",
+			          "ConceptualProperty": "DETALLE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "detalle": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "mayores 2023": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "mayore 2023": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.nombre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "NOMBRE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "nombre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "mayores_2023.fecha.jerarquía_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "jerarquía de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.fecha.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.fecha.trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "trimestre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.fecha.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.fecha.día": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "VariationSource": "FECHA",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Día"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "día": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha día": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.anio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "ANIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "anio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "MES"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "TIPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "tipo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.numero": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "NUMERO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "numero": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "REGISTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.debe": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "DEBE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "debe": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.haber": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "HABER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "haber": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.saldo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "SALDO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "saldo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "mayores_2023.detalle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "MAYORES 2023",
+			          "ConceptualProperty": "DETALLE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "detalle": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "b1. mayores 2019 - 2023": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "b1. mayore 2019 - 2023": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "b1. mayores 2019 2023": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "b1. mayore 2019 2023": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.7566
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.anio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "ANIO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "anio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "MES"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "TIPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tipo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.numero": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "NUMERO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "numero": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "REGISTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.debe": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "DEBE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "debe": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.haber": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "HABER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "haber": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.saldo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "SALDO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "saldo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.detalle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "DETALLE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "detalle": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.descripcion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "DESCRIPCION"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "descripcion": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.nombre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "NOMBRE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "nombre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.tipo_documento": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "TIPO_DOCUMENTO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tipo documento": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "TIPO_DOCUMENTO": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.numero_documento": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "NUMERO_DOCUMENTO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "numero documento": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "NUMERO_DOCUMENTO": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha_documento": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "FECHA_DOCUMENTO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fecha documento": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "FECHA_DOCUMENTO": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "VariationSource": "FECHA_DOCUMENTO",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "jerarquía de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha_documento.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "VariationSource": "FECHA_DOCUMENTO",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha documento año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha_documento.trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "VariationSource": "FECHA_DOCUMENTO",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "trimestre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha documento trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha_documento.me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "VariationSource": "FECHA_DOCUMENTO",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha documento me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.fecha_documento.día": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "VariationSource": "FECHA_DOCUMENTO",
+			          "VariationSet": "Variación",
+			          "Hierarchy": "Jerarquía de fechas",
+			          "HierarchyLevel": "Día"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "día": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fecha documento día": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.numero_cliente": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "NUMERO_CLIENTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "numero cliente": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "NUMERO_CLIENTE": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.nombre_cliente": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "NOMBRE_CLIENTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "nombre cliente": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "NOMBRE_CLIENTE": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.factura": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "FACTURA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "factura": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "R1. tabla de fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha.date": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "ConceptualProperty": "Date"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "date": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "moment": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.736
+			          }
+			        },
+			        {
+			          "period": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.714
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.entity_2__nombre_me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "ConceptualProperty": "2. Nombre Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "2. nombre me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha.entity_1__año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "ConceptualProperty": "1. Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "1. año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "AÑO": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha.entity_2__mes_número": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "ConceptualProperty": "2. Mes Número"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "2. mes número": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "2. me número": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha.entity_3__trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "ConceptualProperty": "3. Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "3. trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "date jerarquía": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "moment jerarquía": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.6
+			          }
+			        },
+			        {
+			          "period jerarquía": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.582
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía.date": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía",
+			          "HierarchyLevel": "Date"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "date": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "moment": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.736
+			          }
+			        },
+			        {
+			          "period": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.714
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía.entity_1__año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía",
+			          "HierarchyLevel": "1. Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "1. año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía.entity_2__mes_número": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía",
+			          "HierarchyLevel": "2. Mes Número"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "2. mes número": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "2. me número": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía.entity_2__nombre_me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía",
+			          "HierarchyLevel": "2. Nombre Mes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "2. nombre me": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "R1__tabla_de_fecha.date_jerarquía.entity_3__trimestre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "R1. Tabla de Fechas",
+			          "Hierarchy": "Date Jerarquía",
+			          "HierarchyLevel": "3. Trimestre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "3. trimestre": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "t1__dim_cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "T1. DIM_CUENTAS"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "t1. dim_cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta.cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "T1. DIM_CUENTAS",
+			          "ConceptualProperty": "CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "cuenta": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta.nombre_cuenta": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "T1. DIM_CUENTAS",
+			          "ConceptualProperty": "NOMBRE_CUENTA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "nombre cuenta": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "NOMBRE_CUENTA": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "NOMBRE CUENTA:": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.promocion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "PROMOCION"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "promocion": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_3__numero_de_documento": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "3. Numero de Documento"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "3. numero de documento": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Numero de Documento": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Número de Documento": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_4__numero_de_registro": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "4. Numero de registro"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "4. numero de registro": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_5__factura": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "5. Factura"
+			        }
+			      },
+			      "State": "Generated",
+			      "Visibility": {
+			        "Value": "Hidden"
+			      },
+			      "Terms": [
+			        {
+			          "5. factura": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_6__fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "6. Fecha"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "6. fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta.grupo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "T1. DIM_CUENTAS",
+			          "ConceptualProperty": "GRUPO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "grupo": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_2__tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "2. Tipo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "2. tipo": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Tipo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_1__documento": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "1. Documento"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "1. documento": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Documento": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_1__facturas_únicas": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "1. Facturas Únicas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "1. facturas únicas": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Facturas Únicas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_7__cuentas_promocion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "7. cuentas promocion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "7. cuentas promocion": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "7. cuenta promocion": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "CUENTAS": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "CUENTA": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_8__tipo_factura": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "8. TIPO FACTURA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "8. tipo factura": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "TIPO FACTURA": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "DOCUMENTO": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_9__factura_general": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "9. FACTURA GENERAL"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "9. factura general": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.mes_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "MES_FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes fecha": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me fecha": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MES_FECHA": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.año_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "AÑO FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "año fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.mes_fecha_text": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "MES_FECHA_TEXT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes fecha text": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me fecha text": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MES_FECHA_TEXT": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "me fecha manuscript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha transcript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha typescript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha edition": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha version": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha writing": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha script": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha copy": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha schoolbook": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.482
+			          }
+			        },
+			        {
+			          "me fecha reader": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.482
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.FECHA_jerarquía": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "Hierarchy": "FECHA Jerarquía"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "FECHA jerarquía": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.FECHA_jerarquía.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "Hierarchy": "FECHA Jerarquía",
+			          "HierarchyLevel": "FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.FECHA_jerarquía.año_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "Hierarchy": "FECHA Jerarquía",
+			          "HierarchyLevel": "AÑO FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "año fecha": {
+			            "State": "Generated"
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "Hierarchy": "FECHA Jerarquía",
+			          "HierarchyLevel": "MES_FECHA"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes fecha": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me fecha": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MES_FECHA": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha_text": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "Hierarchy": "FECHA Jerarquía",
+			          "HierarchyLevel": "MES_FECHA_TEXT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes fecha text": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me fecha text": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MES_FECHA_TEXT": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "me fecha manuscript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha transcript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha typescript": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha edition": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha version": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "me fecha writing": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha script": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha copy": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "me fecha schoolbook": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.482
+			          }
+			        },
+			        {
+			          "me fecha reader": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.482
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "B2__Tabla_Facturas_Unica": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B2. Tabla_Facturas_Unicas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "B2. Tabla_Facturas_Unica": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "B2__Tabla_Facturas_Unica.factura_FILTRO": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B2. Tabla_Facturas_Unicas",
+			          "ConceptualProperty": "Factura_FILTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "factura FILTRO": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Factura_FILTRO": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "Factura": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_10__cod_ini_fact": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "10. cod_ini_fact"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "10. cod_ini_fact": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023.entity_11__fact": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B1. MAYORES 2019 - 2023",
+			          "ConceptualProperty": "11. Fact"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "11. fact": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "11. statistic": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "11. element": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "11. information": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "11. statement": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.508
+			          }
+			        },
+			        {
+			          "11. detail": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "11. circumstance": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "11. point": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.492
+			          }
+			        },
+			        {
+			          "11. occurrence": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.482
+			          }
+			        },
+			        {
+			          "11. happening": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.468
+			          }
+			        },
+			        {
+			          "11. deed": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.468
+			          }
+			        },
+			        {
+			          "Factura": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "B3__Tabla_AC_Unico": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B3. Tabla_AC_Unicos"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "B3. Tabla_AC_Unico": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "B3__Tabla_AC_Unico.número_AC_FILTRO": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "B3. Tabla_AC_Unicos",
+			          "ConceptualProperty": "Número AC_FILTRO"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "número AC_FILTRO": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    }
+			  },
+			  "Relationships": {
+			    "b1__mayores_2019__2023_FECHA_jerarquía_has_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.FECHA_jerarquía": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía"
+			          }
+			        },
+			        "b1__mayores_2019__2023.FECHA_jerarquía.fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía.fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía.fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "FECHA_jerarquías_have_fechas"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_date_jerarquía_has_entity_3__trimestre": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía.entity_3__trimestre": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía.entity_3__trimestre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía.entity_3__trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "date_jerarquías_have_3__trimestres"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_date_jerarquía_has_entity_2__nombre_me": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía.entity_2__nombre_me": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía.entity_2__nombre_me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía.entity_2__nombre_me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "date_jerarquías_have_2__nombre_me"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_date_jerarquía_has_entity_2__mes_número": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía.entity_2__mes_número": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía.entity_2__mes_número"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía.entity_2__mes_número"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "date_jerarquías_have_2__mes_números"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_date_jerarquía_has_entity_1__año": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía.entity_1__año": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía.entity_1__año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía.entity_1__año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "date_jerarquías_have_1__años"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_date_jerarquía_has_date": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía.date": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía.date"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía.date"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "date_jerarquías_have_dates"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_me_has_b1__mayores_2019__2023_fecha_documento_día": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.me": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.me"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.día": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.día"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.día"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "me_have_días"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.día"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "días_have_me"
+			        },
+			        {
+			          "Preposition": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.día"
+			            },
+			            "Prepositions": [
+			              {
+			                "in": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "días_are_in_me"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_trimestre_has_b1__mayores_2019__2023_fecha_documento_me": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.trimestre": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.me": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "trimestres_have_me"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "me_have_trimestres"
+			        },
+			        {
+			          "Preposition": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            },
+			            "Prepositions": [
+			              {
+			                "in": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "me_are_in_trimestres"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_año_has_b1__mayores_2019__2023_fecha_documento_trimestre": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.año": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.año"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.trimestre": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.año"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "años_have_trimestres"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "trimestres_have_años"
+			        },
+			        {
+			          "Preposition": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            },
+			            "Prepositions": [
+			              {
+			                "in": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "trimestres_are_in_años"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_jerarquía_de_fecha_has_b1__mayores_2019__2023_fecha_documento_día": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.día": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.día"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.día"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "jerarquía_de_fechas_have_días"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_jerarquía_de_fecha_has_b1__mayores_2019__2023_fecha_documento_me": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.me": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "jerarquía_de_fechas_have_me"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_jerarquía_de_fecha_has_b1__mayores_2019__2023_fecha_documento_trimestre": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.trimestre": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "jerarquía_de_fechas_have_trimestres"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_jerarquía_de_fecha_has_b1__mayores_2019__2023_fecha_documento_año": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.año": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "jerarquía_de_fechas_have_años"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_fecha_documento_has_jerarquía_de_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.fecha_documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento.jerarquía_de_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "fecha_documentos_have_jerarquía_de_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_B3__Tabla_AC_Unico": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "B3__Tabla_AC_Unico": {
+			          "Target": {
+			            "Entity": "B3__Tabla_AC_Unico"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "B3__Tabla_AC_Unico"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_B3__Tabla_AC_Unicos"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "B3__Tabla_AC_Unico"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "B3__Tabla_AC_Unicos_have_b1__mayores_2019__2023"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_B2__Tabla_Facturas_Unica": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "B2__Tabla_Facturas_Unica": {
+			          "Target": {
+			            "Entity": "B2__Tabla_Facturas_Unica"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "B2__Tabla_Facturas_Unica"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_B2__Tabla_Facturas_Unicas"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "B2__Tabla_Facturas_Unica"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "B2__Tabla_Facturas_Unicas_have_b1__mayores_2019__2023"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_t1__dim_cuenta": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "t1__dim_cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "t1__dim_cuenta"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_t1__dim_cuentas"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "t1__dim_cuenta"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "t1__dim_cuentas_have_b1__mayores_2019__2023"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_R1__tabla_de_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_R1__tabla_de_fechas"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_b1__mayores_2019__2023"
+			        }
+			      ]
+			    },
+			    "B3__Tabla_AC_Unico_has_número_AC_FILTRO": {
+			      "Binding": {
+			        "ConceptualEntity": "B3. Tabla_AC_Unicos"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "B3__Tabla_AC_Unico": {
+			          "Target": {
+			            "Entity": "B3__Tabla_AC_Unico"
+			          }
+			        },
+			        "B3__Tabla_AC_Unico.número_AC_FILTRO": {
+			          "Target": {
+			            "Entity": "B3__Tabla_AC_Unico.número_AC_FILTRO"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "B3__Tabla_AC_Unico"
+			            },
+			            "Object": {
+			              "Role": "B3__Tabla_AC_Unico.número_AC_FILTRO"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "B3__Tabla_AC_Unicos_have_número_AC_FILTROs"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_11__fact": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_11__fact": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_11__fact"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_11__fact"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_11__facts"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_10__cod_ini_fact": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_10__cod_ini_fact": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_10__cod_ini_fact"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_10__cod_ini_fact"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_10__cod_ini_facts"
+			        }
+			      ]
+			    },
+			    "B2__Tabla_Facturas_Unica_has_factura_FILTRO": {
+			      "Binding": {
+			        "ConceptualEntity": "B2. Tabla_Facturas_Unicas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "B2__Tabla_Facturas_Unica": {
+			          "Target": {
+			            "Entity": "B2__Tabla_Facturas_Unica"
+			          }
+			        },
+			        "B2__Tabla_Facturas_Unica.factura_FILTRO": {
+			          "Target": {
+			            "Entity": "B2__Tabla_Facturas_Unica.factura_FILTRO"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "B2__Tabla_Facturas_Unica"
+			            },
+			            "Object": {
+			              "Role": "B2__Tabla_Facturas_Unica.factura_FILTRO"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "B2__Tabla_Facturas_Unicas_have_factura_FILTROs"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_FECHA_jerarquía": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.FECHA_jerarquía": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_FECHA_jerarquías"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_mes_fecha_text": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.mes_fecha_text": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.mes_fecha_text"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.mes_fecha_text"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_mes_fecha_texts"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_año_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.año_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.año_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.año_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_año_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_mes_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.mes_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.mes_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.mes_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_mes_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_9__factura_general": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_9__factura_general": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_9__factura_general"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_9__factura_general"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_9__factura_generals"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_8__tipo_factura": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_8__tipo_factura": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_8__tipo_factura"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_8__tipo_factura"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_8__tipo_facturas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_7__cuentas_promocion": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_7__cuentas_promocion": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_7__cuentas_promocion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_7__cuentas_promocion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_7__cuentas_promocions"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_1__facturas_únicas": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_1__facturas_únicas": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_1__facturas_únicas"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_1__facturas_únicas"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_1__facturas_únicas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_1__documento": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_1__documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_1__documento"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_1__documento"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_1__documentos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_2__tipo": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_2__tipo": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_2__tipo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_2__tipo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_2__tipos"
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta_has_grupo": {
+			      "Binding": {
+			        "ConceptualEntity": "T1. DIM_CUENTAS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "t1__dim_cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta"
+			          }
+			        },
+			        "t1__dim_cuenta.grupo": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta.grupo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "t1__dim_cuenta"
+			            },
+			            "Object": {
+			              "Role": "t1__dim_cuenta.grupo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "t1__dim_cuentas_have_grupos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_6__fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_6__fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_6__fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_6__fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_6__fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_4__numero_de_registro": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_4__numero_de_registro": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_4__numero_de_registro"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_4__numero_de_registro"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_4__numero_de_registros"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_entity_3__numero_de_documento": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.entity_3__numero_de_documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.entity_3__numero_de_documento"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.entity_3__numero_de_documento"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_3__numero_de_documentos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_promocion": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.promocion": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.promocion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.promocion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_promocions"
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta_has_nombre_cuenta": {
+			      "Binding": {
+			        "ConceptualEntity": "T1. DIM_CUENTAS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "t1__dim_cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta"
+			          }
+			        },
+			        "t1__dim_cuenta.nombre_cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta.nombre_cuenta"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "t1__dim_cuenta"
+			            },
+			            "Object": {
+			              "Role": "t1__dim_cuenta.nombre_cuenta"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "t1__dim_cuentas_have_nombre_cuentas"
+			        }
+			      ]
+			    },
+			    "t1__dim_cuenta_has_cuenta": {
+			      "Binding": {
+			        "ConceptualEntity": "T1. DIM_CUENTAS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "t1__dim_cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta"
+			          }
+			        },
+			        "t1__dim_cuenta.cuenta": {
+			          "Target": {
+			            "Entity": "t1__dim_cuenta.cuenta"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "t1__dim_cuenta"
+			            },
+			            "Object": {
+			              "Role": "t1__dim_cuenta.cuenta"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "t1__dim_cuentas_have_cuentas"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_date_jerarquía": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date_jerarquía": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date_jerarquía"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date_jerarquía"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_date_jerarquías"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_entity_3__trimestre": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.entity_3__trimestre": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.entity_3__trimestre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.entity_3__trimestre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_3__trimestres"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_entity_2__mes_número": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.entity_2__mes_número": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.entity_2__mes_número"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.entity_2__mes_número"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_2__mes_números"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_entity_1__año": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.entity_1__año": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.entity_1__año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.entity_1__año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_1__años"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_entity_2__nombre_me": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.entity_2__nombre_me": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.entity_2__nombre_me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.entity_2__nombre_me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_2__nombre_me"
+			        }
+			      ]
+			    },
+			    "R1__tabla_de_fecha_has_date": {
+			      "Binding": {
+			        "ConceptualEntity": "R1. Tabla de Fechas"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "R1__tabla_de_fecha": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha"
+			          }
+			        },
+			        "R1__tabla_de_fecha.date": {
+			          "Target": {
+			            "Entity": "R1__tabla_de_fecha.date"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "R1__tabla_de_fecha"
+			            },
+			            "Object": {
+			              "Role": "R1__tabla_de_fecha.date"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "R1__tabla_de_fechas_have_dates"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_factura": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.factura": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.factura"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.factura"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_facturas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_nombre_cliente": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.nombre_cliente": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.nombre_cliente"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.nombre_cliente"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_nombre_clientes"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_numero_cliente": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.numero_cliente": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.numero_cliente"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.numero_cliente"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_numero_clientes"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_fecha_documento": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha_documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha_documento"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha_documento"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_fecha_documentos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_numero_documento": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.numero_documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.numero_documento"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.numero_documento"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_numero_documentos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_tipo_documento": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.tipo_documento": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.tipo_documento"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.tipo_documento"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_tipo_documentos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_nombre": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.nombre": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.nombre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.nombre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_nombres"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_descripcion": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.descripcion": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.descripcion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.descripcion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_descripcions"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_detalle": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.detalle": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.detalle"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.detalle"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_detalles"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_saldo": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.saldo": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.saldo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.saldo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_saldos"
+			        },
+			        {
+			          "Adjective": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Adjectives": [
+			              {
+			                "expensive": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Antonyms": [
+			              {
+			                "cheap": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Measurement": {
+			              "Role": "b1__mayores_2019__2023.saldo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "saldo_indicates_how_expensive_b1__mayores_2019__2023_are"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_haber": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.haber": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.haber"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.haber"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_haber"
+			        },
+			        {
+			          "Adjective": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Adjectives": [
+			              {
+			                "expensive": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Antonyms": [
+			              {
+			                "cheap": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Measurement": {
+			              "Role": "b1__mayores_2019__2023.haber"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "haber_indicates_how_expensive_b1__mayores_2019__2023_are"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_debe": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.debe": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.debe"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.debe"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_debes"
+			        },
+			        {
+			          "Adjective": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Adjectives": [
+			              {
+			                "expensive": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Antonyms": [
+			              {
+			                "cheap": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Measurement": {
+			              "Role": "b1__mayores_2019__2023.debe"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "debe_indicates_how_expensive_b1__mayores_2019__2023_are"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_registro": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.registro": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.registro"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.registro"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_registros"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_tipo": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.tipo": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.tipo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.tipo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_tipos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_me": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.me": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_me"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_anio": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.anio": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.anio"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.anio"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_anios"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_has_grupo": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023"
+			          }
+			        },
+			        "b1__mayores_2019__2023.grupo": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.grupo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.grupo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "b1__mayores_2019__2023_have_grupos"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_FECHA_jerarquía_has_año_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.FECHA_jerarquía": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía"
+			          }
+			        },
+			        "b1__mayores_2019__2023.FECHA_jerarquía.año_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía.año_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía.año_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "FECHA_jerarquías_have_año_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_FECHA_jerarquía_has_mes_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.FECHA_jerarquía": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía"
+			          }
+			        },
+			        "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "FECHA_jerarquías_have_mes_fechas"
+			        }
+			      ]
+			    },
+			    "b1__mayores_2019__2023_FECHA_jerarquía_has_mes_fecha_text": {
+			      "Binding": {
+			        "ConceptualEntity": "B1. MAYORES 2019 - 2023"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "b1__mayores_2019__2023.FECHA_jerarquía": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía"
+			          }
+			        },
+			        "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha_text": {
+			          "Target": {
+			            "Entity": "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha_text"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía"
+			            },
+			            "Object": {
+			              "Role": "b1__mayores_2019__2023.FECHA_jerarquía.mes_fecha_text"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "FECHA_jerarquías_have_mes_fecha_texts"
+			        }
+			      ]
+			    }
+			  },
+			  "Agents": {
+			    "Internal": {
+			      "Version": "1.1.0"
+			    }
+			  }
+			}
+		contentType: json
+

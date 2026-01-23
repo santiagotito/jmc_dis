@@ -1,0 +1,27 @@
+table 'B2. Tabla_Facturas_Unicas'
+	lineageTag: 3374231b-470b-40a2-afd6-57a4bd6212ae
+
+	column Factura_FILTRO
+		lineageTag: cf414064-4610-4a38-bf2a-58341aafc21d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Factura_FILTRO]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'B2. Tabla_Facturas_Unicas' = calculated
+		mode: import
+		source =
+				
+				DISTINCT(
+				    SELECTCOLUMNS(
+				        FILTER(
+				            'B1. MAYORES 2019 - 2023',
+				            [7. cuentas promocion] <> "otros" && NOT(ISBLANK([11. Fact]))
+				        ),
+				        "Factura_FILTRO", [11. Fact]
+				    )
+				)
+
+	annotation PBI_Id = 05e4c975246f49cc8bd0616a2494bc0c
+

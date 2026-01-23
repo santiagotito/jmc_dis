@@ -1,0 +1,46 @@
+table 'T1. DIM_CUENTAS'
+	lineageTag: edcf9e9a-2dd1-4d45-966a-71e8a064d42c
+
+	column CUENTA
+		lineageTag: 64992be4-3956-46b9-bd9e-0df8d54e0a09
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: B1. MAYORES 2019 - 2023[CUENTA]
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOMBRE_CUENTA
+		lineageTag: c532c77c-2781-4939-af1c-0028ca675fe4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NOMBRE_CUENTA]
+
+		annotation SummarizationSetBy = Automatic
+
+	column GRUPO
+		lineageTag: 997efee5-27c5-4144-847a-aaa5e888ea60
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: B1. MAYORES 2019 - 2023[GRUPO]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'T1. DIM_CUENTAS' = calculated
+		mode: import
+		source = ```
+				
+				SUMMARIZE(
+				    FILTER(
+				        'B1. MAYORES 2019 - 2023',
+				        NOT(ISBLANK('B1. MAYORES 2019 - 2023'[NOMBRE])) &&
+				        'B1. MAYORES 2019 - 2023'[NOMBRE] <> ""
+				    ),
+				    'B1. MAYORES 2019 - 2023'[CUENTA],
+				    'B1. MAYORES 2019 - 2023'[GRUPO],
+				    "NOMBRE_CUENTA", 
+				    FIRSTNONBLANK('B1. MAYORES 2019 - 2023'[NOMBRE], 'B1. MAYORES 2019 - 2023'[NOMBRE])
+				)
+				```
+
+	annotation PBI_Id = 1d34847b80084b12b482cd13b2b05767
+

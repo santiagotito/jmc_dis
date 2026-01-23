@@ -1,0 +1,8 @@
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+node_modules/
+dist/
+__pycache__/
+.env
+datos/
+dashboard-v2/public/data/data.json

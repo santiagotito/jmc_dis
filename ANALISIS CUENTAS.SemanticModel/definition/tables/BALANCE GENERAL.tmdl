@@ -1,0 +1,120 @@
+table 'BALANCE GENERAL'
+	lineageTag: 372e9063-dbcf-4e28-8865-adb7e448b263
+
+	column Año
+		dataType: string
+		lineageTag: 41c894de-9c7f-490c-b076-bbcbeb26fb2f
+		summarizeBy: none
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	column CODIGO
+		dataType: string
+		lineageTag: 6e012563-abe1-426f-96d6-2ad32a0e2efa
+		summarizeBy: none
+		sourceColumn: CODIGO
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOMBRE
+		dataType: string
+		lineageTag: 8a6c5189-34bf-43e6-9ef2-19c654ab77d6
+		summarizeBy: none
+		sourceColumn: NOMBRE
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SALDO FINAL'
+		dataType: double
+		lineageTag: b9636157-5223-48bb-981b-8ae55d1f7173
+		summarizeBy: sum
+		sourceColumn: SALDO FINAL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'SALDO FINAL REV'
+		dataType: double
+		lineageTag: aa9a90b9-c5d0-410d-9c69-5ee83bed5826
+		summarizeBy: sum
+		sourceColumn: SALDO FINAL REV
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'COMPROB.'
+		dataType: string
+		lineageTag: 8040d864-53b5-400f-bc75-78c221bbfc3c
+		summarizeBy: none
+		sourceColumn: COMPROB.
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'BALANCE GENERAL' = m
+		mode: import
+		source = ```
+				let
+				    // Ruta de la carpeta donde están los archivos
+				    RutaCarpeta = "G:\Mi unidad\1. PROYECTOS\15. JMC - PROYECTOS\1. DISOR\1. ESTADOS FINANCIEROS -PDF\1. ARCHIVOS EXTRAOFICIALES\2. ARCHIVOS FINALES\",
+				    
+				    // Obtener todos los archivos de la carpeta
+				    Origen = Folder.Files(RutaCarpeta),
+				    
+				    // Filtrar archivos (excluir temporales que empiezan con ~$)
+				    ArchivosFiltrados = Table.SelectRows(Origen, each 
+				        Text.Contains([Name], "BG Interno Disor") 
+				        and Text.EndsWith([Name], ".xlsx")
+				        and not Text.StartsWith([Name], "~$")),
+				    
+				    // Función para procesar cada archivo CON MANEJO DE ERRORES
+				    ProcesarArchivo = (RutaCompleta as text) =>
+				        try
+				            let
+				                Archivo = Excel.Workbook(File.Contents(RutaCompleta), null, true),
+				                RESULTADOS_Sheet = Archivo{[Item="RESULTADOS",Kind="Sheet"]}[Data],
+				                EncabezadosPromovidos = Table.PromoteHeaders(RESULTADOS_Sheet, [PromoteAllScalars=true]),
+				                TipoCambiado = Table.TransformColumnTypes(EncabezadosPromovidos,{
+				                    {"CODIGO", type text}, 
+				                    {"NOMBRE", type text}, 
+				                    {"SALDO FINAL", type number}, 
+				                    {"SALDO FINAL REV", type number}, 
+				                    {"COMPROB.", type logical}
+				                })
+				            in
+				                TipoCambiado
+				        otherwise null,
+				    
+				    // Aplicar la función a cada archivo
+				    AgregarDatos = Table.AddColumn(ArchivosFiltrados, "Datos", each ProcesarArchivo([Folder Path] & [Name])),
+				    
+				    // Extraer el año del nombre del archivo
+				    AgregarAño = Table.AddColumn(AgregarDatos, "Año", each Number.FromText(Text.Middle([Name], Text.PositionOf([Name], "Disor ") + 6, 4))),
+				    
+				    // FILTRAR SOLO LOS ARCHIVOS QUE SE CARGARON CORRECTAMENTE (sin errores)
+				    SoloValidos = Table.SelectRows(AgregarAño, each [Datos] <> null),
+				    
+				    // Expandir los datos de cada archivo
+				    ExpandirDatos = Table.ExpandTableColumn(SoloValidos, "Datos", {"CODIGO", "NOMBRE", "SALDO FINAL", "SALDO FINAL REV", "COMPROB."}, {"CODIGO", "NOMBRE", "SALDO FINAL", "SALDO FINAL REV", "COMPROB."}),
+				    
+				    // Seleccionar solo las columnas necesarias
+				    SeleccionarColumnas = Table.SelectColumns(ExpandirDatos, {"Año", "CODIGO", "NOMBRE", "SALDO FINAL", "SALDO FINAL REV", "COMPROB."}),
+				    
+				    #"Tipo cambiado" = Table.TransformColumnTypes(SeleccionarColumnas,{
+				        {"Año", type text}, 
+				        {"NOMBRE", type text}, 
+				        {"COMPROB.", type text}, 
+				        {"CODIGO", type text}, 
+				        {"SALDO FINAL", type number}, 
+				        {"SALDO FINAL REV", type number}
+				    })
+				in
+				    #"Tipo cambiado"
+				```
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxp_pie_forma",
+  "position": {
+    "x": 440,
+    "y": 140,
+    "z": 3,
+    "height": 280,
+    "width": 350,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "FORMA_PAGO"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.FORMA_PAGO",
+              "nativeQueryRef": "FORMA_PAGO"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CXP_Total Debe"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CXP_Total Debe",
+              "nativeQueryRef": "CXP_Total Debe"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

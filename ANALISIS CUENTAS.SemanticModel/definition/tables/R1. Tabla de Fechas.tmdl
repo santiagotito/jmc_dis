@@ -1,0 +1,79 @@
+table 'R1. Tabla de Fechas'
+	lineageTag: 4c72e1b1-d6e0-4b1d-ab28-4eac99e1dc8e
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: c2e93ea3-e76f-4e0f-8b8e-1ca76170c5a4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. Nombre Mes' = FORMAT([Date], "mmmm")
+		displayFolder: 1. Medidas Temporales
+		lineageTag: e44815eb-9d81-4bf0-a112-e0beafdd27ed
+		summarizeBy: none
+		sortByColumn: '2. Mes Número'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1. Año' = YEAR([Date])
+		formatString: 0
+		displayFolder: 1. Medidas Temporales
+		lineageTag: 9056cdbe-3a13-4e8e-8834-eb1ded0525ab
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. Mes Número' = MONTH([Date])
+		formatString: 0
+		displayFolder: 1. Medidas Temporales
+		lineageTag: 75003952-c1df-459e-8a4f-d5c549369e02
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '3. Trimestre' = "Q" & QUARTER([Date])
+		displayFolder: 1. Medidas Temporales
+		lineageTag: 76c021d7-3d51-475e-9e2f-8235bd877321
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Date Jerarquía'
+		lineageTag: b40ee151-b740-4b9d-8b00-8e2aa90506f3
+
+		level Date
+			lineageTag: 779db26d-0d5b-4ae1-b2fa-084a94c4ad67
+			column: Date
+
+		level '1. Año'
+			lineageTag: 6e2cf5ca-c453-4fe3-b483-7a637e79f45c
+			column: '1. Año'
+
+		level '2. Mes Número'
+			lineageTag: 4bead916-176b-49a4-b4b4-094d4974aeed
+			column: '2. Mes Número'
+
+		level '2. Nombre Mes'
+			lineageTag: 52a086b5-b169-4b5a-b6e1-e80ea3d6fa31
+			column: '2. Nombre Mes'
+
+		level '3. Trimestre'
+			lineageTag: 81bc35c5-fdcd-4835-9dfd-eaf1edecf7df
+			column: '3. Trimestre'
+
+	partition 'R1. Tabla de Fechas' = calculated
+		mode: import
+		source =
+				
+				VAR MinFechaBase = CALCULATE(MIN('B1. MAYORES 2019 - 2023'[FECHA]), ALL('B1. MAYORES 2019 - 2023'))
+				VAR FechaActual = TODAY()
+				RETURN
+				    CALENDAR(MinFechaBase, FechaActual)
+
+	annotation PBI_Id = e58f18786651443ab184e154574bc26a
+

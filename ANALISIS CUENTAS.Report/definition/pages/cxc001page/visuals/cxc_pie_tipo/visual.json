@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxc_pie_tipo",
+  "position": {
+    "x": 540,
+    "y": 140,
+    "z": 4,
+    "height": 280,
+    "width": 350,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "TIPO_DOCUMENTO"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.TIPO_DOCUMENTO",
+              "nativeQueryRef": "TIPO_DOCUMENTO"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CXC_Total Cobrado"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CXC_Total Cobrado",
+              "nativeQueryRef": "CXC_Total Cobrado"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

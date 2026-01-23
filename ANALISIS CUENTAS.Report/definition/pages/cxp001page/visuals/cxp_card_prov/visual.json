@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxp_card_prov",
+  "position": {
+    "x": 240,
+    "y": 20,
+    "z": 1,
+    "height": 100,
+    "width": 200,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CXP_Proveedores Únicos"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CXP_Proveedores Únicos",
+              "nativeQueryRef": "CXP_Proveedores Únicos"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "cxc_bar_clientes",
+  "position": {
+    "x": 20,
+    "y": 140,
+    "z": 3,
+    "height": 280,
+    "width": 500,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CLIENTE"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CLIENTE",
+              "nativeQueryRef": "CLIENTE"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "B1. MAYORES 2019 - 2023"
+                    }
+                  },
+                  "Property": "CXC_Saldo Cartera"
+                }
+              },
+              "queryRef": "B1. MAYORES 2019 - 2023.CXC_Saldo Cartera",
+              "nativeQueryRef": "CXC_Saldo Cartera"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
