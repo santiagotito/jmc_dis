@@ -12,7 +12,65 @@ const App = {
     selectedCPType: null, // Filter by CP Type from Donut
     metricFilter: null, // 'debe' or 'haber' filter from KPIs
     selectedTiposDoc: [], // Filter by document types (multiple)
-    searchDocumento: '' // Search by document number (factura, NC, etc)
+    searchDocumento: '', // Search by document number (factura, NC, etc)
+    // Sorting state for hierarchical table
+    tableSortField: 'fecha', // fecha, debe, haber, cuenta
+    tableSortDir: 'desc', // asc, desc
+    isLoading: false,
+    // Track which details are open (to preserve state on re-render)
+    openDetails: new Set()
+  },
+
+  // Internal flag for tracking heavy table rendering
+  _pendingTableRender: false,
+
+  // Show global loading overlay
+  showLoading() {
+    this.state.isLoading = true;
+    let overlay = document.getElementById('loading-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'loading-overlay';
+      overlay.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+          <div class="loading-spinner" style="width: 50px; height: 50px; border: 4px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <div style="color: var(--text-heading); font-weight: 500;">Cargando datos...</div>
+        </div>
+      `;
+      overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+      document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
+  },
+
+  // Hide global loading overlay
+  hideLoading() {
+    this.state.isLoading = false;
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+  },
+
+  // Render with loading - waits for heavy table DOM to become interactive
+  renderWithLoading() {
+    this.showLoading();
+    this._pendingTableRender = true;
+
+    setTimeout(() => {
+      this.render();
+      // The hierarchical table renders async, wait for it to signal completion
+      this._checkTableRenderComplete();
+    }, 50);
+  },
+
+  // Check if table render is complete, then hide loading
+  _checkTableRenderComplete() {
+    if (this._pendingTableRender) {
+      // Wait a bit more and check again
+      setTimeout(() => this._checkTableRenderComplete(), 100);
+    } else {
+      // Table render complete, hide global loading (table has its own overlay now)
+      setTimeout(() => this.hideLoading(), 500);
+    }
   },
 
   async init() {
@@ -89,7 +147,7 @@ const App = {
           this.state.selectedYears.push(year);
         }
         this.renderFilters();
-        this.render();
+        this.renderWithLoading();
       });
     });
 
@@ -99,7 +157,7 @@ const App = {
         this.state.selectedCPType = null;
         this.state.metricFilter = null;
         this.renderFilters();
-        this.render();
+        this.renderWithLoading();
       };
     }
   },
@@ -107,6 +165,7 @@ const App = {
   render() {
     switch (this.state.currentPage) {
       case 'resumen':
+        this._pendingTableRender = false; // No heavy table on this page
         this.renderResumen();
         break;
       case 'promocion':
@@ -227,26 +286,36 @@ const App = {
 
     // 2. Agregaciones para Donut (Cruce de Cuentas)
     // El donut debe mostrar el desglose de lo que está filtrado por base
+    // Si hay filtros de documento activos, mostrar todas las líneas; si no, solo líneas de promoción
+    const hasDocFilters = tiposFilter.length > 0 || searchTerm;
     const cpAggGeneral = {};
     baseFiltered.forEach(d => {
-      const type = d.tipo_cp || 'OTROS';
-      if (!cpAggGeneral[type]) cpAggGeneral[type] = { debe: 0, haber: 0 };
-      cpAggGeneral[type].debe += d.debe;
-      cpAggGeneral[type].haber += d.haber;
+      // Si hay filtros de documento, mostrar todas las líneas; si no, solo promoción
+      if (hasDocFilters || d.es_linea_promo) {
+        const type = d.tipo_cp || 'OTROS';
+        if (!cpAggGeneral[type]) cpAggGeneral[type] = { debe: 0, haber: 0 };
+        cpAggGeneral[type].debe += d.debe;
+        cpAggGeneral[type].haber += d.haber;
+      }
     });
 
     // 3. Filtrado Final para KPIs y Ranking (Aplica también el filtro del Donut)
     const finalFiltered = baseFiltered.filter(d => !filterCP || d.tipo_cp === filterCP);
 
+    // Para KPIs: Si hay filtros de documento activos, mostrar todas las líneas filtradas
+    // Si no hay filtros, solo mostrar líneas de promoción (es_linea_promo = true)
     let totalDebe = 0;
     let totalHaber = 0;
     const accountAgg = {};
     const accountsSet = new Set();
 
     finalFiltered.forEach(d => {
-      totalDebe += d.debe;
-      totalHaber += d.haber;
-      accountAgg[d.cuenta] = (accountAgg[d.cuenta] || 0) + d.debe;
+      // Si hay filtros de documento, contar todas las líneas; si no, solo promoción
+      if (hasDocFilters || d.es_linea_promo) {
+        totalDebe += d.debe;
+        totalHaber += d.haber;
+        accountAgg[d.cuenta] = (accountAgg[d.cuenta] || 0) + d.debe;
+      }
       accountsSet.add(d.cuenta);
     });
 
@@ -336,7 +405,7 @@ const App = {
         const m = card.dataset.metric;
         this.state.metricFilter = (this.state.metricFilter === m) ? null : m;
         this.renderFilters();
-        this.render();
+        this.renderWithLoading();
       };
     });
   },
@@ -381,19 +450,20 @@ const App = {
           } else {
             this.state.selectedTiposDoc.push(type);
           }
-          console.log('Tipos seleccionados:', this.state.selectedTiposDoc);
-          this.render();
+          this.renderWithLoading();
         };
       });
     }
 
-    // Document search input
+    // Document search input with debounce
     const input = document.getElementById('filter-documento');
     if (input) {
       input.value = this.state.searchDocumento || '';
+      let debounceTimer;
       input.oninput = (e) => {
         this.state.searchDocumento = e.target.value;
-        this.render();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => this.renderWithLoading(), 300);
       };
     }
 
@@ -404,7 +474,7 @@ const App = {
         this.state.selectedTiposDoc = [];
         this.state.searchDocumento = '';
         if (input) input.value = '';
-        this.render();
+        this.renderWithLoading();
       };
     }
   },
@@ -439,7 +509,7 @@ const App = {
             const type = labels[index];
             this.state.selectedCPType = (this.state.selectedCPType === type) ? null : type;
             this.renderFilters();
-            this.render();
+            this.renderWithLoading();
           }
         },
         plugins: { legend: { display: false } }
@@ -471,15 +541,18 @@ const App = {
   setCPFilter(type) {
     this.state.selectedCPType = (this.state.selectedCPType === type) ? null : type;
     this.renderFilters();
-    this.render();
+    this.renderWithLoading();
   },
 
   createHierarchicalTable() {
     const container = document.getElementById('promo-hierarchical-table');
 
-    // Show loading indicator
+    // Save which details were open before re-render
+    this._saveOpenDetails();
+
+    // Show internal loading indicator
     container.innerHTML = `
-      <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+      <div id="table-loading-overlay" style="text-align: center; padding: 3rem; color: var(--text-muted);">
         <div class="loading-spinner" style="width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
         <div>Procesando datos...</div>
       </div>
@@ -488,46 +561,135 @@ const App = {
     // Use setTimeout to allow UI to update before heavy processing
     setTimeout(() => {
       this._renderHierarchicalTable();
+      // Restore open details
+      this._restoreOpenDetails();
+      // Signal that table render is complete
+      this._pendingTableRender = false;
+
+      // Keep the loading overlay visible for 15 seconds to ensure DOM is interactive
+      // The table is rendered but we show an overlay to prevent interaction until ready
+      this._showTableOverlay();
+      setTimeout(() => this._hideTableOverlay(), 15000);
     }, 10);
+  },
+
+  // Show overlay on table to prevent interaction while DOM settles
+  _showTableOverlay() {
+    const container = document.getElementById('promo-hierarchical-table');
+    if (!container) return;
+
+    // Add overlay div on top of table
+    let overlay = document.getElementById('table-interaction-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'table-interaction-overlay';
+      overlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: var(--radius-lg);
+      `;
+      overlay.innerHTML = `
+        <div style="text-align: center; color: var(--text-muted);">
+          <div class="loading-spinner" style="width: 30px; height: 30px; border: 3px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 0.5rem;"></div>
+          <div style="font-size: 0.85rem;">Preparando tabla...</div>
+        </div>
+      `;
+    }
+
+    // Make container relative for positioning
+    container.style.position = 'relative';
+    container.appendChild(overlay);
+  },
+
+  // Hide table interaction overlay
+  _hideTableOverlay() {
+    const overlay = document.getElementById('table-interaction-overlay');
+    if (overlay) overlay.remove();
+  },
+
+  // Save which details elements are currently open
+  _saveOpenDetails() {
+    const container = document.getElementById('promo-hierarchical-table');
+    if (!container) return;
+
+    this.state.openDetails = new Set();
+    container.querySelectorAll('details[open]').forEach(detail => {
+      const summary = detail.querySelector('summary');
+      if (summary) {
+        // Use the text content as identifier
+        const text = summary.textContent.trim().substring(0, 100);
+        this.state.openDetails.add(text);
+      }
+    });
+  },
+
+  // Restore previously open details after re-render
+  _restoreOpenDetails() {
+    const container = document.getElementById('promo-hierarchical-table');
+    if (!container || this.state.openDetails.size === 0) return;
+
+    container.querySelectorAll('details').forEach(detail => {
+      const summary = detail.querySelector('summary');
+      if (summary) {
+        const text = summary.textContent.trim().substring(0, 100);
+        if (this.state.openDetails.has(text)) {
+          detail.setAttribute('open', '');
+        }
+      }
+    });
   },
 
   _renderHierarchicalTable() {
     const container = document.getElementById('promo-hierarchical-table');
     const data = this.state.data.promocion.detalle;
     const years = this.state.selectedYears;
-    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter, selectedTiposDoc, searchDocumento } = this.state;
+    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter, selectedTiposDoc, searchDocumento, tableSortField, tableSortDir } = this.state;
 
     const searchTerm = (searchDocumento || '').toLowerCase().trim();
     const tiposFilter = selectedTiposDoc || [];
 
-    console.log('Filtros activos:', { tiposFilter, searchTerm, years });
-
     const filtered = data.filter(d => {
-      // Year filter
       if (!years.includes(d.anio)) return false;
-      // Account filter
       if (filterAcc && d.cuenta !== filterAcc) return false;
-      // CP Type filter
       if (filterCP && d.tipo_cp !== filterCP) return false;
-      // Metric filter
       if (metricFilter && !(metricFilter === 'debe' ? d.debe > 0 : metricFilter === 'haber' ? d.haber > 0 : true)) return false;
-      // Document types filter (multiple) - check if ANY selected type is in the record's tipos
       if (tiposFilter.length > 0) {
         const tipoDocStr = d.tipo_doc || '';
-        // Check if any selected type is contained in the record's tipo_doc string
-        const hasMatchingType = tiposFilter.some(t => tipoDocStr.includes(t));
-        if (!hasMatchingType) return false;
+        if (!tiposFilter.some(t => tipoDocStr.includes(t))) return false;
       }
-      // Document search
       if (searchTerm && !(d.documentos && d.documentos.toLowerCase().includes(searchTerm))) return false;
       return true;
     });
 
+    // Build hierarchy: Cuenta > Cliente Individual > Rows
+    // Separar contrapartidas por ";" para agrupar por cliente individual
     const hierarchy = {};
+    const uniqueAsientosByCuenta = {}; // Para calcular totales sin duplicar
+
     filtered.forEach(d => {
-      if (!hierarchy[d.cuenta]) hierarchy[d.cuenta] = {};
-      if (!hierarchy[d.cuenta][d.contrapartida]) hierarchy[d.cuenta][d.contrapartida] = [];
-      hierarchy[d.cuenta][d.contrapartida].push(d);
+      if (!hierarchy[d.cuenta]) {
+        hierarchy[d.cuenta] = {};
+        uniqueAsientosByCuenta[d.cuenta] = new Set();
+      }
+
+      // Track unique asientos for accurate account totals
+      const asientoKey = `${d.asiento}_${d.cuenta_linea}_${d.debe}_${d.haber}`;
+      uniqueAsientosByCuenta[d.cuenta].add(JSON.stringify({ debe: d.debe, haber: d.haber, key: asientoKey }));
+
+      // Separar clientes por ";" y agregar a cada uno
+      const clientes = (d.contrapartida || 'N/A').split(';').map(c => c.trim()).filter(c => c);
+      clientes.forEach(cliente => {
+        if (!hierarchy[d.cuenta][cliente]) hierarchy[d.cuenta][cliente] = [];
+        hierarchy[d.cuenta][cliente].push(d);
+      });
     });
 
     if (filtered.length === 0) {
@@ -535,12 +697,45 @@ const App = {
       return;
     }
 
+    // Sort function
+    const sortRows = (rows) => {
+      const sorted = [...rows].sort((a, b) => {
+        let valA, valB;
+        switch (tableSortField) {
+          case 'fecha': valA = a.fecha; valB = b.fecha; break;
+          case 'debe': valA = a.debe; valB = b.debe; break;
+          case 'haber': valA = a.haber; valB = b.haber; break;
+          case 'cuenta': valA = a.nombre_cuenta_linea || a.cuenta_linea; valB = b.nombre_cuenta_linea || b.cuenta_linea; break;
+          default: valA = a.fecha; valB = b.fecha;
+        }
+        if (typeof valA === 'string') return tableSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        return tableSortDir === 'asc' ? valA - valB : valB - valA;
+      });
+      return sorted;
+    };
+
+    // Sort icon helper
+    const sortIcon = (field) => {
+      if (tableSortField !== field) return '<i class="ri-arrow-up-down-line" style="opacity: 0.3;"></i>';
+      return tableSortDir === 'asc' ? '<i class="ri-arrow-up-line"></i>' : '<i class="ri-arrow-down-line"></i>';
+    };
+
     container.innerHTML = Object.entries(hierarchy).map(([acc, cpGroup]) => {
-      const accTotals = Object.values(cpGroup).reduce((s, rows) => {
-        rows.forEach(r => { s.debe += r.debe; s.haber += r.haber; });
-        return s;
-      }, { debe: 0, haber: 0 });
+      // Calcular totales de cuenta usando registros únicos (evitar duplicados por separación de clientes)
+      const accTotals = { debe: 0, haber: 0 };
+      uniqueAsientosByCuenta[acc].forEach(jsonStr => {
+        const item = JSON.parse(jsonStr);
+        accTotals.debe += item.debe;
+        accTotals.haber += item.haber;
+      });
       const accNeto = accTotals.debe - accTotals.haber;
+
+      // Ordenar clientes por total de debe (descendente)
+      const sortedClients = Object.entries(cpGroup).sort((a, b) => {
+        const aTotal = a[1].reduce((s, r) => s + r.debe, 0);
+        const bTotal = b[1].reduce((s, r) => s + r.debe, 0);
+        return bTotal - aTotal;
+      });
 
       return `
         <details class="h-details h-level-1 h-group-main">
@@ -554,13 +749,14 @@ const App = {
             <i class="ri-arrow-down-s-line h-arrow"></i>
           </summary>
           <div class="h-content">
-            ${Object.entries(cpGroup).map(([cp, rows]) => {
+            ${sortedClients.map(([cliente, rows]) => {
         const cpTotals = rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
         const cpNeto = cpTotals.debe - cpTotals.haber;
+        const sortedRows = sortRows(rows);
         return `
                 <details class="h-details h-level-2">
                   <summary class="h-header">
-                    <i class="ri-user-follow-line"></i> <span>Cliente: ${cp}</span>
+                    <i class="ri-user-follow-line"></i> <span>${cliente}</span>
                     <span style="margin-left: auto; display: flex; gap: 12px; font-size: 0.85rem;">
                       <span style="color: var(--primary);">$${cpTotals.debe.toLocaleString()}</span>
                       <span style="color: var(--danger);">$${cpTotals.haber.toLocaleString()}</span>
@@ -572,18 +768,18 @@ const App = {
                     <table class="h-table">
                       <thead>
                         <tr>
-                          <th>Fecha</th>
+                          <th class="sortable" data-sort="fecha" style="cursor: pointer;">Fecha ${sortIcon('fecha')}</th>
                           <th>Asiento</th>
                           <th>Documentos</th>
-                          <th>Cuenta</th>
+                          <th class="sortable" data-sort="cuenta" style="cursor: pointer;">Cuenta ${sortIcon('cuenta')}</th>
                           <th>Tipo Doc</th>
                           <th>Detalle</th>
-                          <th style="text-align: right;">Debe</th>
-                          <th style="text-align: right;">Haber</th>
+                          <th class="sortable" data-sort="debe" style="cursor: pointer; text-align: right;">Debe ${sortIcon('debe')}</th>
+                          <th class="sortable" data-sort="haber" style="cursor: pointer; text-align: right;">Haber ${sortIcon('haber')}</th>
                         </tr>
                       </thead>
                       <tbody>
-                        ${rows.map(row => {
+                        ${sortedRows.map(row => {
           const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
           return `
                           <tr class="${rowClass}">
@@ -608,6 +804,28 @@ const App = {
         </details>
       `;
     }).join('');
+
+    // Bind sort events - preserve open details state and show table overlay
+    container.querySelectorAll('.sortable').forEach(th => {
+      th.onclick = () => {
+        const field = th.dataset.sort;
+        if (this.state.tableSortField === field) {
+          this.state.tableSortDir = this.state.tableSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          this.state.tableSortField = field;
+          this.state.tableSortDir = 'desc';
+        }
+        // Show table overlay, save state, re-render, restore
+        this._showTableOverlay();
+        this._saveOpenDetails();
+        setTimeout(() => {
+          this._renderHierarchicalTable();
+          this._restoreOpenDetails();
+          // Keep overlay for 15 seconds
+          setTimeout(() => this._hideTableOverlay(), 15000);
+        }, 50);
+      };
+    });
   },
 
   renderRankingChart(sortedData) {
@@ -628,7 +846,7 @@ const App = {
             const index = points[0].index;
             this.state.selectedAccount = sortedData[index][0];
             this.renderFilters();
-            this.render();
+            this.renderWithLoading();
           }
         },
         plugins: { legend: { display: false } },

@@ -154,6 +154,12 @@ def process_promocion(df):
                     if f"Ret-{num}" not in docs_list:
                         docs_list.append(f"Ret-{num}")
             
+            # Cheques: CH/8916, CH-1234, CH. 1234, CH 1234, CH1234
+            ch_matches = re.findall(r'CH[/\-\.\s]*(\d+)', detalle_text, flags=re.IGNORECASE)
+            for num in ch_matches:
+                if f"CH-{num}" not in docs_list:
+                    docs_list.append(f"CH-{num}")
+
             # Determine document types based on extracted documents AND detalle text
             tipos_doc_list = []
 
@@ -172,8 +178,8 @@ def process_promocion(df):
             # From detalle text patterns
             detalle_upper = detalle_text.upper()
 
-            # Cheques: CH/8916, CH-1234
-            if re.search(r'CH[/\-]\d+', detalle_text):
+            # Cheques y Transferencias/otros
+            if re.search(r'CH[/\-\.\s]*\d+', detalle_text, flags=re.IGNORECASE):
                 if 'CHEQUE' not in tipos_doc_list:
                     tipos_doc_list.append('CHEQUE')
 

@@ -519,6 +519,27 @@ tr:last-child td {
   animation: spin 1s linear infinite;
 }
 
+/* --- Sortable Headers --- */
+.h-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.h-table th.sortable:hover {
+  background-color: var(--primary-light);
+}
+
+.h-table th.sortable i {
+  margin-left: 4px;
+  font-size: 0.75rem;
+}
+
+/* --- Loading Overlay --- */
+#loading-overlay {
+  backdrop-filter: blur(2px);
+}
+
 /* --- Responsive --- */
 @media (max-width: 992px) {
   aside.sidebar {
