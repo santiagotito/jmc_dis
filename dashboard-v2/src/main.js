@@ -13,6 +13,7 @@ const App = {
     metricFilter: null, // 'debe' or 'haber' filter from KPIs
     selectedTiposDoc: [], // Filter by document types (multiple)
     searchDocumento: '', // Search by document number (factura, NC, etc)
+    selectedCliente: '', // Filter by client name
     // Sorting state for hierarchical table
     tableSortField: 'fecha', // fecha, debe, haber, cuenta
     tableSortDir: 'desc', // asc, desc
@@ -265,6 +266,7 @@ const App = {
     const filterMetric = this.state.metricFilter;
     const tiposFilter = this.state.selectedTiposDoc || [];
     const searchTerm = (this.state.searchDocumento || '').toLowerCase().trim();
+    const filterCliente = (this.state.selectedCliente || '').toLowerCase().trim();
 
     // 1. Filtrado Base (Afecta a todo: KPIs, Gráficos y Tabla)
     const baseFiltered = data.detalle.filter(d => {
@@ -272,6 +274,11 @@ const App = {
       if (!years.includes(d.anio)) return false;
       // Filtro de Cuenta
       if (filterAcc && d.cuenta !== filterAcc) return false;
+      // Filtro de Cliente (usa nombre_cuenta_linea - la columna Cuenta)
+      if (filterCliente) {
+        const cuentaNombre = (d.nombre_cuenta_linea || '').toLowerCase();
+        if (!cuentaNombre.includes(filterCliente)) return false;
+      }
       // Filtro de Tipo de Documento
       if (tiposFilter.length > 0) {
         const tipoDocStr = d.tipo_doc || '';
@@ -380,9 +387,14 @@ const App = {
 
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-          <h5 style="color: var(--text-heading); margin: 0;">Auditoría Jerárquica (Gasto > Contrapartida > Asiento)</h5>
+          <h5 style="color: var(--text-heading); margin: 0;">Auditoría Jerárquica (Cuenta > Asiento)</h5>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <div id="filter-tipos-doc" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+            <div style="position: relative;">
+              <input type="text" id="filter-cliente" list="clientes-list" placeholder="Buscar cuenta..."
+                style="padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 200px; font-size: 0.85rem;">
+              <datalist id="clientes-list"></datalist>
+            </div>
             <input type="text" id="filter-documento" placeholder="Buscar documento (ej: 2047)"
               style="padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 180px; font-size: 0.85rem;">
             <button id="btn-clear-doc-filters" style="padding: 6px 12px; background: var(--border-color); border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
@@ -467,13 +479,51 @@ const App = {
       };
     }
 
+    // Client filter - populate datalist (uses Cuenta/nombre_cuenta_linea)
+    const clienteInput = document.getElementById('filter-cliente');
+    const clientesList = document.getElementById('clientes-list');
+    if (clienteInput && clientesList) {
+      // Get unique account names from filtered data (by year)
+      const clientesSet = new Set();
+      data.forEach(d => {
+        if (years.includes(d.anio) && d.nombre_cuenta_linea) {
+          const cuenta = d.nombre_cuenta_linea.trim();
+          if (cuenta && cuenta !== 'N/A') {
+            clientesSet.add(cuenta);
+          }
+        }
+      });
+
+      // Populate datalist
+      clientesList.innerHTML = Array.from(clientesSet).sort().map(c => `<option value="${c}">`).join('');
+
+      // Set current value
+      clienteInput.value = this.state.selectedCliente || '';
+
+      // Event handler - only search on selection or Enter key
+      clienteInput.onchange = (e) => {
+        this.state.selectedCliente = e.target.value;
+        this.renderWithLoading();
+      };
+
+      clienteInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.state.selectedCliente = clienteInput.value;
+          this.renderWithLoading();
+        }
+      };
+    }
+
     // Clear button
     const clearBtn = document.getElementById('btn-clear-doc-filters');
     if (clearBtn) {
       clearBtn.onclick = () => {
         this.state.selectedTiposDoc = [];
         this.state.searchDocumento = '';
+        this.state.selectedCliente = '';
         if (input) input.value = '';
+        if (clienteInput) clienteInput.value = '';
         this.renderWithLoading();
       };
     }
@@ -566,10 +616,10 @@ const App = {
       // Signal that table render is complete
       this._pendingTableRender = false;
 
-      // Keep the loading overlay visible for 15 seconds to ensure DOM is interactive
+      // Keep the loading overlay visible for 6 seconds to ensure DOM is interactive
       // The table is rendered but we show an overlay to prevent interaction until ready
       this._showTableOverlay();
-      setTimeout(() => this._hideTableOverlay(), 15000);
+      setTimeout(() => this._hideTableOverlay(), 6000);
     }, 10);
   },
 
@@ -651,15 +701,20 @@ const App = {
     const container = document.getElementById('promo-hierarchical-table');
     const data = this.state.data.promocion.detalle;
     const years = this.state.selectedYears;
-    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter, selectedTiposDoc, searchDocumento, tableSortField, tableSortDir } = this.state;
+    const { selectedAccount: filterAcc, selectedCPType: filterCP, metricFilter, selectedTiposDoc, searchDocumento, selectedCliente, tableSortField, tableSortDir } = this.state;
 
     const searchTerm = (searchDocumento || '').toLowerCase().trim();
     const tiposFilter = selectedTiposDoc || [];
+    const filterCliente = (selectedCliente || '').toLowerCase().trim();
 
     const filtered = data.filter(d => {
       if (!years.includes(d.anio)) return false;
       if (filterAcc && d.cuenta !== filterAcc) return false;
       if (filterCP && d.tipo_cp !== filterCP) return false;
+      if (filterCliente) {
+        const cuentaNombre = (d.nombre_cuenta_linea || '').toLowerCase();
+        if (!cuentaNombre.includes(filterCliente)) return false;
+      }
       if (metricFilter && !(metricFilter === 'debe' ? d.debe > 0 : metricFilter === 'haber' ? d.haber > 0 : true)) return false;
       if (tiposFilter.length > 0) {
         const tipoDocStr = d.tipo_doc || '';
@@ -669,27 +724,30 @@ const App = {
       return true;
     });
 
-    // Build hierarchy: Cuenta > Cliente Individual > Rows
-    // Separar contrapartidas por ";" para agrupar por cliente individual
+    // Build hierarchy: Cuenta > Asiento > Rows (each journal entry separate)
     const hierarchy = {};
-    const uniqueAsientosByCuenta = {}; // Para calcular totales sin duplicar
+    const uniqueLinesByCuenta = {}; // Para calcular totales sin duplicar
 
     filtered.forEach(d => {
       if (!hierarchy[d.cuenta]) {
         hierarchy[d.cuenta] = {};
-        uniqueAsientosByCuenta[d.cuenta] = new Set();
+        uniqueLinesByCuenta[d.cuenta] = new Set();
       }
 
-      // Track unique asientos for accurate account totals
-      const asientoKey = `${d.asiento}_${d.cuenta_linea}_${d.debe}_${d.haber}`;
-      uniqueAsientosByCuenta[d.cuenta].add(JSON.stringify({ debe: d.debe, haber: d.haber, key: asientoKey }));
+      // Track unique lines for accurate account totals
+      const lineKey = `${d.asiento}_${d.cuenta_linea}_${d.debe}_${d.haber}`;
+      uniqueLinesByCuenta[d.cuenta].add(JSON.stringify({ debe: d.debe, haber: d.haber, key: lineKey }));
 
-      // Separar clientes por ";" y agregar a cada uno
-      const clientes = (d.contrapartida || 'N/A').split(';').map(c => c.trim()).filter(c => c);
-      clientes.forEach(cliente => {
-        if (!hierarchy[d.cuenta][cliente]) hierarchy[d.cuenta][cliente] = [];
-        hierarchy[d.cuenta][cliente].push(d);
-      });
+      // Agrupar por asiento contable
+      const asientoId = d.asiento || 'N/A';
+      if (!hierarchy[d.cuenta][asientoId]) {
+        hierarchy[d.cuenta][asientoId] = {
+          rows: [],
+          fecha: d.fecha,
+          contrapartida: d.contrapartida || 'N/A'
+        };
+      }
+      hierarchy[d.cuenta][asientoId].rows.push(d);
     });
 
     if (filtered.length === 0) {
@@ -720,20 +778,24 @@ const App = {
       return tableSortDir === 'asc' ? '<i class="ri-arrow-up-line"></i>' : '<i class="ri-arrow-down-line"></i>';
     };
 
-    container.innerHTML = Object.entries(hierarchy).map(([acc, cpGroup]) => {
-      // Calcular totales de cuenta usando registros únicos (evitar duplicados por separación de clientes)
+    container.innerHTML = Object.entries(hierarchy).map(([acc, asientosGroup]) => {
+      // Calcular totales de cuenta usando registros únicos
       const accTotals = { debe: 0, haber: 0 };
-      uniqueAsientosByCuenta[acc].forEach(jsonStr => {
+      uniqueLinesByCuenta[acc].forEach(jsonStr => {
         const item = JSON.parse(jsonStr);
         accTotals.debe += item.debe;
         accTotals.haber += item.haber;
       });
       const accNeto = accTotals.debe - accTotals.haber;
 
-      // Ordenar clientes por total de debe (descendente)
-      const sortedClients = Object.entries(cpGroup).sort((a, b) => {
-        const aTotal = a[1].reduce((s, r) => s + r.debe, 0);
-        const bTotal = b[1].reduce((s, r) => s + r.debe, 0);
+      // Ordenar asientos por fecha (descendente) y luego por debe
+      const sortedAsientos = Object.entries(asientosGroup).sort((a, b) => {
+        // Primero por fecha descendente
+        const dateCompare = b[1].fecha.localeCompare(a[1].fecha);
+        if (dateCompare !== 0) return dateCompare;
+        // Luego por total debe descendente
+        const aTotal = a[1].rows.reduce((s, r) => s + r.debe, 0);
+        const bTotal = b[1].rows.reduce((s, r) => s + r.debe, 0);
         return bTotal - aTotal;
       });
 
@@ -749,53 +811,89 @@ const App = {
             <i class="ri-arrow-down-s-line h-arrow"></i>
           </summary>
           <div class="h-content">
-            ${sortedClients.map(([cliente, rows]) => {
-        const cpTotals = rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
-        const cpNeto = cpTotals.debe - cpTotals.haber;
+            ${sortedAsientos.map(([asientoId, asientoData]) => {
+        const rows = asientoData.rows;
+        const asientoTotals = rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
+        const asientoNeto = asientoTotals.debe - asientoTotals.haber;
         const sortedRows = sortRows(rows);
         return `
                 <details class="h-details h-level-2">
                   <summary class="h-header">
-                    <i class="ri-user-follow-line"></i> <span>${cliente}</span>
+                    <i class="ri-file-list-3-line"></i>
+                    <span style="font-family: monospace; font-size: 0.85rem;">${asientoId}</span>
+                    <span style="margin-left: 10px; color: var(--text-muted); font-size: 0.8rem;">${asientoData.fecha}</span>
+                    <span style="margin-left: 10px; color: var(--text-muted); font-size: 0.8rem;" title="${asientoData.contrapartida}">${asientoData.contrapartida}</span>
                     <span style="margin-left: auto; display: flex; gap: 12px; font-size: 0.85rem;">
-                      <span style="color: var(--primary);">$${cpTotals.debe.toLocaleString()}</span>
-                      <span style="color: var(--danger);">$${cpTotals.haber.toLocaleString()}</span>
-                      <span style="color: ${cpNeto >= 0 ? 'var(--success)' : 'var(--warning)'};">$${cpNeto.toLocaleString()}</span>
+                      <span style="color: var(--primary);">$${asientoTotals.debe.toLocaleString()}</span>
+                      <span style="color: var(--danger);">$${asientoTotals.haber.toLocaleString()}</span>
+                      <span style="color: ${asientoNeto >= 0 ? 'var(--success)' : 'var(--warning)'};">$${asientoNeto.toLocaleString()}</span>
                     </span>
                     <i class="ri-arrow-down-s-line h-arrow"></i>
                   </summary>
                   <div class="h-content" style="padding: 1rem;">
-                    <table class="h-table">
-                      <thead>
-                        <tr>
-                          <th class="sortable" data-sort="fecha" style="cursor: pointer;">Fecha ${sortIcon('fecha')}</th>
-                          <th>Asiento</th>
-                          <th>Documentos</th>
-                          <th class="sortable" data-sort="cuenta" style="cursor: pointer;">Cuenta ${sortIcon('cuenta')}</th>
-                          <th>Tipo Doc</th>
-                          <th>Detalle</th>
-                          <th class="sortable" data-sort="debe" style="cursor: pointer; text-align: right;">Debe ${sortIcon('debe')}</th>
-                          <th class="sortable" data-sort="haber" style="cursor: pointer; text-align: right;">Haber ${sortIcon('haber')}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${sortedRows.map(row => {
-          const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
-          return `
-                          <tr class="${rowClass}">
-                            <td style="width: 85px;"><small>${row.fecha}</small></td>
-                            <td style="width: 130px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.asiento}</small></td>
-                            <td style="width: 140px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.documentos}</small></td>
-                            <td style="width: 150px;"><small title="${row.cuenta_linea}">${row.nombre_cuenta_linea || row.cuenta_linea}</small></td>
-                            <td style="width: 100px;"><small>${row.tipo_doc}</small></td>
-                            <td><small>${row.detalle}</small></td>
-                            <td style="text-align: right; width: 90px; color: var(--primary); font-weight: 600;">$${row.debe.toLocaleString()}</td>
-                            <td style="text-align: right; width: 90px; color: var(--danger); font-weight: 600;">$${row.haber.toLocaleString()}</td>
-                          </tr>
-                        `;
-        }).join('')}
-                      </tbody>
-                    </table>
+                    ${(() => {
+          // Agrupar filas por cuenta_linea dentro del asiento
+          const byAccount = {};
+          sortedRows.forEach(row => {
+            const accKey = row.cuenta_linea || 'N/A';
+            if (!byAccount[accKey]) byAccount[accKey] = { rows: [], nombre: row.nombre_cuenta_linea || accKey };
+            byAccount[accKey].rows.push(row);
+          });
+
+          // Ordenar cuentas por total debe descendente
+          const sortedAccounts = Object.entries(byAccount).sort((a, b) => {
+            const aTotal = a[1].rows.reduce((s, r) => s + r.debe, 0);
+            const bTotal = b[1].rows.reduce((s, r) => s + r.debe, 0);
+            return bTotal - aTotal;
+          });
+
+          return sortedAccounts.map(([accNum, accData]) => {
+            const accTotal = accData.rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
+            const accNeto = accTotal.debe - accTotal.haber;
+            return `
+                      <details class="h-details h-level-3" style="margin-bottom: 8px;">
+                        <summary class="h-header" style="padding: 8px 12px; background: var(--bg-light); border-radius: 6px;">
+                          <i class="ri-account-circle-line"></i>
+                          <span style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted);">${accNum}</span>
+                          <span style="margin-left: 8px; font-weight: 500;">${accData.nombre}</span>
+                          <span style="margin-left: auto; display: flex; gap: 10px; font-size: 0.8rem;">
+                            <span style="color: var(--primary);">$${accTotal.debe.toLocaleString()}</span>
+                            <span style="color: var(--danger);">$${accTotal.haber.toLocaleString()}</span>
+                            <span style="color: ${accNeto >= 0 ? 'var(--success)' : 'var(--warning)'};">$${accNeto.toLocaleString()}</span>
+                          </span>
+                          <i class="ri-arrow-down-s-line h-arrow"></i>
+                        </summary>
+                        <div class="h-content" style="padding: 0.5rem;">
+                          <table class="h-table">
+                            <thead>
+                              <tr>
+                                <th>Documentos</th>
+                                <th>Tipo Doc</th>
+                                <th>Detalle</th>
+                                <th style="text-align: right;">Debe</th>
+                                <th style="text-align: right;">Haber</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              ${accData.rows.map(row => {
+              const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
+              return `
+                                <tr class="${rowClass}">
+                                  <td style="width: 140px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.documentos}</small></td>
+                                  <td style="width: 100px;"><small>${row.tipo_doc}</small></td>
+                                  <td><small>${row.detalle}</small></td>
+                                  <td style="text-align: right; width: 90px; color: var(--primary); font-weight: 600;">$${row.debe.toLocaleString()}</td>
+                                  <td style="text-align: right; width: 90px; color: var(--danger); font-weight: 600;">$${row.haber.toLocaleString()}</td>
+                                </tr>
+                              `;
+            }).join('')}
+                            </tbody>
+                          </table>
+                        </div>
+                      </details>
+                    `;
+          }).join('');
+        })()}
                   </div>
                 </details>
               `;
@@ -821,8 +919,8 @@ const App = {
         setTimeout(() => {
           this._renderHierarchicalTable();
           this._restoreOpenDetails();
-          // Keep overlay for 15 seconds
-          setTimeout(() => this._hideTableOverlay(), 15000);
+          // Keep overlay for 6 seconds
+          setTimeout(() => this._hideTableOverlay(), 6000);
         }, 50);
       };
     });

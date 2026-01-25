@@ -13,7 +13,57 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "datos"
 PARQUET_FILE = DATA_DIR / "MAYORES_CONSOLIDADO.parquet"
+MASTER_CUENTAS_FILE = DATA_DIR / "Mater Cuenta - Nombre.xlsx"
 OUTPUT_FILE = BASE_DIR / "dashboard-v2" / "public" / "data" / "data.json"
+
+# Global account name mapping
+CUENTA_NOMBRES = {}
+
+def load_master_cuentas():
+    """Load the master account names from Excel file"""
+    global CUENTA_NOMBRES
+    if not MASTER_CUENTAS_FILE.exists():
+        print(f"Warning: Master file {MASTER_CUENTAS_FILE} not found. Using default names.")
+        return
+
+    print(f"Loading master cuenta-nombre from {MASTER_CUENTAS_FILE}...")
+    try:
+        df = pd.read_excel(MASTER_CUENTAS_FILE)
+
+        # The file has multiple columns for different years, we need to consolidate
+        # Columns: CUENTA, NOMBRE, AÑO, ..., CUENTA.1, NOMBRE.1, AÑO.1, etc.
+        for i in range(5):  # Up to 5 sets of columns (years 2019-2023)
+            suffix = f".{i}" if i > 0 else ""
+            cuenta_col = f"CUENTA{suffix}"
+            nombre_col = f"NOMBRE{suffix}"
+
+            if cuenta_col in df.columns and nombre_col in df.columns:
+                for _, row in df.iterrows():
+                    cuenta = row[cuenta_col]
+                    nombre = row[nombre_col]
+                    if pd.notna(cuenta) and pd.notna(nombre):
+                        # Store as string key (account number)
+                        cuenta_str = str(int(cuenta)) if isinstance(cuenta, float) else str(cuenta)
+                        CUENTA_NOMBRES[cuenta_str] = str(nombre).strip()
+
+        print(f"Loaded {len(CUENTA_NOMBRES)} account names from master file.")
+    except Exception as e:
+        print(f"Error loading master file: {e}")
+
+def get_nombre_cuenta(cuenta_code, fallback_nombre=''):
+    """Get account name from master, falling back to provided name or code"""
+    cuenta_str = str(int(float(cuenta_code))) if cuenta_code and str(cuenta_code).replace('.', '').isdigit() else str(cuenta_code)
+
+    # Try exact match first
+    if cuenta_str in CUENTA_NOMBRES:
+        return CUENTA_NOMBRES[cuenta_str]
+
+    # If fallback provided and not empty/N/A, use it
+    if fallback_nombre and fallback_nombre not in ['N/A', 'nan', '']:
+        return fallback_nombre
+
+    # Return the code itself as last resort
+    return cuenta_str
 
 def load_parquet():
     if not PARQUET_FILE.exists():
@@ -198,12 +248,17 @@ def process_promocion(df):
                 if 'ROBO' not in tipos_doc_list:
                     tipos_doc_list.append('ROBO')
 
+            # Get account name from master or fallback to NOMBRE column
+            cuenta_code = line.get('CUENTA', '')
+            fallback_name = str(line.get('NOMBRE', ''))
+            nombre_cuenta = get_nombre_cuenta(cuenta_code, fallback_name)
+
             detalle.append({
                 "fecha": fecha,
                 "asiento": str(asiento_id),
                 "cuenta": cuenta_promo,  # Main promotion account
-                "cuenta_linea": str(line.get('CUENTA', 'N/A')),  # Account code of this specific line
-                "nombre_cuenta_linea": str(line.get('NOMBRE', 'N/A')),  # Account NAME of this line
+                "cuenta_linea": str(cuenta_code) if cuenta_code else 'N/A',  # Account code of this specific line
+                "nombre_cuenta_linea": nombre_cuenta,  # Account NAME from master or fallback
                 "detalle": str(line.get('DETALLE', '')),  # Full detail, no truncation
                 "debe": float(line.get('DEBE', 0)),
                 "haber": float(line.get('HABER', 0)),
@@ -225,6 +280,9 @@ def process_promocion(df):
     }
 
 def main():
+    # Load master cuenta-nombre first
+    load_master_cuentas()
+
     df = load_parquet()
     if df is None: return
 
