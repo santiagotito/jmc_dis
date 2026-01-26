@@ -70,7 +70,7 @@ def vectorize_logic(df, master_dict=None):
     df['ES_CXC'] = df['CUENTA_STR'].str.startswith('1010205')  # Clientes
     df['ES_CXP'] = df['CUENTA_STR'].str.startswith('201')       # Proveedores
     df['ES_BANCO'] = df['CUENTA_STR'].str.startswith('10101')   # Bancos
-    df['ES_PROMOCION'] = df['CUENTA_STR'].isin(['502011101003', '502011103003', '502011102003', '502011105003', '502011104001'])
+    df['ES_PROMOCION'] = df['CUENTA_STR'].str.startswith('5020111')  # Todas las cuentas de Promociones y Publicidad
     
     # Inicializar columnas con None o NaN
     df['TIPO_DOCUMENTO'] = None
@@ -162,9 +162,10 @@ def vectorize_logic(df, master_dict=None):
     df.loc[mask_cxp, 'NUMERO_DOCUMENTO'] = df.loc[mask_cxp, 'FACTURA']
 
     # 5. CHEQUES
-    mask_ch = df['DETALLE'].str.contains(r"#\s*Ch\.", case=False, na=False) & df['TIPO_DOCUMENTO'].isna()
+    mask_ch = df['DETALLE'].str.contains(r"Ch[/\-\.\s0-9]", case=False, na=False) & df['TIPO_DOCUMENTO'].isna()
     df.loc[mask_ch, 'TIPO_DOCUMENTO'] = "CHEQUE"
-    df.loc[mask_ch, 'NUMERO_DOCUMENTO'] = df.loc[mask_ch, 'DETALLE'].str.extract(r"Ch\.\s*(\d+)", flags=re.IGNORECASE, expand=False)
+    # Extraer solo el número, permitiendo formatos como CH/8916, CH 8916, CH-8916 o CH8916
+    df.loc[mask_ch, 'NUMERO_DOCUMENTO'] = df.loc[mask_ch, 'DETALLE'].str.extract(r"Ch[/\-\.\s]*(\d+)", flags=re.IGNORECASE, expand=False)
 
     # 6. CRUCES
     mask_cruce = df['DETALLE'].str.contains("Cruce", case=False, na=False) & df['TIPO_DOCUMENTO'].isna()
@@ -216,7 +217,8 @@ def vectorize_logic(df, master_dict=None):
 
     # --- LÓGICA DE CUENTAS PROMOCION ---
     cuentas_map = {
-        "502011101003": "Promociones Ventas Lago",
+        "502011101003": "Promociones Ventas Lago Agrio",
+        "502011101001": "Publicidad Ventas Lago Agrio",
         "502011103003": "Promociones Ventas Portoviejo",
         "502011102003": "Promociones Ventas Quevedo",
         "502011105003": "Promociones Ventas Sto. Dgo.",
@@ -380,7 +382,8 @@ def process_data():
     # Forzar conversión a string de todas las columnas objeto para evitar problemas de Arrow
     for col in combined_df.columns:
         if combined_df[col].dtype == 'object':
-            combined_df[col] = combined_df[col].astype(str).replace('None', '')
+            # Reemplazar representaciones de nulos por vacío para mejor visualización
+            combined_df[col] = combined_df[col].astype(str).replace(['None', 'nan', 'NaN', 'N/A'], '')
         elif pd.api.types.is_datetime64_any_dtype(combined_df[col]):
             pass # Mantener fechas como tal
             

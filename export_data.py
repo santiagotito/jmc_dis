@@ -210,6 +210,12 @@ def process_promocion(df):
                 if f"CH-{num}" not in docs_list:
                     docs_list.append(f"CH-{num}")
 
+            # Memos: MEMO A-202-23, SEG MEMO A-123-24
+            memo_matches = re.findall(r'MEMO\s+([A-Z]?-?\d+-\d+)', detalle_text, flags=re.IGNORECASE)
+            for ref in memo_matches:
+                if f"MEMO-{ref}" not in docs_list:
+                    docs_list.append(f"MEMO-{ref}")
+
             # Determine document types based on extracted documents AND detalle text
             tipos_doc_list = []
 
@@ -248,6 +254,11 @@ def process_promocion(df):
                 if 'ROBO' not in tipos_doc_list:
                     tipos_doc_list.append('ROBO')
 
+            # Memo
+            if 'MEMO' in detalle_upper:
+                if 'MEMO' not in tipos_doc_list:
+                    tipos_doc_list.append('MEMO')
+
             # Get account name from master or fallback to NOMBRE column
             cuenta_code = line.get('CUENTA', '')
             fallback_name = str(line.get('NOMBRE', ''))
@@ -272,12 +283,182 @@ def process_promocion(df):
     
     # Sort by date descending, then by asiento
     detalle = sorted(detalle, key=lambda x: (x['fecha'], x['asiento']), reverse=True)
-        
+
     return {
         "by_account": by_account,
         "cp_breakdown": cp_breakdown,
         "detalle": detalle
     }
+
+def process_cxc(df):
+    """
+    Procesa las Cuentas por Cobrar (CXC) para análisis de cartera.
+    Incluye: saldos por cliente, tiempos de cobro, antigüedad, ranking.
+    """
+    print("Processing CXC...")
+
+    # Filtrar solo cuentas por cobrar
+    cxc_df = df[df.get('ES_CXC', False) == True].copy()
+
+    if len(cxc_df) == 0:
+        print("No CXC data found.")
+        return {"clientes": [], "resumen_anual": {}, "detalle": []}
+
+    # Asegurarse de que FECHA sea datetime
+    if 'FECHA' in cxc_df.columns:
+        cxc_df['FECHA'] = pd.to_datetime(cxc_df['FECHA'], errors='coerce')
+
+    # Obtener nombre del cliente desde NOMBRE o CLIENTE columna
+    cxc_df['CLIENTE_NOMBRE'] = cxc_df.apply(
+        lambda x: str(x.get('CLIENTE', x.get('NOMBRE', 'Sin Nombre'))).strip(), axis=1
+    )
+    cxc_df['CLIENTE_NOMBRE'] = cxc_df['CLIENTE_NOMBRE'].replace(['nan', 'None', ''], 'Sin Nombre')
+
+    # Código de cuenta del cliente
+    cxc_df['CLIENTE_CODIGO'] = cxc_df['CUENTA'].astype(str)
+
+    # ============================================
+    # 1. ANÁLISIS POR CLIENTE
+    # ============================================
+    clientes_data = []
+
+    for (codigo, nombre), grupo in cxc_df.groupby(['CLIENTE_CODIGO', 'CLIENTE_NOMBRE']):
+        # Totales
+        total_debe = grupo['DEBE'].sum()  # Ventas/Cargos
+        total_haber = grupo['HABER'].sum()  # Cobros/Abonos
+        saldo = total_debe - total_haber
+
+        # Conteo de transacciones
+        num_ventas = len(grupo[grupo['DEBE'] > 0])
+        num_cobros = len(grupo[grupo['HABER'] > 0])
+
+        # Fechas
+        primera_venta = grupo[grupo['DEBE'] > 0]['FECHA'].min()
+        ultima_venta = grupo[grupo['DEBE'] > 0]['FECHA'].max()
+        ultimo_cobro = grupo[grupo['HABER'] > 0]['FECHA'].max()
+
+        # Calcular días desde última venta y último cobro
+        hoy = pd.Timestamp.now()
+        dias_sin_venta = (hoy - ultima_venta).days if pd.notna(ultima_venta) else None
+        dias_sin_cobro = (hoy - ultimo_cobro).days if pd.notna(ultimo_cobro) else None
+
+        # Promedio de días entre venta y cobro (simplificado)
+        # Usamos la diferencia entre última venta y último cobro como proxy
+        dias_promedio_cobro = None
+        if pd.notna(ultima_venta) and pd.notna(ultimo_cobro) and ultimo_cobro >= primera_venta:
+            # Calcular promedio basado en el flujo general
+            if total_haber > 0 and total_debe > 0:
+                # Proxy: días entre primera venta y proporción cobrada
+                dias_activo = (max(ultima_venta, ultimo_cobro) - primera_venta).days
+                if dias_activo > 0:
+                    tasa_cobro = total_haber / total_debe if total_debe > 0 else 0
+                    dias_promedio_cobro = int(dias_activo * (1 - tasa_cobro)) if tasa_cobro < 1 else 30
+
+        # Años activos
+        anios_activos = sorted(grupo['ANIO'].dropna().unique().astype(int).tolist())
+
+        # Desglose por año
+        por_anio = {}
+        for anio in anios_activos:
+            anio_df = grupo[grupo['ANIO'] == anio]
+            por_anio[str(anio)] = {
+                "debe": float(anio_df['DEBE'].sum()),
+                "haber": float(anio_df['HABER'].sum()),
+                "saldo": float(anio_df['DEBE'].sum() - anio_df['HABER'].sum()),
+                "num_transacciones": len(anio_df)
+            }
+
+        clientes_data.append({
+            "codigo": codigo,
+            "nombre": nombre if nombre != 'Sin Nombre' else get_nombre_cuenta(codigo, nombre),
+            "total_debe": float(total_debe),
+            "total_haber": float(total_haber),
+            "saldo": float(saldo),
+            "num_ventas": num_ventas,
+            "num_cobros": num_cobros,
+            "primera_venta": str(primera_venta)[:10] if pd.notna(primera_venta) else None,
+            "ultima_venta": str(ultima_venta)[:10] if pd.notna(ultima_venta) else None,
+            "ultimo_cobro": str(ultimo_cobro)[:10] if pd.notna(ultimo_cobro) else None,
+            "dias_sin_venta": dias_sin_venta,
+            "dias_sin_cobro": dias_sin_cobro,
+            "dias_promedio_cobro": dias_promedio_cobro,
+            "anios_activos": anios_activos,
+            "por_anio": por_anio
+        })
+
+    # Ordenar por saldo descendente y limitar a top 2000 clientes
+    clientes_data = sorted(clientes_data, key=lambda x: abs(x['saldo']) + x['total_debe'], reverse=True)
+    clientes_data = clientes_data[:2000]  # Limitar para rendimiento
+
+    # ============================================
+    # 2. RESUMEN ANUAL
+    # ============================================
+    resumen_anual = {}
+    for anio in cxc_df['ANIO'].dropna().unique():
+        anio_str = str(int(anio))
+        anio_df = cxc_df[cxc_df['ANIO'] == anio]
+
+        total_debe = anio_df['DEBE'].sum()
+        total_haber = anio_df['HABER'].sum()
+
+        # Clientes activos (con movimiento)
+        clientes_con_debe = anio_df[anio_df['DEBE'] > 0]['CLIENTE_CODIGO'].nunique()
+        clientes_con_haber = anio_df[anio_df['HABER'] > 0]['CLIENTE_CODIGO'].nunique()
+
+        resumen_anual[anio_str] = {
+            "total_debe": float(total_debe),
+            "total_haber": float(total_haber),
+            "saldo_neto": float(total_debe - total_haber),
+            "clientes_con_ventas": clientes_con_debe,
+            "clientes_con_cobros": clientes_con_haber,
+            "num_transacciones": len(anio_df)
+        }
+
+    # ============================================
+    # 3. DETALLE DE TRANSACCIONES (limitado para rendimiento)
+    # ============================================
+    # Solo incluir transacciones de clientes con saldo pendiente (top 500)
+    # y las últimas 100 transacciones por cliente
+    top_clientes = [c['codigo'] for c in clientes_data[:500] if c['saldo'] > 0]
+    cxc_filtered = cxc_df[cxc_df['CLIENTE_CODIGO'].isin(top_clientes)].copy()
+
+    # Ordenar por cliente y fecha, limitar a 100 por cliente
+    cxc_sorted = cxc_filtered.sort_values(['CLIENTE_CODIGO', 'FECHA'], ascending=[True, False])
+    cxc_sorted = cxc_sorted.groupby('CLIENTE_CODIGO').head(100)
+
+    detalle = []
+    for _, row in cxc_sorted.iterrows():
+        # Extraer número de factura del detalle o de la columna FACTURA
+        factura = str(row.get('FACTURA', '') or '')
+        if not factura or factura == 'nan':
+            # Intentar extraer de NUMERO_DOCUMENTO
+            factura = str(row.get('NUMERO_DOCUMENTO', '') or '')
+        if not factura or factura == 'nan':
+            # Usar asiento como identificador
+            factura = str(row.get('ID_ASIENTO', ''))
+
+        detalle.append({
+            "fecha": str(row.get('FECHA', ''))[:10],
+            "anio": str(int(row.get('ANIO', 0))) if pd.notna(row.get('ANIO')) else '',
+            "cliente_codigo": str(row.get('CUENTA', '')),
+            "cliente_nombre": row.get('CLIENTE_NOMBRE', 'Sin Nombre'),
+            "detalle": str(row.get('DETALLE', ''))[:200],
+            "debe": float(row.get('DEBE', 0)),
+            "haber": float(row.get('HABER', 0)),
+            "tipo_doc": str(row.get('TIPO_DOCUMENTO', 'OTROS')),
+            "asiento": str(row.get('ID_ASIENTO', '')),
+            "factura": factura
+        })
+
+    print(f"  - {len(clientes_data)} clientes procesados")
+    print(f"  - {len(detalle)} transacciones en detalle")
+
+    return {
+        "clientes": clientes_data,
+        "resumen_anual": resumen_anual,
+        "detalle": detalle
+    }
+
 
 def main():
     # Load master cuenta-nombre first
@@ -295,13 +476,14 @@ def main():
             "available_years": sorted([str(int(y)) for y in df['ANIO'].dropna().unique()]) if 'ANIO' in df.columns else []
         },
         "resumen": process_resumen(df),
-        "promocion": process_promocion(df)
+        "promocion": process_promocion(df),
+        "cxc": process_cxc(df)
     }
 
     print(f"Writing to {OUTPUT_FILE}...")
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    
+
     print("Export Complete!")
 
 if __name__ == "__main__":
