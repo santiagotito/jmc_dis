@@ -337,10 +337,10 @@ def process_cxc(df):
         ultima_venta = grupo[grupo['DEBE'] > 0]['FECHA'].max()
         ultimo_cobro = grupo[grupo['HABER'] > 0]['FECHA'].max()
 
-        # Calcular días desde última venta y último cobro
-        hoy = pd.Timestamp.now()
-        dias_sin_venta = (hoy - ultima_venta).days if pd.notna(ultima_venta) else None
-        dias_sin_cobro = (hoy - ultimo_cobro).days if pd.notna(ultimo_cobro) else None
+        # Calcular días desde última venta y último cobro (referencia: 31-dic-2025)
+        fecha_corte = pd.Timestamp('2025-12-31')
+        dias_sin_venta = (fecha_corte - ultima_venta).days if pd.notna(ultima_venta) else None
+        dias_sin_cobro = (fecha_corte - ultimo_cobro).days if pd.notna(ultimo_cobro) else None
 
         # Promedio de días entre venta y cobro (simplificado)
         # Usamos la diferencia entre última venta y último cobro como proxy
@@ -417,37 +417,81 @@ def process_cxc(df):
     # ============================================
     # 3. DETALLE DE TRANSACCIONES (limitado para rendimiento)
     # ============================================
-    # Solo incluir transacciones de clientes con saldo pendiente (top 500)
-    # y las últimas 100 transacciones por cliente
-    top_clientes = [c['codigo'] for c in clientes_data[:500] if c['saldo'] > 0]
+    # Incluir transacciones de todos los clientes en clientes_data (top 2000)
+    # para que coincida con la lista de clientes en el frontend
+    top_clientes = [c['codigo'] for c in clientes_data]
     cxc_filtered = cxc_df[cxc_df['CLIENTE_CODIGO'].isin(top_clientes)].copy()
 
     # Ordenar por cliente y fecha, limitar a 100 por cliente
     cxc_sorted = cxc_filtered.sort_values(['CLIENTE_CODIGO', 'FECHA'], ascending=[True, False])
     cxc_sorted = cxc_sorted.groupby('CLIENTE_CODIGO').head(100)
 
+    import re
+
+    def extraer_factura_de_detalle(detalle_text, debe, haber, doc_numero):
+        """
+        Extrae el número de factura del detalle.
+        - Para ventas (DEBE > 0): usar el número de documento
+        - Para pagos (HABER > 0): buscar referencia a factura en el detalle (FA-XXXXX, FACT-XXXXX)
+        """
+        detalle_str = str(detalle_text) if detalle_text else ''
+
+        if debe > 0:
+            # Es una venta/factura - usar su propio número
+            return str(doc_numero) if doc_numero else ''
+
+        if haber > 0:
+            # Es un pago/cobro - buscar la factura que está pagando
+            # Patrones comunes (ordenados de más específico a menos):
+            patterns = [
+                # FA-serie-factura: FA-005051-257330 → captura 257330
+                r'FA-\d+-(\d{5,})',
+                # FA-serie-serie-factura: FA-001-001-123456 → captura 123456
+                r'FA-\d+-\d+-(\d+)',
+                # (FAxxxxxx): (FA223064) → captura 223064
+                r'\(FA(\d{5,})\)',
+                # FA-factura: FA-257330 → captura 257330
+                r'FA-(\d{5,})',
+                # FACT-factura: FACT-123456 → captura 123456
+                r'FACT-(\d+)',
+                # FA[espacio]factura: FA 257330
+                r'FA\s+(\d{5,})',
+            ]
+
+            for pattern in patterns:
+                match = re.search(pattern, detalle_str)
+                if match:
+                    return match.group(1)
+
+            # Si no encontramos referencia a factura, usar el número de documento
+            return str(doc_numero) if doc_numero else ''
+
+        return str(doc_numero) if doc_numero else ''
+
     detalle = []
     for _, row in cxc_sorted.iterrows():
-        # Extraer número de factura del detalle o de la columna FACTURA
-        factura = str(row.get('FACTURA', '') or '')
-        if not factura or factura == 'nan':
-            # Intentar extraer de NUMERO_DOCUMENTO
-            factura = str(row.get('NUMERO_DOCUMENTO', '') or '')
-        if not factura or factura == 'nan':
-            # Usar asiento como identificador
-            factura = str(row.get('ID_ASIENTO', ''))
+        detalle_text = str(row.get('DETALLE', ''))
+        debe = float(row.get('DEBE', 0))
+        haber = float(row.get('HABER', 0))
+
+        # Número de documento original
+        doc_numero = row.get('FACTURA', '') or row.get('NUMERO_DOCUMENTO', '') or row.get('ID_ASIENTO', '')
+
+        # Extraer la factura correcta (para pagos, buscar en el detalle)
+        factura = extraer_factura_de_detalle(detalle_text, debe, haber, doc_numero)
 
         detalle.append({
             "fecha": str(row.get('FECHA', ''))[:10],
             "anio": str(int(row.get('ANIO', 0))) if pd.notna(row.get('ANIO')) else '',
             "cliente_codigo": str(row.get('CUENTA', '')),
             "cliente_nombre": row.get('CLIENTE_NOMBRE', 'Sin Nombre'),
-            "detalle": str(row.get('DETALLE', ''))[:200],
-            "debe": float(row.get('DEBE', 0)),
-            "haber": float(row.get('HABER', 0)),
+            "detalle": detalle_text,  # Detalle completo, sin truncar
+            "debe": debe,
+            "haber": haber,
             "tipo_doc": str(row.get('TIPO_DOCUMENTO', 'OTROS')),
             "asiento": str(row.get('ID_ASIENTO', '')),
-            "factura": factura
+            "factura": factura,
+            "documento": str(doc_numero)  # Documento original para referencia
         })
 
     print(f"  - {len(clientes_data)} clientes procesados")

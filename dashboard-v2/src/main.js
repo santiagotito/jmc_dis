@@ -787,13 +787,77 @@ const App = {
     // Filtrar por búsquedas
     if (cxcSearchCuenta) {
       const searchLower = cxcSearchCuenta.toLowerCase();
-      clientesConSaldo = clientesConSaldo.filter(c => c.codigo.toLowerCase().includes(searchLower));
+      // Primero filtrar detalle por código de cuenta
       detalleFiltrado = detalleFiltrado.filter(d => d.cliente_codigo.toLowerCase().includes(searchLower));
+      // Obtener códigos de clientes que tienen transacciones
+      const clientesEnDetalle = new Set(detalleFiltrado.map(d => d.cliente_codigo));
+      // Filtrar clientesConSaldo a solo los que tienen transacciones
+      clientesConSaldo = clientesConSaldo.filter(c => clientesEnDetalle.has(c.codigo));
+      // Si hay clientes en detalle que no están en clientesConSaldo, agregarlos
+      clientesEnDetalle.forEach(codigo => {
+        if (!clientesConSaldo.find(c => c.codigo === codigo)) {
+          const transacciones = detalleFiltrado.filter(d => d.cliente_codigo === codigo);
+          if (transacciones.length > 0) {
+            const nombre = transacciones[0].cliente_nombre;
+            const debe = transacciones.reduce((s, t) => s + (t.debe || 0), 0);
+            const haber = transacciones.reduce((s, t) => s + (t.haber || 0), 0);
+            const fechas = transacciones.filter(t => t.debe > 0).map(t => t.fecha).sort();
+            const ultimaVenta = fechas.length > 0 ? fechas[fechas.length - 1] : null;
+            const cobros = transacciones.filter(t => t.haber > 0).map(t => t.fecha).sort();
+            const ultimoCobro = cobros.length > 0 ? cobros[cobros.length - 1] : null;
+            const fechaCorte = new Date('2025-12-31');
+            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000*60*60*24)) :
+                                 ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000*60*60*24)) : null;
+            clientesConSaldo.push({
+              codigo,
+              nombre,
+              debe_filtrado: debe,
+              haber_filtrado: haber,
+              saldo_filtrado: debe - haber,
+              ultima_venta: ultimaVenta,
+              ultimo_cobro: ultimoCobro,
+              dias_sin_cobro: diasSinCobro
+            });
+          }
+        }
+      });
     }
     if (cxcSearchCliente) {
       const searchLower = cxcSearchCliente.toLowerCase();
-      clientesConSaldo = clientesConSaldo.filter(c => c.nombre.toLowerCase().includes(searchLower));
+      // Primero filtrar detalle por nombre de cliente
       detalleFiltrado = detalleFiltrado.filter(d => d.cliente_nombre.toLowerCase().includes(searchLower));
+      // Obtener códigos de clientes que tienen transacciones con ese nombre
+      const clientesEnDetalle = new Set(detalleFiltrado.map(d => d.cliente_codigo));
+      // Filtrar clientesConSaldo a solo los que tienen transacciones
+      clientesConSaldo = clientesConSaldo.filter(c => clientesEnDetalle.has(c.codigo));
+      // Si hay clientes en detalle que no están en clientesConSaldo, agregarlos
+      clientesEnDetalle.forEach(codigo => {
+        if (!clientesConSaldo.find(c => c.codigo === codigo)) {
+          const transacciones = detalleFiltrado.filter(d => d.cliente_codigo === codigo);
+          if (transacciones.length > 0) {
+            const nombre = transacciones[0].cliente_nombre;
+            const debe = transacciones.reduce((s, t) => s + (t.debe || 0), 0);
+            const haber = transacciones.reduce((s, t) => s + (t.haber || 0), 0);
+            const fechas = transacciones.filter(t => t.debe > 0).map(t => t.fecha).sort();
+            const ultimaVenta = fechas.length > 0 ? fechas[fechas.length - 1] : null;
+            const cobros = transacciones.filter(t => t.haber > 0).map(t => t.fecha).sort();
+            const ultimoCobro = cobros.length > 0 ? cobros[cobros.length - 1] : null;
+            const fechaCorte = new Date('2025-12-31');
+            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000*60*60*24)) :
+                                 ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000*60*60*24)) : null;
+            clientesConSaldo.push({
+              codigo,
+              nombre,
+              debe_filtrado: debe,
+              haber_filtrado: haber,
+              saldo_filtrado: debe - haber,
+              ultima_venta: ultimaVenta,
+              ultimo_cobro: ultimoCobro,
+              dias_sin_cobro: diasSinCobro
+            });
+          }
+        }
+      });
     }
     if (cxcSearchFactura) {
       const searchLower = cxcSearchFactura.toLowerCase();
@@ -951,22 +1015,37 @@ const App = {
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
           <div style="flex: 1; min-width: 150px;">
             <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Cuenta</label>
-            <input type="text" id="cxcSearchCuenta" placeholder="Código cuenta..." value="${cxcSearchCuenta}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+            <div style="position: relative;">
+              <input type="text" id="cxcSearchCuenta" placeholder="Código cuenta... (Enter)" value="${cxcSearchCuenta}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxcSearchCuenta ? `<button class="clear-filter-btn" data-clear="cxcSearchCuenta" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
           </div>
           <div style="flex: 1; min-width: 150px;">
             <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Cliente</label>
-            <input type="text" id="cxcSearchCliente" placeholder="Nombre cliente..." value="${cxcSearchCliente}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+            <div style="position: relative;">
+              <input type="text" id="cxcSearchCliente" list="clientesList" placeholder="Nombre cliente... (Enter)" value="${cxcSearchCliente}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxcSearchCliente ? `<button class="clear-filter-btn" data-clear="cxcSearchCliente" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+            <datalist id="clientesList">
+              ${[...new Set(clientes.map(c => c.nombre))].map(n => `<option value="${n}">`).join('')}
+            </datalist>
           </div>
           <div style="flex: 1; min-width: 150px;">
             <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Factura/Doc</label>
-            <input type="text" id="cxcSearchFactura" placeholder="Número factura..." value="${cxcSearchFactura}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+            <div style="position: relative;">
+              <input type="text" id="cxcSearchFactura" placeholder="Número factura... (Enter)" value="${cxcSearchFactura}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxcSearchFactura ? `<button class="clear-filter-btn" data-clear="cxcSearchFactura" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
           </div>
           <div style="flex: 1; min-width: 150px;">
             <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Tipo Documento</label>
-            <select id="cxcSearchTipoDoc" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
-              <option value="">Todos</option>
-              ${tiposDoc.map(t => `<option value="${t}" ${cxcSearchTipoDoc === t ? 'selected' : ''}>${t}</option>`).join('')}
-            </select>
+            <div style="position: relative;">
+              <select id="cxcSearchTipoDoc" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+                <option value="">Todos</option>
+                ${tiposDoc.map(t => `<option value="${t}" ${cxcSearchTipoDoc === t ? 'selected' : ''}>${t}</option>`).join('')}
+              </select>
+              ${cxcSearchTipoDoc ? `<button class="clear-filter-btn" data-clear="cxcSearchTipoDoc" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
           </div>
         </div>
       </div>
@@ -983,10 +1062,12 @@ const App = {
           <table id="cxcTable" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
             <thead>
               <tr style="background: var(--bg-light); text-align: left;">
-                <th style="padding: 10px; border-bottom: 2px solid var(--border-color); width: 40px;"></th>
+                <th style="padding: 10px; border-bottom: 2px solid var(--border-color); width: 30px;"></th>
                 <th class="sortable-th" data-sort="nombre" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
-                  Cliente ${cxcSortField === 'nombre' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
+                  Documento ${cxcSortField === 'nombre' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
+                <th style="padding: 10px; border-bottom: 2px solid var(--border-color);">Tipo</th>
+                <th style="padding: 10px; border-bottom: 2px solid var(--border-color);">Detalle</th>
                 <th class="sortable-th" data-sort="debe" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
                   Ventas ${cxcSortField === 'debe' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
@@ -997,7 +1078,7 @@ const App = {
                   Saldo ${cxcSortField === 'saldo' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
                 <th class="sortable-th" data-sort="dias_sin_cobro" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; cursor: pointer;">
-                  Días sin Cobro ${cxcSortField === 'dias_sin_cobro' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
+                  Días ${cxcSortField === 'dias_sin_cobro' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
               </tr>
             </thead>
@@ -1008,21 +1089,29 @@ const App = {
                 const facturas = clienteDetalle ? Object.entries(clienteDetalle.facturas) : [];
 
                 return `
-                <tr class="cliente-row" data-codigo="${c.codigo}" style="border-bottom: 1px solid var(--border-color); cursor: pointer; background: ${isOpen ? '#f8f9fa' : 'white'};">
+                <tr class="cliente-row" data-codigo="${c.codigo}" style="border-bottom: 1px solid var(--border-color); cursor: pointer; background: ${isOpen ? '#e7f5ff' : 'white'}; font-weight: 500;">
                   <td style="padding: 10px; text-align: center;">
-                    <i class="ri-arrow-${isOpen ? 'down' : 'right'}-s-line" style="color: var(--text-muted);"></i>
+                    <i class="ri-arrow-${isOpen ? 'down' : 'right'}-s-line" style="color: var(--primary);"></i>
                   </td>
-                  <td style="padding: 10px;">
-                    <div style="font-weight: 500;">${c.nombre}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">${c.codigo}</div>
+                  <td style="padding: 10px;" colspan="2">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <i class="ri-user-line" style="color: var(--primary);"></i>
+                      <div>
+                        <div>${c.nombre}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: normal;">${c.codigo} • ${facturas.length} facturas</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="padding: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">
+                    ${c.ultima_venta ? `Últ. venta: ${c.ultima_venta}` : ''}
                   </td>
                   <td style="padding: 10px; text-align: right; color: var(--primary);">$${c.debe_filtrado.toLocaleString()}</td>
                   <td style="padding: 10px; text-align: right; color: var(--success);">$${c.haber_filtrado.toLocaleString()}</td>
-                  <td style="padding: 10px; text-align: right; font-weight: 600; color: ${c.saldo_filtrado > 0 ? 'var(--warning)' : 'var(--success)'};">$${c.saldo_filtrado.toLocaleString()}</td>
+                  <td style="padding: 10px; text-align: right; color: ${c.saldo_filtrado > 0 ? 'var(--warning)' : 'var(--success)'};">$${c.saldo_filtrado.toLocaleString()}</td>
                   <td style="padding: 10px; text-align: center;">
                     ${c.dias_sin_cobro !== null ? `
                       <span style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; background: ${c.dias_sin_cobro > 90 ? '#fff5f5' : c.dias_sin_cobro > 60 ? '#ffe8cc' : c.dias_sin_cobro > 30 ? '#fff9db' : '#ebfbee'}; color: ${c.dias_sin_cobro > 90 ? '#c92a2a' : c.dias_sin_cobro > 60 ? '#d9480f' : c.dias_sin_cobro > 30 ? '#e67700' : '#2b8a3e'};">
-                        ${c.dias_sin_cobro} días
+                        ${c.dias_sin_cobro}d
                       </span>
                     ` : '-'}
                   </td>
@@ -1032,27 +1121,56 @@ const App = {
                   const facHaber = items.reduce((s, i) => s + i.haber, 0);
                   const facSaldo = facDebe - facHaber;
                   const isFacOpen = this.state.cxcOpenFacturas.has(`${c.codigo}_${facKey}`);
+                  // Encontrar el tipo de documento principal (la venta original)
+                  const ventaItem = items.find(i => i.debe > 0) || items[0];
+                  const tipoDoc = ventaItem ? ventaItem.tipo_doc : 'N/A';
+                  const detalleCorto = ventaItem ? ventaItem.detalle.substring(0, 50) + (ventaItem.detalle.length > 50 ? '...' : '') : '';
+                  // Calcular días desde la fecha de la factura hasta 31-dic-2025 o último cobro
+                  const fechaVenta = ventaItem ? new Date(ventaItem.fecha) : null;
+                  const ultimoCobro = items.filter(i => i.haber > 0).sort((a,b) => new Date(b.fecha) - new Date(a.fecha))[0];
+                  const fechaCorte = new Date('2025-12-31');
+                  const fechaRef = ultimoCobro ? new Date(ultimoCobro.fecha) : fechaCorte;
+                  const diasFac = fechaVenta ? Math.floor((fechaRef - fechaVenta) / (1000*60*60*24)) : null;
                   return `
-                  <tr class="factura-row" data-cliente="${c.codigo}" data-factura="${facKey}" style="background: #f1f3f5; cursor: pointer;">
-                    <td style="padding: 8px 10px;"></td>
-                    <td style="padding: 8px 10px; padding-left: 30px;">
-                      <i class="ri-arrow-${isFacOpen ? 'down' : 'right'}-s-line" style="color: var(--text-muted); margin-right: 4px;"></i>
-                      <i class="ri-file-text-line" style="color: var(--primary); margin-right: 4px;"></i>
-                      <span style="font-size: 0.8rem;">${facKey}</span>
-                      <span style="font-size: 0.7rem; color: var(--text-muted); margin-left: 8px;">(${items.length} mov.)</span>
+                  <tr class="factura-row" data-cliente="${c.codigo}" data-factura="${facKey}" style="background: #f8f9fa; cursor: pointer; border-left: 3px solid ${facSaldo > 0 ? 'var(--warning)' : 'var(--success)'};">
+                    <td style="padding: 8px 10px; text-align: center;">
+                      <i class="ri-arrow-${isFacOpen ? 'down' : 'right'}-s-line" style="color: var(--text-muted);"></i>
                     </td>
-                    <td style="padding: 8px 10px; text-align: right; font-size: 0.8rem; color: var(--primary);">$${facDebe.toLocaleString()}</td>
-                    <td style="padding: 8px 10px; text-align: right; font-size: 0.8rem; color: var(--success);">$${facHaber.toLocaleString()}</td>
-                    <td style="padding: 8px 10px; text-align: right; font-size: 0.8rem; font-weight: 500; color: ${facSaldo > 0 ? 'var(--warning)' : 'var(--success)'};">$${facSaldo.toLocaleString()}</td>
-                    <td style="padding: 8px 10px;"></td>
+                    <td style="padding: 8px 10px;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <i class="ri-file-text-line" style="color: ${facSaldo > 0 ? 'var(--warning)' : 'var(--success)'};"></i>
+                        <span style="font-weight: 500;">${facKey}</span>
+                      </div>
+                    </td>
+                    <td style="padding: 8px 10px;">
+                      <span style="background: #e9ecef; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">${tipoDoc}</span>
+                    </td>
+                    <td style="padding: 8px 10px; font-size: 0.8rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${ventaItem ? ventaItem.detalle : ''}">
+                      ${detalleCorto}
+                    </td>
+                    <td style="padding: 8px 10px; text-align: right; color: var(--primary);">$${facDebe.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: right; color: var(--success);">$${facHaber.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 600; color: ${facSaldo > 0 ? 'var(--warning)' : 'var(--success)'};">$${facSaldo.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: center;">
+                      ${diasFac !== null && facSaldo > 0 ? `
+                        <span style="padding: 2px 6px; border-radius: 8px; font-size: 0.7rem; background: ${diasFac > 90 ? '#fff5f5' : diasFac > 60 ? '#ffe8cc' : diasFac > 30 ? '#fff9db' : '#ebfbee'}; color: ${diasFac > 90 ? '#c92a2a' : diasFac > 60 ? '#d9480f' : diasFac > 30 ? '#e67700' : '#2b8a3e'};">
+                          ${diasFac}d
+                        </span>
+                      ` : (facSaldo <= 0 ? '<span style="color: var(--success); font-size: 0.75rem;">✓</span>' : '-')}
+                    </td>
                   </tr>
-                  ${isFacOpen ? items.map(item => `
-                  <tr class="detalle-row" style="background: #e9ecef; font-size: 0.8rem;">
+                  ${isFacOpen ? items.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).map(item => `
+                  <tr class="detalle-row" style="background: #f1f3f5; font-size: 0.8rem;">
                     <td style="padding: 6px 10px;"></td>
-                    <td style="padding: 6px 10px; padding-left: 50px; color: var(--text-muted);">
-                      <span style="margin-right: 8px;">${item.fecha}</span>
-                      <span style="background: #dee2e6; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">${item.tipo_doc}</span>
-                      <div style="font-size: 0.75rem; margin-top: 2px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.detalle}</div>
+                    <td style="padding: 6px 10px;">
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">${item.fecha}</div>
+                      ${item.documento && item.documento !== item.factura ? `<div style="font-size: 0.7rem; color: #868e96;">Doc: ${item.documento}</div>` : ''}
+                    </td>
+                    <td style="padding: 6px 10px;">
+                      <span style="background: ${item.debe > 0 ? '#dbe4ff' : '#d3f9d8'}; color: ${item.debe > 0 ? '#364fc7' : '#2b8a3e'}; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">${item.tipo_doc}</span>
+                    </td>
+                    <td style="padding: 6px 10px; color: var(--text-muted); font-size: 0.75rem; max-width: 400px; word-wrap: break-word; white-space: normal;">
+                      ${item.detalle}
                     </td>
                     <td style="padding: 6px 10px; text-align: right; color: ${item.debe > 0 ? 'var(--primary)' : 'var(--text-muted)'};">${item.debe > 0 ? '$' + item.debe.toLocaleString() : '-'}</td>
                     <td style="padding: 6px 10px; text-align: right; color: ${item.haber > 0 ? 'var(--success)' : 'var(--text-muted)'};">${item.haber > 0 ? '$' + item.haber.toLocaleString() : '-'}</td>
@@ -1103,17 +1221,23 @@ const App = {
   bindCXCEvents(topVentas, antiguedadTotals) {
     const self = this;
 
-    // Search inputs with debounce
-    let debounceTimer;
+    // Search inputs - trigger on Enter key only
     ['cxcSearchCuenta', 'cxcSearchCliente', 'cxcSearchFactura'].forEach(id => {
       const input = document.getElementById(id);
       if (input) {
-        input.oninput = (e) => {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(() => {
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
             self.state[id] = e.target.value;
             self.renderCXC();
-          }, 400);
+          }
+        };
+        // Also trigger when selecting from datalist (for cliente autocomplete)
+        input.onchange = (e) => {
+          if (id === 'cxcSearchCliente' && e.target.value) {
+            self.state[id] = e.target.value;
+            self.renderCXC();
+          }
         };
       }
     });
@@ -1133,6 +1257,19 @@ const App = {
         const clearKey = chip.dataset.clear;
         if (clearKey) {
           self.state[clearKey] = clearKey.includes('Search') ? '' : null;
+          self.renderCXC();
+        }
+      };
+    });
+
+    // Clear filter buttons (X buttons on inputs)
+    document.querySelectorAll('.clear-filter-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clearKey = btn.dataset.clear;
+        if (clearKey) {
+          self.state[clearKey] = '';
           self.renderCXC();
         }
       };
