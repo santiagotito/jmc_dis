@@ -2,7 +2,14 @@
  * DataService - Handles data fetching and caching
  * Supports dynamic loading of year-specific detail files
  */
-const DATA_URL = '/data/data.json';
+
+// Detect Production vs Local
+const IS_PROD = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+const BASE_URL = IS_PROD
+    ? 'https://github.com/santiagotito/jmc_dis/releases/download/v1.0' // Production: GitHub Releases (v1.0 tag)
+    : '/data'; // Local: Local folder
+
+const DATA_URL = `${BASE_URL}/data.json`;
 
 class DataService {
     constructor() {
@@ -48,7 +55,7 @@ class DataService {
         this.loadingYears.add(cacheKey);
         try {
             console.log(`Loading CXC detail for ${year}...`);
-            const response = await fetch(`/data/cxc_${year}.json`);
+            const response = await fetch(`${BASE_URL}/cxc_${year}.json`);
             if (!response.ok) {
                 console.warn(`CXC data for ${year} not found`);
                 this.yearDataCache.cxc[year] = [];
@@ -86,7 +93,7 @@ class DataService {
         this.loadingYears.add(cacheKey);
         try {
             console.log(`Loading CXP detail for ${year}...`);
-            const response = await fetch(`/data/cxp_${year}.json`);
+            const response = await fetch(`${BASE_URL}/cxp_${year}.json`);
             if (!response.ok) {
                 console.warn(`CXP data for ${year} not found`);
                 this.yearDataCache.cxp[year] = [];
