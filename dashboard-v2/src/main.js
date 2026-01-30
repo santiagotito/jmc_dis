@@ -23,6 +23,9 @@ const App = {
     // CXC specific state
     cxcSelectedCliente: null, // Selected client from Top 10 chart
     cxcSelectedAntiguedad: null, // Selected aging range ('0-30', '31-60', etc)
+    cxcSelectedAntiguedad: null, // Selected aging range ('0-30', '31-60', etc)
+    resumenView: 'monthly', // 'monthly' or 'yearly'
+    resumenVisibleSeries: ['cxc', 'cxp', 'promo'], // Visible datasets in evolution chart
     cxcSearchCuenta: '', // Search by account code
     cxcSearchCliente: '', // Search by client name
     cxcSearchFactura: '', // Search by invoice number
@@ -30,7 +33,23 @@ const App = {
     cxcSortField: 'saldo', // saldo, debe, haber, nombre, dias_sin_cobro
     cxcSortDir: 'desc', // asc, desc
     cxcOpenClientes: new Set(), // Track which client groups are open
-    cxcOpenFacturas: new Set() // Track which invoice groups are open
+    cxcOpenFacturas: new Set(), // Track which invoice groups are open
+    cxcCurrentPage: 1, // Pagination current page
+    cxcItemsPerPage: 50, // Items per page
+    // CXP specific state
+    cxpSelectedProveedor: null, // Selected provider from Top 10 chart
+    cxpSelectedAntiguedad: null, // Selected aging range
+    cxpSearchCuenta: '', // Search by account code
+    cxpSearchProveedor: '', // Search by provider name
+    cxpSearchFactura: '', // Search by invoice number
+    cxpSearchAsiento: '', // Search by accounting entry
+    cxpSearchTipoDoc: '', // Filter by document type
+    cxpSortField: 'saldo', // saldo, compras, pagos, nombre, dias_sin_pago
+    cxpSortDir: 'desc', // asc, desc
+    cxpOpenProveedores: new Set(), // Track which provider groups are open
+    cxpOpenFacturas: new Set(), // Track which invoice groups are open
+    cxpCurrentPage: 1, // Pagination current page
+    cxpItemsPerPage: 50 // Items per page
   },
 
   // Internal flag for tracking heavy table rendering
@@ -187,6 +206,10 @@ const App = {
         this._pendingTableRender = false;
         this.renderCXC();
         break;
+      case 'cxp':
+        this._pendingTableRender = false;
+        this.renderCXP();
+        break;
     }
   },
 
@@ -196,77 +219,215 @@ const App = {
 
     // Aggregation
     const summary = years.reduce((acc, y) => {
-      if (data[y]) {
-        acc.registros += data[y].registros;
-        acc.debe += data[y].debe;
-        acc.haber += data[y].haber;
+      if (data.anual && data.anual[y]) {
+        acc.registros += data.anual[y].registros;
+        acc.debe += data.anual[y].debe;
+        acc.haber += data.anual[y].haber;
+        acc.cxc += data.anual[y].cxc || 0;
+        acc.cxp += data.anual[y].cxp || 0;
+        acc.promo += data.anual[y].promo || 0;
       }
       return acc;
-    }, { registros: 0, debe: 0, haber: 0 });
+    }, { registros: 0, debe: 0, haber: 0, cxc: 0, cxp: 0, promo: 0 });
 
     const container = document.getElementById('app');
     container.innerHTML = `
       <div class="kpi-grid">
         <div class="card kpi-card">
-          <div class="kpi-header">
-            <div class="kpi-icon icon-primary"><i class="ri-file-list-3-line"></i></div>
-          </div>
-          <div class="kpi-label">Registros Totales</div>
-          <div class="kpi-value">${summary.registros.toLocaleString()}</div>
+        <div class="kpi-header">
+          <div class="kpi-icon icon-primary"><i class="ri-user-received-line"></i></div>
         </div>
-        <div class="card kpi-card">
-          <div class="kpi-header">
-            <div class="kpi-icon icon-success"><i class="ri-money-dollar-circle-line"></i></div>
-          </div>
-          <div class="kpi-label">Flujo (Debe)</div>
-          <div class="kpi-value">$${summary.debe.toLocaleString()}</div>
+        <div class="kpi-label">Ventas (CXC)</div>
+        <div class="kpi-value">$${summary.cxc.toLocaleString()}</div>
+        <div class="kpi-subtitle" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Generación de cartera</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon icon-warning"><i class="ri-user-shared-line"></i></div>
         </div>
-        <div class="card kpi-card">
-          <div class="kpi-header">
-            <div class="kpi-icon icon-danger"><i class="ri-arrow-right-up-line"></i></div>
-          </div>
-          <div class="kpi-label">Egresos (Haber)</div>
-          <div class="kpi-value">$${summary.haber.toLocaleString()}</div>
+        <div class="kpi-label">Compras (CXP)</div>
+        <div class="kpi-value">$${summary.cxp.toLocaleString()}</div>
+        <div class="kpi-subtitle" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Deuda proveedores</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-icon icon-danger"><i class="ri-advertisement-line"></i></div>
         </div>
+        <div class="kpi-label">Promociones</div>
+        <div class="kpi-value">$${summary.promo.toLocaleString()}</div>
+        <div class="kpi-subtitle" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Marketing y Pub.</div>
+      </div>
       </div>
 
       <div class="card">
-        <h5 style="margin-bottom: 1.5rem; color: var(--text-heading);">Evolución Histórica</h5>
-        <div style="height: 350px;">
-          <canvas id="evolutionChart"></canvas>
-        </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h5 style="color: var(--text-heading); margin: 0;"><i class="ri-line-chart-line"></i> Tendencia de Cuentas Principales</h5>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Evolución mensual histórica</div>
       </div>
+      </div>
+      <div style="height: 400px; position: relative;">
+        <div style="position: absolute; top: -50px; right: 0; z-index: 10; display: flex; gap: 12px; align-items: center;">
+          <!-- Series Filter -->
+          <div class="toggle-group" style="display: flex; gap: 4px;">
+            <button class="toggle-series active" data-series="cxc" onclick="App.toggleResumenSeries('cxc')" style="padding: 4px 10px; border: 1px solid #696cff; background: #696cff; color: white; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">Ventas</button>
+            <button class="toggle-series active" data-series="cxp" onclick="App.toggleResumenSeries('cxp')" style="padding: 4px 10px; border: 1px solid #ffab00; background: #ffab00; color: white; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">Compras</button>
+            <button class="toggle-series active" data-series="promo" onclick="App.toggleResumenSeries('promo')" style="padding: 4px 10px; border: 1px solid #ff3e1d; background: #ff3e1d; color: white; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">Promo</button>
+          </div>
+          <!-- View Toggle -->
+          <div class="toggle-group" style="display: flex; background: #f5f5f9; padding: 4px; border-radius: 8px;">
+            <button class="toggle-btn active" data-view="monthly" onclick="App.toggleResumenView('monthly')" style="padding: 4px 12px; border: none; background: white; border-radius: 6px; font-size: 0.75rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600;">Mensual</button>
+            <button class="toggle-btn" data-view="yearly" onclick="App.toggleResumenView('yearly')" style="padding: 4px 12px; border: none; background: transparent; border-radius: 6px; font-size: 0.75rem; cursor: pointer; color: var(--text-muted);">Anual</button>
+          </div>
+        </div>
+        <canvas id="evolutionChart"></canvas>
+      </div>
+    </div>
     `;
+
+    this.renderResumenChart();
+  },
+
+  toggleResumenView(view) {
+    this.state.resumenView = view;
+    // Update active class for View Toggle
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.style.background = btn.dataset.view === view ? 'white' : 'transparent';
+      btn.style.boxShadow = btn.dataset.view === view ? '0 2px 4px rgba(0,0,0,0.05)' : 'none';
+      btn.style.fontWeight = btn.dataset.view === view ? '600' : 'normal';
+      btn.style.color = btn.dataset.view === view ? 'var(--text-body)' : 'var(--text-muted)';
+    });
+    this.renderResumenChart();
+  },
+
+  toggleResumenSeries(series) {
+    const current = this.state.resumenVisibleSeries || ['cxc', 'cxp', 'promo'];
+    const idx = current.indexOf(series);
+    if (idx > -1) {
+      if (current.length > 1) current.splice(idx, 1); // Prevent hiding all
+    } else {
+      current.push(series);
+    }
+    this.state.resumenVisibleSeries = current;
+
+    // Update UI
+    const colors = { cxc: '#696cff', cxp: '#ffab00', promo: '#ff3e1d' };
+    document.querySelectorAll('.toggle-series').forEach(btn => {
+      const s = btn.dataset.series;
+      const isActive = current.includes(s);
+      const color = colors[s];
+
+      btn.style.background = isActive ? color : 'transparent';
+      btn.style.color = isActive ? 'white' : color;
+      btn.classList.toggle('active', isActive);
+    });
 
     this.renderResumenChart();
   },
 
   renderResumenChart() {
     const ctx = document.getElementById('evolutionChart').getContext('2d');
-    const years = this.state.data.metadata.available_years;
-    const data = this.state.data.resumen;
+    const resumen = this.state.data.resumen;
+    const view = this.state.resumenView || 'monthly';
+    const years = this.state.selectedYears;
+    const visibleSeries = this.state.resumenVisibleSeries || ['cxc', 'cxp', 'promo'];
 
-    new Chart(ctx, {
+    // Destroy previous chart if exists
+    if (this._evolutionChart) {
+      this._evolutionChart.destroy();
+    }
+
+    let labels, cxcData, cxpData, promoData;
+
+    if (view === 'yearly') {
+      // Agrupación Anual (usando data.anual)
+      // Ordenar años para que salgan cronológicos
+      const sortedYears = [...years].sort();
+      labels = sortedYears;
+      cxcData = sortedYears.map(y => resumen.anual[y]?.cxc || 0);
+      cxpData = sortedYears.map(y => resumen.anual[y]?.cxp || 0);
+      promoData = sortedYears.map(y => resumen.anual[y]?.promo || 0);
+
+    } else {
+      // Agrupación Mensual (existente)
+      const hasMonthly = resumen.mensual && resumen.mensual.length > 0;
+      if (hasMonthly) {
+        const filteredMonthly = resumen.mensual.filter(m => {
+          const year = m.label.split('/')[1];
+          return years.includes(year);
+        });
+
+        labels = filteredMonthly.map(m => m.label);
+        cxcData = filteredMonthly.map(m => m.cxc);
+        cxpData = filteredMonthly.map(m => m.cxp);
+        promoData = filteredMonthly.map(m => m.promo);
+      } else {
+        // Fallback si no hay mensual
+        labels = years;
+        cxcData = years.map(y => resumen.anual[y]?.cxc || 0);
+        cxpData = years.map(y => resumen.anual[y]?.cxp || 0);
+        promoData = years.map(y => resumen.anual[y]?.promo || 0);
+      }
+    }
+
+    this._evolutionChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: years,
+        labels: labels,
         datasets: [
           {
-            label: 'Flujo (Debe)',
-            data: years.map(y => data[y]?.debe || 0),
+            label: 'Ventas (CXC)',
+            data: cxcData,
             borderColor: '#696cff',
-            tension: 0.4,
+            backgroundColor: 'rgba(105, 108, 255, 0.1)',
+            tension: 0.3,
             fill: true,
-            backgroundColor: 'rgba(105, 108, 255, 0.1)'
+            hidden: !visibleSeries.includes('cxc')
+          },
+          {
+            label: 'Compras (CXP)',
+            data: cxpData,
+            borderColor: '#ffab00',
+            backgroundColor: 'rgba(255, 171, 0, 0.1)',
+            tension: 0.3,
+            fill: true,
+            hidden: !visibleSeries.includes('cxp')
+          },
+          {
+            label: 'Promociones',
+            data: promoData,
+            borderColor: '#ff3e1d',
+            backgroundColor: 'rgba(255, 62, 29, 0.1)',
+            tension: 0.3,
+            fill: true,
+            hidden: !visibleSeries.includes('promo')
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { usePointStyle: true, boxWidth: 6, font: { size: 11 } }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              label: function (context) {
+                return context.dataset.label + ': $' + context.raw.toLocaleString();
+              }
+            }
+          }
+        },
         scales: {
-          y: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: { callback: value => '$' + (value / 1000) + 'K' }
+          },
           x: { grid: { display: false } }
         }
       }
@@ -614,18 +775,18 @@ const App = {
           </summary>
           <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px;">
             ${Object.entries(analisisPorCuenta).sort((a, b) => b[1].total - a[1].total).map(([cuenta, data]) => {
-              const pctInternoC = data.porTipo['INTERNO'] ? (data.porTipo['INTERNO'] / data.total * 100) : 0;
-              const pctClienteC = data.porTipo['CLIENTE'] ? (data.porTipo['CLIENTE'] / data.total * 100) : 0;
-              return `
+      const pctInternoC = data.porTipo['INTERNO'] ? (data.porTipo['INTERNO'] / data.total * 100) : 0;
+      const pctClienteC = data.porTipo['CLIENTE'] ? (data.porTipo['CLIENTE'] / data.total * 100) : 0;
+      return `
               <div style="padding: 10px; background: var(--bg-light); border-radius: 6px;">
                 <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-heading); margin-bottom: 6px;">${cuenta}</div>
                 <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Total: $${data.total.toLocaleString()}</div>
                 <div style="display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden;">
                   ${Object.entries(data.porTipo).map(([tipo, val]) => {
-                    const pct = val / data.total * 100;
-                    const color = tipo === 'INTERNO' ? '#ff6b6b' : tipo === 'CLIENTE' ? '#51cf66' : tipo === 'PROVEEDOR' ? '#fcc419' : tipo === 'BANCO' ? '#339af0' : '#868e96';
-                    return `<div style="width: ${pct}%; background: ${color};" title="${tipo}: ${pct.toFixed(1)}%"></div>`;
-                  }).join('')}
+        const pct = val / data.total * 100;
+        const color = tipo === 'INTERNO' ? '#ff6b6b' : tipo === 'CLIENTE' ? '#51cf66' : tipo === 'PROVEEDOR' ? '#fcc419' : tipo === 'BANCO' ? '#339af0' : '#868e96';
+        return `<div style="width: ${pct}%; background: ${color};" title="${tipo}: ${pct.toFixed(1)}%"></div>`;
+      }).join('')}
                 </div>
                 <div style="display: flex; gap: 8px; margin-top: 4px; font-size: 0.7rem; color: var(--text-muted);">
                   ${pctInternoC > 0 ? `<span style="color: #ff6b6b;">INT ${pctInternoC.toFixed(0)}%</span>` : ''}
@@ -633,7 +794,7 @@ const App = {
                 </div>
               </div>
             `;
-            }).join('')}
+    }).join('')}
           </div>
         </details>
       </div>
@@ -707,7 +868,7 @@ const App = {
   // ============================================
   // CUENTAS POR COBRAR (CXC)
   // ============================================
-  renderCXC() {
+  async renderCXC() {
     const cxcData = this.state.data.cxc;
     if (!cxcData || !cxcData.clientes) {
       document.getElementById('app').innerHTML = `
@@ -722,8 +883,14 @@ const App = {
 
     const years = this.state.selectedYears;
     const clientes = cxcData.clientes;
-    const detalle = cxcData.detalle || [];
     const resumenAnual = cxcData.resumen_anual;
+
+    // Cargar detalle del año seleccionado dinámicamente
+    if (!dataService.areCXCYearsLoaded(years)) {
+      this.showLoading();
+    }
+    const detalle = await dataService.loadCXCYears(years);
+    this.hideLoading();
 
     // Filtrar clientes por años seleccionados (que tengan movimiento en esos años)
     let clientesFiltrados = clientes.filter(c => {
@@ -740,6 +907,10 @@ const App = {
       }
     });
 
+    // Fecha de corte basada en el año máximo seleccionado
+    const maxYear = Math.max(...years);
+    const fechaCorte = new Date(maxYear, 11, 31);
+
     // Recalcular saldos de clientes para los años seleccionados
     let clientesConSaldo = clientesFiltrados.map(c => {
       let debe = 0, haber = 0;
@@ -752,9 +923,9 @@ const App = {
       return { ...c, saldo_filtrado: debe - haber, debe_filtrado: debe, haber_filtrado: haber };
     }).filter(c => c.debe_filtrado > 0 || c.haber_filtrado > 0 || c.saldo_filtrado !== 0);
 
-    // Análisis de antigüedad (antes de filtros)
-    const antiguedadData = { '0-30': [], '31-60': [], '61-90': [], '>90': [] };
-    const antiguedadTotals = { '0-30': 0, '31-60': 0, '61-90': 0, '>90': 0 };
+    // Análisis de antigüedad inicial (para filtros de selección)
+    let antiguedadData = { '0-30': [], '31-60': [], '61-90': [], '>90': [] };
+    let antiguedadTotals = { '0-30': 0, '31-60': 0, '61-90': 0, '>90': 0 };
     clientesConSaldo.forEach(c => {
       if (c.saldo_filtrado > 0 && c.dias_sin_cobro !== null) {
         if (c.dias_sin_cobro <= 30) { antiguedadData['0-30'].push(c); antiguedadTotals['0-30'] += c.saldo_filtrado; }
@@ -763,9 +934,6 @@ const App = {
         else { antiguedadData['>90'].push(c); antiguedadTotals['>90'] += c.saldo_filtrado; }
       }
     });
-
-    // Rankings (antes de filtros para los gráficos)
-    const topVentas = [...clientesConSaldo].sort((a, b) => b.debe_filtrado - a.debe_filtrado).slice(0, 10);
 
     // ========== APLICAR FILTROS ==========
     const { cxcSelectedCliente, cxcSelectedAntiguedad, cxcSearchCuenta, cxcSearchCliente, cxcSearchFactura, cxcSearchTipoDoc } = this.state;
@@ -805,9 +973,8 @@ const App = {
             const ultimaVenta = fechas.length > 0 ? fechas[fechas.length - 1] : null;
             const cobros = transacciones.filter(t => t.haber > 0).map(t => t.fecha).sort();
             const ultimoCobro = cobros.length > 0 ? cobros[cobros.length - 1] : null;
-            const fechaCorte = new Date('2025-12-31');
-            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000*60*60*24)) :
-                                 ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000*60*60*24)) : null;
+            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000 * 60 * 60 * 24)) :
+              ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000 * 60 * 60 * 24)) : null;
             clientesConSaldo.push({
               codigo,
               nombre,
@@ -842,9 +1009,8 @@ const App = {
             const ultimaVenta = fechas.length > 0 ? fechas[fechas.length - 1] : null;
             const cobros = transacciones.filter(t => t.haber > 0).map(t => t.fecha).sort();
             const ultimoCobro = cobros.length > 0 ? cobros[cobros.length - 1] : null;
-            const fechaCorte = new Date('2025-12-31');
-            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000*60*60*24)) :
-                                 ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000*60*60*24)) : null;
+            const diasSinCobro = ultimaVenta && !ultimoCobro ? Math.floor((fechaCorte - new Date(ultimaVenta)) / (1000 * 60 * 60 * 24)) :
+              ultimaVenta && ultimoCobro ? Math.floor((new Date(ultimoCobro) - new Date(ultimaVenta)) / (1000 * 60 * 60 * 24)) : null;
             clientesConSaldo.push({
               codigo,
               nombre,
@@ -860,10 +1026,10 @@ const App = {
       });
     }
     if (cxcSearchFactura) {
-      const searchLower = cxcSearchFactura.toLowerCase();
+      const searchLower = cxcSearchFactura.toLowerCase().trim();
+      // Búsqueda EXACTA de factura (no parcial)
       detalleFiltrado = detalleFiltrado.filter(d =>
-        (d.factura && d.factura.toLowerCase().includes(searchLower)) ||
-        (d.asiento && d.asiento.toLowerCase().includes(searchLower))
+        (d.factura && d.factura.toLowerCase() === searchLower)
       );
       // Filtrar clientes que tengan esas facturas
       const clientesConFactura = new Set(detalleFiltrado.map(d => d.cliente_codigo));
@@ -876,14 +1042,41 @@ const App = {
       clientesConSaldo = clientesConSaldo.filter(c => clientesConTipo.has(c.codigo));
     }
 
+    // Recalcular totales de clientes basado en detalle filtrado (para que los totales de la fila gris coincidan con lo filtrado)
+    if (cxcSearchCuenta || cxcSearchCliente || cxcSearchFactura || cxcSearchTipoDoc || cxcSelectedCliente || cxcSelectedAntiguedad) {
+      // Recalcular totales de cada cliente basado SOLO en el detalle filtrado y solo en cuentas CXC
+      clientesConSaldo = clientesConSaldo.map(c => {
+        const clienteDetalle = detalleFiltrado.filter(d => d.cliente_codigo === c.codigo);
+        const itemsCxc = clienteDetalle.filter(d => d.es_cxc);
+        const debe = itemsCxc.reduce((s, d) => s + (d.debe || 0), 0);
+        const haber = itemsCxc.reduce((s, d) => s + (d.haber || 0), 0);
+        return { ...c, debe_filtrado: debe, haber_filtrado: haber, saldo_filtrado: debe - haber };
+      }).filter(c => c.debe_filtrado !== 0 || c.haber_filtrado !== 0);
+    }
+
     // Recalcular KPIs después de filtros
     let kpiDebe = 0, kpiHaber = 0;
-    if (cxcSelectedCliente || cxcSelectedAntiguedad || cxcSearchCuenta || cxcSearchCliente) {
+    if (cxcSelectedCliente || cxcSelectedAntiguedad || cxcSearchCuenta || cxcSearchCliente || cxcSearchFactura || cxcSearchTipoDoc) {
       clientesConSaldo.forEach(c => { kpiDebe += c.debe_filtrado; kpiHaber += c.haber_filtrado; });
     } else {
       kpiDebe = totalDebe; kpiHaber = totalHaber;
     }
     const saldoTotal = kpiDebe - kpiHaber;
+
+    // Recalcular antigüedad y rankings desde datos FILTRADOS
+    antiguedadData = { '0-30': [], '31-60': [], '61-90': [], '>90': [] };
+    antiguedadTotals = { '0-30': 0, '31-60': 0, '61-90': 0, '>90': 0 };
+    clientesConSaldo.forEach(c => {
+      if (c.saldo_filtrado > 0 && c.dias_sin_cobro !== null) {
+        if (c.dias_sin_cobro <= 30) { antiguedadData['0-30'].push(c); antiguedadTotals['0-30'] += c.saldo_filtrado; }
+        else if (c.dias_sin_cobro <= 60) { antiguedadData['31-60'].push(c); antiguedadTotals['31-60'] += c.saldo_filtrado; }
+        else if (c.dias_sin_cobro <= 90) { antiguedadData['61-90'].push(c); antiguedadTotals['61-90'] += c.saldo_filtrado; }
+        else { antiguedadData['>90'].push(c); antiguedadTotals['>90'] += c.saldo_filtrado; }
+      }
+    });
+
+    // Top 10 Ventas desde datos filtrados
+    const topVentas = [...clientesConSaldo].sort((a, b) => b.debe_filtrado - a.debe_filtrado).slice(0, 10);
 
     // Ordenar clientes
     const { cxcSortField, cxcSortDir } = this.state;
@@ -894,6 +1087,8 @@ const App = {
       if (cxcSortField === 'saldo') { va = a.saldo_filtrado; vb = b.saldo_filtrado; }
       if (cxcSortField === 'debe') { va = a.debe_filtrado; vb = b.debe_filtrado; }
       if (cxcSortField === 'haber') { va = a.haber_filtrado; vb = b.haber_filtrado; }
+      if (cxcSortField === 'fecha') { va = a.ultima_venta || ''; vb = b.ultima_venta || ''; }
+      if (cxcSortField === 'tipo') { va = a.tipo || ''; vb = b.tipo || ''; }
       if (typeof va === 'string') return cxcSortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
       return cxcSortDir === 'asc' ? va - vb : vb - va;
     });
@@ -996,17 +1191,29 @@ const App = {
             </div>
             <div style="flex: 1;">
               ${['0-30', '31-60', '61-90', '>90'].map(range => {
-                const colors = { '0-30': ['#ebfbee', '#2b8a3e'], '31-60': ['#fff9db', '#e67700'], '61-90': ['#ffe8cc', '#d9480f'], '>90': ['#fff5f5', '#c92a2a'] };
-                const isActive = cxcSelectedAntiguedad === range;
-                return `
+      const colors = { '0-30': ['#ebfbee', '#2b8a3e'], '31-60': ['#fff9db', '#e67700'], '61-90': ['#ffe8cc', '#d9480f'], '>90': ['#fff5f5', '#c92a2a'] };
+      const isActive = cxcSelectedAntiguedad === range;
+      return `
                 <div class="antiguedad-chip" data-range="${range}" style="margin-bottom: 8px; padding: 8px; background: ${colors[range][0]}; border-radius: 6px; cursor: pointer; border: 2px solid ${isActive ? colors[range][1] : 'transparent'}; transition: all 0.2s;">
                   <div style="font-size: 0.75rem; color: ${colors[range][1]};">${range} días</div>
                   <div style="font-weight: 600;">$${antiguedadTotals[range].toLocaleString()}</div>
                   <div style="font-size: 0.7rem; color: var(--text-muted);">${antiguedadData[range].length} clientes</div>
                 </div>`;
-              }).join('')}
+    }).join('')}
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Info: Cómo se calculan los días -->
+      <div style="background: #e7f5ff; border-radius: 8px; padding: 12px 16px; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 12px;">
+        <i class="ri-information-line" style="color: #1971c2; font-size: 1.2rem; margin-top: 2px;"></i>
+        <div style="font-size: 0.8rem; color: #1864ab;">
+          <strong>¿Cómo se calculan los días?</strong><br>
+          <span style="color: #495057;">
+            • <strong>Con cobro:</strong> Días entre fecha de factura y fecha del último cobro<br>
+            • <strong>Sin cobro:</strong> Días entre fecha de factura y 31-dic-2023 (fecha de corte de datos)
+          </span>
         </div>
       </div>
 
@@ -1066,7 +1273,12 @@ const App = {
                 <th class="sortable-th" data-sort="nombre" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
                   Documento ${cxcSortField === 'nombre' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
-                <th style="padding: 10px; border-bottom: 2px solid var(--border-color);">Tipo</th>
+                <th class="sortable-th" data-sort="tipo" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
+                  Tipo ${cxcSortField === 'tipo' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th" data-sort="fecha" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
+                  Fecha ${cxcSortField === 'fecha' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
                 <th style="padding: 10px; border-bottom: 2px solid var(--border-color);">Detalle</th>
                 <th class="sortable-th" data-sort="debe" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
                   Ventas ${cxcSortField === 'debe' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
@@ -1077,18 +1289,37 @@ const App = {
                 <th class="sortable-th" data-sort="saldo" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
                   Saldo ${cxcSortField === 'saldo' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
-                <th class="sortable-th" data-sort="dias_sin_cobro" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; cursor: pointer;">
-                  Días ${cxcSortField === 'dias_sin_cobro' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
+                <th class="sortable-th" data-sort="dias_sin_cobro" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; cursor: pointer;" title="Días desde la factura hasta el cobro (o hasta 31-dic-2023 si no hay cobro)">
+                  Días <i class="ri-question-line" style="font-size: 0.7rem; color: var(--text-muted);"></i> ${cxcSortField === 'dias_sin_cobro' ? (cxcSortDir === 'asc' ? '↑' : '↓') : ''}
                 </th>
               </tr>
             </thead>
             <tbody id="cxcTableBody">
-              ${clientesConSaldo.slice(0, 50).map(c => {
-                const isOpen = this.state.cxcOpenClientes.has(c.codigo);
-                const clienteDetalle = detalleByCliente[c.codigo];
-                const facturas = clienteDetalle ? Object.entries(clienteDetalle.facturas) : [];
+              ${clientesConSaldo.slice((this.state.cxcCurrentPage - 1) * this.state.cxcItemsPerPage, this.state.cxcCurrentPage * this.state.cxcItemsPerPage).map(c => {
+      const isOpen = this.state.cxcOpenClientes.has(c.codigo);
+      const clienteDetalle = detalleByCliente[c.codigo];
+      const facturas = clienteDetalle ? Object.entries(clienteDetalle.facturas) : [];
 
-                return `
+      // Calcular fecha más reciente de las transacciones filtradas
+      const allItems = facturas.flatMap(([_, items]) => items);
+      const ultimaFechaFiltrada = allItems.length > 0
+        ? allItems.map(i => i.fecha).sort().reverse()[0]
+        : null;
+
+      // Calcular promedio de días de cobro desde las facturas
+      const diasPorFactura = facturas.map(([_, items]) => {
+        const ventaItem = items.find(i => i.debe > 0) || items[0];
+        const fechaVenta = ventaItem ? new Date(ventaItem.fecha) : null;
+        const ultimoCobro = items.filter(i => i.haber > 0).sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+        const fechaRef = ultimoCobro ? new Date(ultimoCobro.fecha) : fechaCorte;
+        return fechaVenta ? Math.floor((fechaRef - fechaVenta) / (1000 * 60 * 60 * 24)) : null;
+      }).filter(d => d !== null);
+
+      const diasPromedio = diasPorFactura.length > 0
+        ? Math.round(diasPorFactura.reduce((a, b) => a + b, 0) / diasPorFactura.length)
+        : null;
+
+      return `
                 <tr class="cliente-row" data-codigo="${c.codigo}" style="border-bottom: 1px solid var(--border-color); cursor: pointer; background: ${isOpen ? '#e7f5ff' : 'white'}; font-weight: 500;">
                   <td style="padding: 10px; text-align: center;">
                     <i class="ri-arrow-${isOpen ? 'down' : 'right'}-s-line" style="color: var(--primary);"></i>
@@ -1102,36 +1333,37 @@ const App = {
                       </div>
                     </div>
                   </td>
-                  <td style="padding: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">
-                    ${c.ultima_venta ? `Últ. venta: ${c.ultima_venta}` : ''}
+                  <td style="padding: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">
+                    ${ultimaFechaFiltrada || '-'}
                   </td>
+                  <td style="padding: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: normal;"></td>
                   <td style="padding: 10px; text-align: right; color: var(--primary);">$${c.debe_filtrado.toLocaleString()}</td>
                   <td style="padding: 10px; text-align: right; color: var(--success);">$${c.haber_filtrado.toLocaleString()}</td>
                   <td style="padding: 10px; text-align: right; color: ${c.saldo_filtrado > 0 ? 'var(--warning)' : 'var(--success)'};">$${c.saldo_filtrado.toLocaleString()}</td>
                   <td style="padding: 10px; text-align: center;">
-                    ${c.dias_sin_cobro !== null ? `
-                      <span style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; background: ${c.dias_sin_cobro > 90 ? '#fff5f5' : c.dias_sin_cobro > 60 ? '#ffe8cc' : c.dias_sin_cobro > 30 ? '#fff9db' : '#ebfbee'}; color: ${c.dias_sin_cobro > 90 ? '#c92a2a' : c.dias_sin_cobro > 60 ? '#d9480f' : c.dias_sin_cobro > 30 ? '#e67700' : '#2b8a3e'};">
-                        ${c.dias_sin_cobro}d
+                    ${diasPromedio !== null ? `
+                      <span style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; background: ${diasPromedio > 90 ? '#fff5f5' : diasPromedio > 60 ? '#ffe8cc' : diasPromedio > 30 ? '#fff9db' : '#ebfbee'}; color: ${diasPromedio > 90 ? '#c92a2a' : diasPromedio > 60 ? '#d9480f' : diasPromedio > 30 ? '#e67700' : '#2b8a3e'};">
+                        ${diasPromedio}d
                       </span>
                     ` : '-'}
                   </td>
                 </tr>
                 ${isOpen ? facturas.map(([facKey, items]) => {
-                  const facDebe = items.reduce((s, i) => s + i.debe, 0);
-                  const facHaber = items.reduce((s, i) => s + i.haber, 0);
-                  const facSaldo = facDebe - facHaber;
-                  const isFacOpen = this.state.cxcOpenFacturas.has(`${c.codigo}_${facKey}`);
-                  // Encontrar el tipo de documento principal (la venta original)
-                  const ventaItem = items.find(i => i.debe > 0) || items[0];
-                  const tipoDoc = ventaItem ? ventaItem.tipo_doc : 'N/A';
-                  const detalleCorto = ventaItem ? ventaItem.detalle.substring(0, 50) + (ventaItem.detalle.length > 50 ? '...' : '') : '';
-                  // Calcular días desde la fecha de la factura hasta 31-dic-2025 o último cobro
-                  const fechaVenta = ventaItem ? new Date(ventaItem.fecha) : null;
-                  const ultimoCobro = items.filter(i => i.haber > 0).sort((a,b) => new Date(b.fecha) - new Date(a.fecha))[0];
-                  const fechaCorte = new Date('2025-12-31');
-                  const fechaRef = ultimoCobro ? new Date(ultimoCobro.fecha) : fechaCorte;
-                  const diasFac = fechaVenta ? Math.floor((fechaRef - fechaVenta) / (1000*60*60*24)) : null;
-                  return `
+        const itemsCxc = items.filter(i => i.es_cxc);
+        const facDebe = itemsCxc.reduce((s, i) => s + i.debe, 0);
+        const facHaber = itemsCxc.reduce((s, i) => s + i.haber, 0);
+        const facSaldo = facDebe - facHaber;
+        const isFacOpen = this.state.cxcOpenFacturas.has(`${c.codigo}_${facKey}`);
+        // Encontrar el tipo de documento principal (la venta original)
+        const ventaItem = itemsCxc.find(i => i.debe > 0) || itemsCxc[0] || items[0];
+        const tipoDoc = ventaItem ? ventaItem.tipo_doc : 'N/A';
+        const detalleCorto = ventaItem ? ventaItem.detalle.substring(0, 50) + (ventaItem.detalle.length > 50 ? '...' : '') : '';
+        // Calcular días desde la fecha de la factura hasta fin de año o último cobro
+        const fechaVenta = ventaItem ? new Date(ventaItem.fecha) : null;
+        const ultimoCobro = itemsCxc.filter(i => i.haber > 0).sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+        const fechaRef = ultimoCobro ? new Date(ultimoCobro.fecha) : fechaCorte;
+        const diasFac = fechaVenta ? Math.floor((fechaRef - fechaVenta) / (1000 * 60 * 60 * 24)) : null;
+        return `
                   <tr class="factura-row" data-cliente="${c.codigo}" data-factura="${facKey}" style="background: #f8f9fa; cursor: pointer; border-left: 3px solid ${facSaldo > 0 ? 'var(--warning)' : 'var(--success)'};">
                     <td style="padding: 8px 10px; text-align: center;">
                       <i class="ri-arrow-${isFacOpen ? 'down' : 'right'}-s-line" style="color: var(--text-muted);"></i>
@@ -1144,6 +1376,9 @@ const App = {
                     </td>
                     <td style="padding: 8px 10px;">
                       <span style="background: #e9ecef; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">${tipoDoc}</span>
+                    </td>
+                    <td style="padding: 8px 10px; font-size: 0.8rem; color: var(--text-muted);">
+                      ${ventaItem ? ventaItem.fecha : '-'}
                     </td>
                     <td style="padding: 8px 10px; font-size: 0.8rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${ventaItem ? ventaItem.detalle : ''}">
                       ${detalleCorto}
@@ -1159,18 +1394,19 @@ const App = {
                       ` : (facSaldo <= 0 ? '<span style="color: var(--success); font-size: 0.75rem;">✓</span>' : '-')}
                     </td>
                   </tr>
-                  ${isFacOpen ? items.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).map(item => `
+                  ${isFacOpen ? items.sort((a, b) => new Date(a.fecha) - new Date(b.fecha)).map(item => `
                   <tr class="detalle-row" style="background: #f1f3f5; font-size: 0.8rem;">
                     <td style="padding: 6px 10px;"></td>
                     <td style="padding: 6px 10px;">
-                      <div style="font-size: 0.75rem; color: var(--text-muted);">${item.fecha}</div>
-                      ${item.documento && item.documento !== item.factura ? `<div style="font-size: 0.7rem; color: #868e96;">Doc: ${item.documento}</div>` : ''}
+                      ${item.documento && item.documento !== item.factura ? `<span style="font-size: 0.7rem; color: #868e96;">Doc: ${item.documento}</span>` : ''}
                     </td>
                     <td style="padding: 6px 10px;">
                       <span style="background: ${item.debe > 0 ? '#dbe4ff' : '#d3f9d8'}; color: ${item.debe > 0 ? '#364fc7' : '#2b8a3e'}; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">${item.tipo_doc}</span>
                     </td>
+                    <td style="padding: 6px 10px; font-size: 0.75rem; color: var(--text-muted);">${item.fecha}</td>
                     <td style="padding: 6px 10px; color: var(--text-muted); font-size: 0.75rem; max-width: 400px; word-wrap: break-word; white-space: normal;">
                       ${item.detalle}
+                      ${!item.es_cxc && item.cuenta_nombre ? `<br><span style="color: var(--primary); font-weight: 500;">Contrapartida: ${item.cuenta_nombre}</span>` : ''}
                     </td>
                     <td style="padding: 6px 10px; text-align: right; color: ${item.debe > 0 ? 'var(--primary)' : 'var(--text-muted)'};">${item.debe > 0 ? '$' + item.debe.toLocaleString() : '-'}</td>
                     <td style="padding: 6px 10px; text-align: right; color: ${item.haber > 0 ? 'var(--success)' : 'var(--text-muted)'};">${item.haber > 0 ? '$' + item.haber.toLocaleString() : '-'}</td>
@@ -1179,16 +1415,40 @@ const App = {
                   </tr>
                   `).join('') : ''}
                   `;
-                }).join('') : ''}
+      }).join('') : ''}
                 `;
-              }).join('')}
+    }).join('')}
             </tbody>
           </table>
-          ${clientesConSaldo.length > 50 ? `
-          <div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 0.85rem;">
-            Mostrando 50 de ${clientesConSaldo.length} clientes. Use los filtros para reducir resultados.
-          </div>
-          ` : ''}
+          ${(() => {
+        const totalPages = Math.ceil(clientesConSaldo.length / this.state.cxcItemsPerPage);
+        const currentPage = this.state.cxcCurrentPage;
+        const startItem = (currentPage - 1) * this.state.cxcItemsPerPage + 1;
+        const endItem = Math.min(currentPage * this.state.cxcItemsPerPage, clientesConSaldo.length);
+        if (totalPages <= 1) return '';
+        return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-light);">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">
+                Mostrando ${startItem}-${endItem} de ${clientesConSaldo.length} clientes
+              </span>
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <button class="pagination-btn-cxc" data-page="1" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'};">
+                  <i class="ri-skip-back-line"></i>
+                </button>
+                <button class="pagination-btn-cxc" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'};">
+                  <i class="ri-arrow-left-s-line"></i>
+                </button>
+                <span style="padding: 6px 12px; font-size: 0.85rem;">Página ${currentPage} de ${totalPages}</span>
+                <button class="pagination-btn-cxc" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === totalPages ? '0.5' : '1'};">
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+                <button class="pagination-btn-cxc" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === totalPages ? '0.5' : '1'};">
+                  <i class="ri-skip-forward-line"></i>
+                </button>
+              </div>
+            </div>
+            `;
+      })()}
         </div>
       </div>
 
@@ -1285,6 +1545,7 @@ const App = {
         self.state.cxcSearchCliente = '';
         self.state.cxcSearchFactura = '';
         self.state.cxcSearchTipoDoc = '';
+        self.state.cxcCurrentPage = 1; // Reset paginación
         self.renderCXC();
       };
     }
@@ -1341,11 +1602,26 @@ const App = {
       };
     });
 
+    // Pagination buttons
+    document.querySelectorAll('.pagination-btn-cxc').forEach(btn => {
+      btn.onclick = () => {
+        if (btn.disabled) return;
+        const page = parseInt(btn.dataset.page);
+        if (page && page !== self.state.cxcCurrentPage) {
+          self.state.cxcCurrentPage = page;
+          self.state.cxcOpenClientes.clear(); // Cerrar clientes expandidos al cambiar página
+          self.state.cxcOpenFacturas.clear();
+          self.renderCXC();
+        }
+      };
+    });
+
     // Moroso cards click
     document.querySelectorAll('.moroso-card').forEach(card => {
       card.onclick = () => {
         self.state.cxcSelectedCliente = card.dataset.codigo;
         self.state.cxcOpenClientes.add(card.dataset.codigo);
+        self.state.cxcCurrentPage = 1; // Reset a página 1 cuando se selecciona cliente
         self.renderCXC();
       };
     });
@@ -1420,6 +1696,857 @@ const App = {
               const range = labels[idx];
               self.state.cxcSelectedAntiguedad = self.state.cxcSelectedAntiguedad === range ? null : range;
               self.renderCXC();
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  },
+
+  // =============================================
+  // CXP - CUENTAS POR PAGAR (Proveedores)
+  // =============================================
+  async renderCXP() {
+    const cxpData = this.state.data.cxp;
+    if (!cxpData || !cxpData.proveedores) {
+      document.getElementById('app').innerHTML = `
+        <div class="card" style="text-align: center; padding: 3rem;">
+          <i class="ri-error-warning-line" style="font-size: 3rem; color: var(--warning);"></i>
+          <h4 style="margin-top: 1rem;">No hay datos de Cuentas por Pagar</h4>
+          <p style="color: var(--text-muted);">Verifique que el archivo de datos incluya información de CXP.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const years = this.state.selectedYears;
+    const proveedores = cxpData.proveedores;
+    const resumenAnual = cxpData.resumen_anual;
+
+    // Cargar detalle del año seleccionado dinámicamente
+    if (!dataService.areCXPYearsLoaded(years)) {
+      this.showLoading();
+    }
+    const detalle = await dataService.loadCXPYears(years);
+    this.hideLoading();
+
+    // Filtrar proveedores por años seleccionados
+    let proveedoresFiltrados = proveedores.filter(p => {
+      if (!p.anios_activos) return true;
+      return p.anios_activos.some(a => years.includes(String(a)));
+    });
+
+    // Calcular totales de los años seleccionados
+    let totalCompras = 0, totalPagos = 0;
+    years.forEach(y => {
+      if (resumenAnual[y]) {
+        totalCompras += resumenAnual[y].total_compras;
+        totalPagos += resumenAnual[y].total_pagos;
+      }
+    });
+
+    // Fecha de corte basada en el año máximo seleccionado
+    const maxYear = Math.max(...years);
+    const fechaCorte = new Date(maxYear, 11, 31);
+
+    // Recalcular saldos de proveedores para los años seleccionados
+    let proveedoresConSaldo = proveedoresFiltrados.map(p => {
+      let compras = 0, pagos = 0;
+      years.forEach(y => {
+        if (p.por_anio && p.por_anio[y]) {
+          compras += p.por_anio[y].compras;
+          pagos += p.por_anio[y].pagos;
+        }
+      });
+      return { ...p, saldo_filtrado: compras - pagos, compras_filtrado: compras, pagos_filtrado: pagos };
+    }).filter(p => p.compras_filtrado > 0 || p.pagos_filtrado > 0 || p.saldo_filtrado !== 0);
+
+    // Análisis de antigüedad inicial (para filtros de selección)
+    let antiguedadData = { '0-30': [], '31-60': [], '61-90': [], '>90': [] };
+    let antiguedadTotals = { '0-30': 0, '31-60': 0, '61-90': 0, '>90': 0 };
+    proveedoresConSaldo.forEach(p => {
+      if (p.saldo_filtrado > 0 && p.dias_sin_pago !== null) {
+        if (p.dias_sin_pago <= 30) { antiguedadData['0-30'].push(p); antiguedadTotals['0-30'] += p.saldo_filtrado; }
+        else if (p.dias_sin_pago <= 60) { antiguedadData['31-60'].push(p); antiguedadTotals['31-60'] += p.saldo_filtrado; }
+        else if (p.dias_sin_pago <= 90) { antiguedadData['61-90'].push(p); antiguedadTotals['61-90'] += p.saldo_filtrado; }
+        else { antiguedadData['>90'].push(p); antiguedadTotals['>90'] += p.saldo_filtrado; }
+      }
+    });
+
+    // ========== APLICAR FILTROS ==========
+    const { cxpSelectedProveedor, cxpSelectedAntiguedad, cxpSearchCuenta, cxpSearchProveedor, cxpSearchFactura, cxpSearchAsiento, cxpSearchTipoDoc } = this.state;
+
+    // Filtrar por proveedor seleccionado (del gráfico Top 10)
+    if (cxpSelectedProveedor) {
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => p.codigo === cxpSelectedProveedor);
+    }
+
+    // Filtrar por antigüedad seleccionada
+    if (cxpSelectedAntiguedad && antiguedadData[cxpSelectedAntiguedad]) {
+      const codigosAntiguedad = antiguedadData[cxpSelectedAntiguedad].map(p => p.codigo);
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => codigosAntiguedad.includes(p.codigo));
+    }
+
+    // Filtrar detalle por años
+    let detalleFiltrado = detalle.filter(d => years.includes(d.anio));
+
+    // Filtrar por búsquedas
+    if (cxpSearchCuenta) {
+      const searchLower = cxpSearchCuenta.toLowerCase();
+      detalleFiltrado = detalleFiltrado.filter(d => d.proveedor_codigo.toLowerCase().includes(searchLower));
+      const proveedoresEnDetalle = new Set(detalleFiltrado.map(d => d.proveedor_codigo));
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => proveedoresEnDetalle.has(p.codigo));
+    }
+    if (cxpSearchProveedor) {
+      const searchLower = cxpSearchProveedor.toLowerCase();
+      detalleFiltrado = detalleFiltrado.filter(d => d.proveedor_nombre.toLowerCase().includes(searchLower));
+      const proveedoresEnDetalle = new Set(detalleFiltrado.map(d => d.proveedor_codigo));
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => proveedoresEnDetalle.has(p.codigo));
+      // Agregar proveedores de detalle que no estén en lista
+      proveedoresEnDetalle.forEach(codigo => {
+        if (!proveedoresConSaldo.find(p => p.codigo === codigo)) {
+          const transacciones = detalleFiltrado.filter(d => d.proveedor_codigo === codigo);
+          if (transacciones.length > 0) {
+            const nombre = transacciones[0].proveedor_nombre;
+            const compras = transacciones.reduce((s, t) => s + (t.compra || 0), 0);
+            const pagos = transacciones.reduce((s, t) => s + (t.pago || 0), 0);
+            const fechasCompra = transacciones.filter(t => t.compra > 0).map(t => t.fecha).sort();
+            const ultimaCompra = fechasCompra.length > 0 ? fechasCompra[fechasCompra.length - 1] : null;
+            const fechasPago = transacciones.filter(t => t.pago > 0).map(t => t.fecha).sort();
+            const ultimoPago = fechasPago.length > 0 ? fechasPago[fechasPago.length - 1] : null;
+            const diasSinPago = ultimaCompra && !ultimoPago ? Math.floor((fechaCorte - new Date(ultimaCompra)) / (1000 * 60 * 60 * 24)) :
+              ultimaCompra && ultimoPago ? Math.floor((new Date(ultimoPago) - new Date(ultimaCompra)) / (1000 * 60 * 60 * 24)) : null;
+            proveedoresConSaldo.push({
+              codigo, nombre,
+              compras_filtrado: compras, pagos_filtrado: pagos, saldo_filtrado: compras - pagos,
+              ultima_compra: ultimaCompra, ultimo_pago: ultimoPago, dias_sin_pago: diasSinPago
+            });
+          }
+        }
+      });
+    }
+    if (cxpSearchFactura) {
+      const searchLower = cxpSearchFactura.toLowerCase().trim();
+      // Búsqueda EXACTA de factura (no parcial)
+      detalleFiltrado = detalleFiltrado.filter(d =>
+        (d.factura && d.factura.toLowerCase() === searchLower)
+      );
+      const proveedoresConFactura = new Set(detalleFiltrado.map(d => d.proveedor_codigo));
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => proveedoresConFactura.has(p.codigo));
+    }
+    if (cxpSearchAsiento) {
+      const searchLower = cxpSearchAsiento.toLowerCase().trim();
+      detalleFiltrado = detalleFiltrado.filter(d =>
+        d.asiento && String(d.asiento).toLowerCase().includes(searchLower)
+      );
+      const proveedoresConAsiento = new Set(detalleFiltrado.map(d => d.proveedor_codigo));
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => proveedoresConAsiento.has(p.codigo));
+    }
+    if (cxpSearchTipoDoc) {
+      const searchLower = cxpSearchTipoDoc.toLowerCase();
+      detalleFiltrado = detalleFiltrado.filter(d => d.tipo_doc && d.tipo_doc.toLowerCase().includes(searchLower));
+      const proveedoresConTipo = new Set(detalleFiltrado.map(d => d.proveedor_codigo));
+      proveedoresConSaldo = proveedoresConSaldo.filter(p => proveedoresConTipo.has(p.codigo));
+    }
+
+    // Recalcular totales de proveedores basado en detalle filtrado (para que los totales de la fila naranja coincidan con lo filtrado)
+    if (cxpSearchCuenta || cxpSearchProveedor || cxpSearchFactura || cxpSearchTipoDoc || cxpSearchAsiento || cxpSelectedProveedor || cxpSelectedAntiguedad) {
+      // Recalcular totales de cada proveedor basado SOLO en el detalle filtrado y solo en cuentas CXP
+      proveedoresConSaldo = proveedoresConSaldo.map(p => {
+        const provDetalle = detalleFiltrado.filter(d => d.proveedor_codigo === p.codigo);
+        const itemsCxp = provDetalle.filter(d => d.es_cxp);
+        const compras = itemsCxp.reduce((s, d) => s + (d.compra || 0), 0);
+        const pagos = itemsCxp.reduce((s, d) => s + (d.pago || 0), 0);
+        return { ...p, compras_filtrado: compras, pagos_filtrado: pagos, saldo_filtrado: compras - pagos };
+      }).filter(p => p.compras_filtrado !== 0 || p.pagos_filtrado !== 0);
+    }
+
+    // Recalcular KPIs después de filtros
+    let kpiCompras = 0, kpiPagos = 0;
+    if (cxpSelectedProveedor || cxpSelectedAntiguedad || cxpSearchCuenta || cxpSearchProveedor || cxpSearchFactura || cxpSearchAsiento || cxpSearchTipoDoc) {
+      proveedoresConSaldo.forEach(p => { kpiCompras += p.compras_filtrado; kpiPagos += p.pagos_filtrado; });
+    } else {
+      kpiCompras = totalCompras; kpiPagos = totalPagos;
+    }
+    const saldoTotal = kpiCompras - kpiPagos;
+
+    // Recalcular antigüedad y rankings desde datos FILTRADOS
+    antiguedadData = { '0-30': [], '31-60': [], '61-90': [], '>90': [] };
+    antiguedadTotals = { '0-30': 0, '31-60': 0, '61-90': 0, '>90': 0 };
+    proveedoresConSaldo.forEach(p => {
+      if (p.saldo_filtrado > 0 && p.dias_sin_pago !== null) {
+        if (p.dias_sin_pago <= 30) { antiguedadData['0-30'].push(p); antiguedadTotals['0-30'] += p.saldo_filtrado; }
+        else if (p.dias_sin_pago <= 60) { antiguedadData['31-60'].push(p); antiguedadTotals['31-60'] += p.saldo_filtrado; }
+        else if (p.dias_sin_pago <= 90) { antiguedadData['61-90'].push(p); antiguedadTotals['61-90'] += p.saldo_filtrado; }
+        else { antiguedadData['>90'].push(p); antiguedadTotals['>90'] += p.saldo_filtrado; }
+      }
+    });
+
+    // Top 10 Compras desde datos filtrados
+    const topCompras = [...proveedoresConSaldo].sort((a, b) => b.compras_filtrado - a.compras_filtrado).slice(0, 10);
+
+    // Ordenar proveedores
+    const { cxpSortField, cxpSortDir } = this.state;
+    proveedoresConSaldo.sort((a, b) => {
+      let valA = a[cxpSortField] || a[cxpSortField + '_filtrado'] || 0;
+      let valB = b[cxpSortField] || b[cxpSortField + '_filtrado'] || 0;
+      if (cxpSortField === 'nombre') {
+        valA = a.nombre.toLowerCase();
+        valB = b.nombre.toLowerCase();
+        return cxpSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      if (cxpSortField === 'fecha') {
+        valA = a.ultima_compra || '';
+        valB = b.ultima_compra || '';
+        return cxpSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      if (cxpSortField === 'tipo') {
+        valA = a.tipo || '';
+        valB = b.tipo || '';
+        return cxpSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      return cxpSortDir === 'asc' ? valA - valB : valB - valA;
+    });
+
+    // Top morosos (proveedores con más días sin pago)
+    const topMorosos = [...proveedoresConSaldo]
+      .filter(p => p.saldo_filtrado > 0 && p.dias_sin_pago !== null)
+      .sort((a, b) => (b.dias_sin_pago || 0) - (a.dias_sin_pago || 0)).slice(0, 10);
+
+    // Top 5 proveedores con pago más rápido (menos días para pagar, ya pagados)
+    const topPagoRapido = [...proveedoresConSaldo]
+      .filter(p => p.dias_sin_pago !== null && p.dias_sin_pago >= 0 && p.pagos_filtrado > 0)
+      .sort((a, b) => (a.dias_sin_pago || 999) - (b.dias_sin_pago || 999)).slice(0, 5);
+
+    // Agrupar detalle por proveedor y luego por ASIENTO (no factura)
+    const detalleByProveedor = {};
+    detalleFiltrado.forEach(d => {
+      if (!detalleByProveedor[d.proveedor_codigo]) {
+        detalleByProveedor[d.proveedor_codigo] = { nombre: d.proveedor_nombre, asientos: {} };
+      }
+      const asientoKey = d.asiento || 'SIN_ASIENTO';
+      if (!detalleByProveedor[d.proveedor_codigo].asientos[asientoKey]) {
+        detalleByProveedor[d.proveedor_codigo].asientos[asientoKey] = [];
+      }
+      detalleByProveedor[d.proveedor_codigo].asientos[asientoKey].push(d);
+    });
+
+    // Indicador de filtros activos
+    const hasFilters = cxpSelectedProveedor || cxpSelectedAntiguedad || cxpSearchCuenta || cxpSearchProveedor || cxpSearchFactura || cxpSearchAsiento || cxpSearchTipoDoc;
+    const filterIndicator = hasFilters ? `
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; padding: 8px 12px; background: #e7f5ff; border-radius: 6px; flex-wrap: wrap;">
+        <span style="font-size: 0.8rem; color: #1971c2;"><i class="ri-filter-3-line"></i> Filtros activos:</span>
+        ${cxpSelectedProveedor ? `<span class="filter-chip" data-clear="cxpSelectedProveedor">Proveedor: ${proveedoresConSaldo[0]?.nombre || cxpSelectedProveedor} <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSelectedAntiguedad ? `<span class="filter-chip" data-clear="cxpSelectedAntiguedad">Antigüedad: ${cxpSelectedAntiguedad} días <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSearchCuenta ? `<span class="filter-chip" data-clear="cxpSearchCuenta">Cuenta: ${cxpSearchCuenta} <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSearchProveedor ? `<span class="filter-chip" data-clear="cxpSearchProveedor">Proveedor: ${cxpSearchProveedor} <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSearchFactura ? `<span class="filter-chip" data-clear="cxpSearchFactura">Factura: ${cxpSearchFactura} <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSearchAsiento ? `<span class="filter-chip" data-clear="cxpSearchAsiento">Asiento: ${cxpSearchAsiento} <i class="ri-close-line"></i></span>` : ''}
+        ${cxpSearchTipoDoc ? `<span class="filter-chip" data-clear="cxpSearchTipoDoc">Tipo: ${cxpSearchTipoDoc} <i class="ri-close-line"></i></span>` : ''}
+        <button id="clearAllCxpFilters" style="margin-left: auto; padding: 4px 10px; background: #1971c2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Limpiar todo</button>
+      </div>
+    ` : '';
+
+    // Tipos de documento únicos
+    const tiposDoc = [...new Set(detalleFiltrado.map(d => d.tipo_doc).filter(Boolean))].sort();
+
+    document.getElementById('app').innerHTML = `
+      ${filterIndicator}
+
+      <!-- KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="card" style="text-align: center; border-left: 4px solid var(--primary);">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Compras</div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">$${kpiCompras.toLocaleString()}</div>
+        </div>
+        <div class="card" style="text-align: center; border-left: 4px solid var(--success);">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Pagos</div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">$${kpiPagos.toLocaleString()}</div>
+        </div>
+        <div class="card" style="text-align: center; border-left: 4px solid ${saldoTotal > 0 ? 'var(--danger)' : 'var(--success)'};">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Saldo Pendiente</div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: ${saldoTotal > 0 ? 'var(--danger)' : 'var(--success)'};">$${saldoTotal.toLocaleString()}</div>
+        </div>
+        <div class="card" style="text-align: center; border-left: 4px solid var(--warning);">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Proveedores Activos</div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">${proveedoresConSaldo.length}</div>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="card">
+          <h5 style="color: var(--text-heading); margin-bottom: 1rem;"><i class="ri-bar-chart-horizontal-line"></i> Top 10 Compras</h5>
+          <div style="height: 300px;"><canvas id="chartTopCompras"></canvas></div>
+        </div>
+        <div class="card">
+          <h5 style="color: var(--text-heading); margin-bottom: 1rem;"><i class="ri-pie-chart-line"></i> Antigüedad de Deuda</h5>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            ${['0-30', '31-60', '61-90', '>90'].map(range => `
+              <div class="antiguedad-chip" data-range="${range}" style="flex: 1; min-width: 80px; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; background: ${this.state.cxpSelectedAntiguedad === range ? '#1971c2' : '#f1f3f5'}; color: ${this.state.cxpSelectedAntiguedad === range ? 'white' : 'var(--text-body)'}; transition: all 0.2s;">
+                <div style="font-size: 0.7rem; opacity: 0.8;">${range} días</div>
+                <div style="font-weight: 600;">$${(antiguedadTotals[range] / 1000).toFixed(0)}K</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="height: 200px;"><canvas id="chartAntiguedadCXP"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Info: Cómo se calculan los días -->
+      <div style="background: #fff4e6; border-radius: 8px; padding: 12px 16px; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 12px;">
+        <i class="ri-information-line" style="color: #e67700; font-size: 1.2rem; margin-top: 2px;"></i>
+        <div style="font-size: 0.8rem; color: #d9480f;">
+          <strong>¿Cómo se calculan los días?</strong><br>
+          <span style="color: #495057;">
+            • <strong>Con pago:</strong> Días entre fecha de compra/factura y fecha del último pago<br>
+            • <strong>Sin pago:</strong> Días entre fecha de compra/factura y 31-dic-2023 (fecha de corte de datos)
+          </span>
+        </div>
+      </div>
+
+      <!-- Filtros de búsqueda -->
+      <div class="card" style="margin-bottom: 1rem;">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+          <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Cuenta</label>
+            <div style="position: relative;">
+              <input type="text" id="cxpSearchCuenta" placeholder="Código cuenta... (Enter)" value="${cxpSearchCuenta}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxpSearchCuenta ? `<button class="clear-filter-btn-cxp" data-clear="cxpSearchCuenta" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Proveedor</label>
+            <div style="position: relative;">
+              <input type="text" id="cxpSearchProveedor" list="proveedoresList" placeholder="Nombre proveedor... (Enter)" value="${cxpSearchProveedor}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxpSearchProveedor ? `<button class="clear-filter-btn-cxp" data-clear="cxpSearchProveedor" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+            <datalist id="proveedoresList">
+              ${[...new Set(proveedores.map(p => p.nombre))].map(n => `<option value="${n}">`).join('')}
+            </datalist>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Factura</label>
+            <div style="position: relative;">
+              <input type="text" id="cxpSearchFactura" placeholder="Número factura... (Enter)" value="${cxpSearchFactura}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxpSearchFactura ? `<button class="clear-filter-btn-cxp" data-clear="cxpSearchFactura" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Buscar Asiento</label>
+            <div style="position: relative;">
+              <input type="text" id="cxpSearchAsiento" list="asientosList" placeholder="Número asiento... (Enter)" value="${cxpSearchAsiento}" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+              ${cxpSearchAsiento ? `<button class="clear-filter-btn-cxp" data-clear="cxpSearchAsiento" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+            <datalist id="asientosList">
+              ${[...new Set(detalle.map(d => d.asiento).filter(Boolean))].slice(0, 500).map(a => `<option value="${a}">`).join('')}
+            </datalist>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Tipo Documento</label>
+            <div style="position: relative;">
+              <select id="cxpSearchTipoDoc" style="width: 100%; padding: 8px; padding-right: 28px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem;">
+                <option value="">Todos</option>
+                ${tiposDoc.map(t => `<option value="${t}" ${cxpSearchTipoDoc === t ? 'selected' : ''}>${t}</option>`).join('')}
+              </select>
+              ${cxpSearchTipoDoc ? `<button class="clear-filter-btn-cxp" data-clear="cxpSearchTipoDoc" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: #dee2e6; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; color: #495057;">×</button>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla Jerárquica de Proveedores -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h5 style="color: var(--text-heading); margin: 0;"><i class="ri-file-list-3-line"></i> Detalle por Proveedor y Factura</h5>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            Mostrando ${proveedoresConSaldo.length} proveedores
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead>
+              <tr style="background: #f8f9fa;">
+                <th style="padding: 10px; border-bottom: 2px solid var(--border-color); width: 30px;"></th>
+                <th class="sortable-th-cxp" data-sort="nombre" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: left; cursor: pointer;">
+                  Documento ${cxpSortField === 'nombre' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th-cxp" data-sort="tipo" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
+                  Tipo ${cxpSortField === 'tipo' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th-cxp" data-sort="fecha" style="padding: 10px; border-bottom: 2px solid var(--border-color); cursor: pointer;">
+                  Fecha ${cxpSortField === 'fecha' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th style="padding: 10px; border-bottom: 2px solid var(--border-color);">Detalle</th>
+                <th class="sortable-th-cxp" data-sort="compras" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
+                  Compras ${cxpSortField === 'compras' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th-cxp" data-sort="pagos" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
+                  Pagos ${cxpSortField === 'pagos' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th-cxp" data-sort="saldo" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: right; cursor: pointer;">
+                  Saldo ${cxpSortField === 'saldo' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+                <th class="sortable-th-cxp" data-sort="dias_sin_pago" style="padding: 10px; border-bottom: 2px solid var(--border-color); text-align: center; cursor: pointer;" title="Días desde la compra/factura hasta el pago (o hasta 31-dic-2023 si no hay pago)">
+                  Días <i class="ri-question-line" style="font-size: 0.7rem; color: var(--text-muted);"></i> ${cxpSortField === 'dias_sin_pago' ? (cxpSortDir === 'asc' ? '↑' : '↓') : ''}
+                </th>
+              </tr>
+            </thead>
+            <tbody id="cxpTableBody">
+              ${proveedoresConSaldo.slice((this.state.cxpCurrentPage - 1) * this.state.cxpItemsPerPage, this.state.cxpCurrentPage * this.state.cxpItemsPerPage).map(p => {
+      const isOpen = this.state.cxpOpenProveedores.has(p.codigo);
+      const proveedorDetalle = detalleByProveedor[p.codigo];
+      const asientos = proveedorDetalle ? Object.entries(proveedorDetalle.asientos) : [];
+
+      // Calcular fecha más reciente de las transacciones filtradas (solo CXP)
+      const allItemsCxp = asientos.flatMap(([_, items]) => items.filter(i => i.es_cxp === true));
+      const ultimaFechaFiltrada = allItemsCxp.length > 0
+        ? allItemsCxp.map(i => i.fecha).sort().reverse()[0]
+        : null;
+
+      // Función auxiliar para calcular días (usada para el promedio y para las filas)
+      const calcularDiasAsiento = (items) => {
+        const itemsCxp = items.filter(i => i.es_cxp === true);
+        const compraItem = itemsCxp.find(i => i.compra > 0) || itemsCxp[0];
+        if (!compraItem) return null;
+
+        const fechaCompra = new Date(compraItem.fecha);
+        const asientoCompras = itemsCxp.reduce((s, i) => s + (i.compra || 0), 0);
+        const asientoPagos = itemsCxp.reduce((s, i) => s + (i.pago || 0), 0);
+        const asientoSaldo = asientoCompras - asientoPagos;
+
+        // Si el saldo es > 0.01 (pendiente), contamos hasta el final (fechaCorte)
+        // Si está pagado (saldo <= 0.01), usamos la fecha del último pago real
+        if (asientoSaldo > 0.01) {
+          return Math.floor((fechaCorte - fechaCompra) / (1000 * 60 * 60 * 24));
+        } else {
+          const ultimoPago = itemsCxp.filter(i => i.pago > 0).sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+          const fechaRef = ultimoPago ? new Date(ultimoPago.fecha) : fechaCompra;
+          return Math.floor((fechaRef - fechaCompra) / (1000 * 60 * 60 * 24));
+        }
+      };
+
+      // Mapear días por asiento para el promedio
+      const diasPorAsiento = asientos.map(([_, items]) => calcularDiasAsiento(items)).filter(d => d !== null);
+      const diasPromedio = diasPorAsiento.length > 0
+        ? Math.round(diasPorAsiento.reduce((a, b) => a + b, 0) / diasPorAsiento.length)
+        : null;
+
+      return `
+                <tr class="proveedor-row" data-codigo="${p.codigo}" style="border-bottom: 1px solid var(--border-color); cursor: pointer; background: ${isOpen ? '#fff3e0' : 'white'}; font-weight: 500;">
+                  <td style="padding: 10px; text-align: center;">
+                    <i class="ri-arrow-${isOpen ? 'down' : 'right'}-s-line" style="color: var(--warning);"></i>
+                  </td>
+                  <td style="padding: 10px;" colspan="2">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <i class="ri-store-2-line" style="color: var(--warning);"></i>
+                      <div>
+                        <div>${p.nombre}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: normal;">${p.codigo} • ${asientos.length} asientos</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="padding: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">
+                    ${ultimaFechaFiltrada || '-'}
+                  </td>
+                  <td style="padding: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: normal;"></td>
+                  <td style="padding: 10px; text-align: right; color: var(--primary);">$${p.compras_filtrado.toLocaleString()}</td>
+                  <td style="padding: 10px; text-align: right; color: var(--success);">$${p.pagos_filtrado.toLocaleString()}</td>
+                  <td style="padding: 10px; text-align: right; color: ${p.saldo_filtrado > 0 ? 'var(--danger)' : 'var(--success)'};">$${p.saldo_filtrado.toLocaleString()}</td>
+                  <td style="padding: 10px; text-align: center;">
+                    ${diasPromedio !== null ? `
+                      <span style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; background: ${diasPromedio > 90 ? '#fff5f5' : diasPromedio > 60 ? '#ffe8cc' : diasPromedio > 30 ? '#fff9db' : '#ebfbee'}; color: ${diasPromedio > 90 ? '#c92a2a' : diasPromedio > 60 ? '#d9480f' : diasPromedio > 30 ? '#e67700' : '#2b8a3e'};">
+                        ${diasPromedio}d
+                      </span>
+                    ` : '-'}
+                  </td>
+                </tr>
+                ${isOpen ? asientos.map(([asientoKey, items]) => {
+        // Solo sumar cuentas ES_CXP para los totales
+        const itemsCxp = items.filter(i => i.es_cxp === true);
+        const asientoCompras = itemsCxp.reduce((s, i) => s + (i.compra || 0), 0);
+        const asientoPagos = itemsCxp.reduce((s, i) => s + (i.pago || 0), 0);
+        const asientoSaldo = asientoCompras - asientoPagos;
+        const isAsientoOpen = this.state.cxpOpenFacturas.has(`${p.codigo}_${asientoKey}`);
+
+        const compraItem = itemsCxp.find(i => i.compra > 0) || itemsCxp[0] || items[0];
+        const tipoDoc = compraItem ? compraItem.tipo_doc : 'N/A';
+        const factura = items.map(i => i.factura).find(f => f) || '';
+        const diasAsiento = calcularDiasAsiento(items);
+        const numCuentas = new Set(items.map(i => i.cuenta)).size;
+        return `
+                  <tr class="factura-row-cxp" data-proveedor="${p.codigo}" data-factura="${asientoKey}" style="background: #fff8f0; cursor: pointer; border-left: 3px solid ${asientoSaldo > 0 ? 'var(--danger)' : 'var(--success)'};">
+                    <td style="padding: 8px 10px; text-align: center;">
+                      <i class="ri-arrow-${isAsientoOpen ? 'down' : 'right'}-s-line" style="color: var(--text-muted);"></i>
+                    </td>
+                    <td style="padding: 8px 10px;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <i class="ri-book-2-line" style="color: ${asientoSaldo > 0 ? 'var(--danger)' : 'var(--success)'};"></i>
+                        <div>
+                          <span style="font-weight: 500;">Asiento ${asientoKey}</span>
+                          ${factura ? `<span style="font-size: 0.7rem; color: #868e96; margin-left: 6px;">FA: ${factura}</span>` : ''}
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 8px 10px;">
+                      <span style="background: #e9ecef; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">${tipoDoc}</span>
+                      <span style="background: #e7f5ff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 4px;">${numCuentas} ctas</span>
+                    </td>
+                    <td style="padding: 8px 10px; font-size: 0.8rem; color: var(--text-muted);">
+                      ${compraItem ? compraItem.fecha : '-'}
+                    </td>
+                    <td style="padding: 8px 10px; font-size: 0.8rem; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${compraItem ? compraItem.detalle : ''}">
+                      ${compraItem ? compraItem.detalle.substring(0, 50) + (compraItem.detalle.length > 50 ? '...' : '') : ''}
+                    </td>
+                    <td style="padding: 8px 10px; text-align: right; color: var(--primary);">$${asientoCompras.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: right; color: var(--success);">$${asientoPagos.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 600; color: ${asientoSaldo > 0 ? 'var(--danger)' : 'var(--success)'};">$${asientoSaldo.toLocaleString()}</td>
+                    <td style="padding: 8px 10px; text-align: center;">
+                      ${diasAsiento !== null ? `
+                        <span style="padding: 2px 6px; border-radius: 8px; font-size: 0.7rem; background: ${asientoSaldo <= 0.01 ? '#ebfbee' : (diasAsiento > 90 ? '#fff5f5' : diasAsiento > 60 ? '#ffe8cc' : '#fff9db')}; color: ${asientoSaldo <= 0.01 ? '#2b8a3e' : (diasAsiento > 90 ? '#c92a2a' : diasAsiento > 60 ? '#d9480f' : '#e67700')};">
+                          ${diasAsiento}d ${asientoSaldo <= 0.01 ? '✓' : ''}
+                        </span>
+                      ` : '-'}
+                    </td>
+                  </tr>
+                  ${isAsientoOpen ? items.sort((a, b) => a.cuenta.localeCompare(b.cuenta)).map(item => `
+                  <tr class="detalle-row-cxp" style="background: #fef5e7; font-size: 0.8rem;">
+                    <td style="padding: 6px 10px;"></td>
+                    <td style="padding: 6px 10px;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <i class="ri-wallet-3-line" style="color: #868e96; font-size: 0.85rem;"></i>
+                        <div>
+                          <span style="font-weight: 500; font-size: 0.75rem;">${item.cuenta}</span>
+                          <br><span style="color: #868e96; font-size: 0.7rem; font-weight: normal;">${(item.cuenta_nombre || '').substring(0, 25)}${item.cuenta_nombre?.length > 25 ? '...' : ''}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 6px 10px; text-align: center;">
+                       <span style="padding: 2px 5px; border-radius: 4px; font-size: 0.65rem; background: ${item.tipo_doc === 'CH' ? '#e7f5ff' : item.tipo_doc === 'OP' ? '#fff9db' : '#f1f3f5'}; color: ${item.tipo_doc === 'CH' ? '#1971c2' : item.tipo_doc === 'OP' ? '#f08c00' : '#495057'}; border: 1px solid rgba(0,0,0,0.05);">
+                        ${item.tipo_doc}
+                      </span>
+                    </td>
+                    <td style="padding: 6px 10px; font-size: 0.75rem; color: var(--text-muted);">${item.fecha}</td>
+                    <td style="padding: 6px 10px; color: var(--text-muted); font-size: 0.7rem; max-width: 300px; word-wrap: break-word; white-space: normal;">
+                      ${item.documento && item.documento !== 'None' && item.documento !== 'null' ? `<strong style="color: #495057;">[${item.documento}]</strong> ` : ''}
+                      ${item.detalle.substring(0, 100)}${item.detalle.length > 100 ? '...' : ''}
+                    </td>
+                    <td style="padding: 6px 10px; text-align: right; color: ${item.compra > 0 ? 'var(--primary)' : 'var(--text-muted)'};">${item.compra > 0 ? '$' + item.compra.toLocaleString() : '-'}</td>
+                    <td style="padding: 6px 10px; text-align: right; color: ${item.pago > 0 ? 'var(--success)' : 'var(--text-muted)'};">${item.pago > 0 ? '$' + item.pago.toLocaleString() : '-'}</td>
+                    <td style="padding: 6px 10px;"></td>
+                    <td style="padding: 6px 10px;"></td>
+                  </tr>
+                  `).join('') : ''}
+                  `;
+      }).join('') : ''}
+                `;
+    }).join('')}
+            </tbody>
+          </table>
+          ${(() => {
+        const totalPages = Math.ceil(proveedoresConSaldo.length / this.state.cxpItemsPerPage);
+        const currentPage = this.state.cxpCurrentPage;
+        const startItem = (currentPage - 1) * this.state.cxpItemsPerPage + 1;
+        const endItem = Math.min(currentPage * this.state.cxpItemsPerPage, proveedoresConSaldo.length);
+        if (totalPages <= 1) return '';
+        return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-light);">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">
+                Mostrando ${startItem}-${endItem} de ${proveedoresConSaldo.length} proveedores
+              </span>
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <button class="pagination-btn-cxp" data-page="1" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'};">
+                  <i class="ri-skip-back-line"></i>
+                </button>
+                <button class="pagination-btn-cxp" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === 1 ? '0.5' : '1'};">
+                  <i class="ri-arrow-left-s-line"></i>
+                </button>
+                <span style="padding: 6px 12px; font-size: 0.85rem;">Página ${currentPage} de ${totalPages}</span>
+                <button class="pagination-btn-cxp" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === totalPages ? '0.5' : '1'};">
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+                <button class="pagination-btn-cxp" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 10px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: ${currentPage === totalPages ? 'not-allowed' : 'pointer'}; opacity: ${currentPage === totalPages ? '0.5' : '1'};">
+                  <i class="ri-skip-forward-line"></i>
+                </button>
+              </div>
+            </div>
+            `;
+      })()}
+        </div>
+      </div>
+
+      <!-- Top 5 Proveedores con Pago más Rápido -->
+      ${topPagoRapido.length > 0 && !hasFilters ? `
+      <div class="card" style="border-left: 4px solid var(--success); margin-bottom: 1rem;">
+        <h5 style="color: var(--text-heading); margin-bottom: 1rem;"><i class="ri-trophy-line" style="color: var(--success);"></i> Top 5: Proveedores con Pago más Rápido</h5>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          ${topPagoRapido.map((p, idx) => `
+            <div class="rapido-card-cxp" data-codigo="${p.codigo}" style="padding: 12px; background: #ebfbee; border-radius: 8px; border-left: 3px solid #51cf66; cursor: pointer; transition: transform 0.2s;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="background: #51cf66; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;">${idx + 1}</span>
+                <div style="font-weight: 600; font-size: 0.85rem;">${p.nombre.length > 25 ? p.nombre.substring(0, 25) + '...' : p.nombre}</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+                <span>Pagos: <strong style="color: var(--success);">$${p.pagos_filtrado.toLocaleString()}</strong></span>
+                <span><strong style="color: #2b8a3e;">${p.dias_sin_pago} días</strong></span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
+      <!-- Proveedores con Mayor Deuda -->
+      ${topMorosos.length > 0 && !hasFilters ? `
+      <div class="card" style="border-left: 4px solid var(--danger);">
+        <h5 style="color: var(--text-heading); margin-bottom: 1rem;"><i class="ri-alarm-warning-line" style="color: var(--danger);"></i> Alertas: Proveedores con Mayor Deuda Pendiente</h5>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+          ${topMorosos.slice(0, 6).map(p => `
+            <div class="moroso-card-cxp" data-codigo="${p.codigo}" style="padding: 12px; background: #fff5f5; border-radius: 8px; border-left: 3px solid #ff6b6b; cursor: pointer; transition: transform 0.2s;">
+              <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">${p.nombre}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+                <span>Saldo: <strong style="color: var(--danger);">$${p.saldo_filtrado.toLocaleString()}</strong></span>
+                <span><strong style="color: #c92a2a;">${p.dias_sin_pago} días</strong> sin pago</span>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                Último pago: ${p.ultimo_pago || 'Sin registro'}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+    `;
+
+    // Bind events
+    this.bindCXPEvents(topCompras, antiguedadTotals);
+  },
+
+  bindCXPEvents(topCompras, antiguedadTotals) {
+    const self = this;
+
+    // Search inputs - trigger on Enter key only
+    ['cxpSearchCuenta', 'cxpSearchProveedor', 'cxpSearchFactura', 'cxpSearchAsiento'].forEach(id => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            self.state[id] = e.target.value;
+            self.renderCXP();
+          }
+        };
+        input.onchange = (e) => {
+          if (id === 'cxpSearchProveedor' && e.target.value) {
+            self.state[id] = e.target.value;
+            self.renderCXP();
+          }
+        };
+      }
+    });
+
+    // Tipo doc select
+    const tipoDocSelect = document.getElementById('cxpSearchTipoDoc');
+    if (tipoDocSelect) {
+      tipoDocSelect.onchange = (e) => {
+        self.state.cxpSearchTipoDoc = e.target.value;
+        self.renderCXP();
+      };
+    }
+
+    // Clear filter chips
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.onclick = () => {
+        const clearKey = chip.dataset.clear;
+        if (clearKey && clearKey.startsWith('cxp')) {
+          self.state[clearKey] = clearKey.includes('Search') ? '' : null;
+          self.renderCXP();
+        }
+      };
+    });
+
+    // Clear filter buttons (X buttons on inputs)
+    document.querySelectorAll('.clear-filter-btn-cxp').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clearKey = btn.dataset.clear;
+        if (clearKey) {
+          self.state[clearKey] = '';
+          self.renderCXP();
+        }
+      };
+    });
+
+    // Clear all filters button
+    const clearAllBtn = document.getElementById('clearAllCxpFilters');
+    if (clearAllBtn) {
+      clearAllBtn.onclick = () => {
+        self.state.cxpSelectedProveedor = null;
+        self.state.cxpSelectedAntiguedad = null;
+        self.state.cxpSearchCuenta = '';
+        self.state.cxpSearchProveedor = '';
+        self.state.cxpSearchFactura = '';
+        self.state.cxpSearchAsiento = '';
+        self.state.cxpSearchTipoDoc = '';
+        self.state.cxpCurrentPage = 1; // Reset paginación
+        self.renderCXP();
+      };
+    }
+
+    // Sortable columns
+    document.querySelectorAll('.sortable-th-cxp').forEach(th => {
+      th.onclick = () => {
+        const field = th.dataset.sort;
+        if (self.state.cxpSortField === field) {
+          self.state.cxpSortDir = self.state.cxpSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          self.state.cxpSortField = field;
+          self.state.cxpSortDir = 'desc';
+        }
+        self.renderCXP();
+      };
+    });
+
+    // Antigüedad chips
+    document.querySelectorAll('.antiguedad-chip').forEach(chip => {
+      chip.onclick = () => {
+        const range = chip.dataset.range;
+        self.state.cxpSelectedAntiguedad = self.state.cxpSelectedAntiguedad === range ? null : range;
+        self.renderCXP();
+      };
+    });
+
+    // Proveedor rows (expand/collapse)
+    document.querySelectorAll('.proveedor-row').forEach(row => {
+      row.onclick = () => {
+        const codigo = row.dataset.codigo;
+        if (self.state.cxpOpenProveedores.has(codigo)) {
+          self.state.cxpOpenProveedores.delete(codigo);
+        } else {
+          self.state.cxpOpenProveedores.add(codigo);
+        }
+        self.renderCXP();
+      };
+    });
+
+    // Factura rows (expand/collapse)
+    document.querySelectorAll('.factura-row-cxp').forEach(row => {
+      row.onclick = (e) => {
+        e.stopPropagation();
+        const proveedor = row.dataset.proveedor;
+        const factura = row.dataset.factura;
+        const key = `${proveedor}_${factura}`;
+        if (self.state.cxpOpenFacturas.has(key)) {
+          self.state.cxpOpenFacturas.delete(key);
+        } else {
+          self.state.cxpOpenFacturas.add(key);
+        }
+        self.renderCXP();
+      };
+    });
+
+    // Pagination buttons
+    document.querySelectorAll('.pagination-btn-cxp').forEach(btn => {
+      btn.onclick = () => {
+        if (btn.disabled) return;
+        const page = parseInt(btn.dataset.page);
+        if (page && page !== self.state.cxpCurrentPage) {
+          self.state.cxpCurrentPage = page;
+          self.state.cxpOpenProveedores.clear();
+          self.state.cxpOpenFacturas.clear();
+          self.renderCXP();
+        }
+      };
+    });
+
+    // Moroso cards click
+    document.querySelectorAll('.moroso-card-cxp').forEach(card => {
+      card.onclick = () => {
+        self.state.cxpSelectedProveedor = card.dataset.codigo;
+        self.state.cxpCurrentPage = 1;
+        self.renderCXP();
+      };
+    });
+
+    // Rapido cards click (Top 5 pago más rápido)
+    document.querySelectorAll('.rapido-card-cxp').forEach(card => {
+      card.onclick = () => {
+        self.state.cxpSelectedProveedor = card.dataset.codigo;
+        self.state.cxpCurrentPage = 1;
+        self.renderCXP();
+      };
+    });
+
+    // Render charts with click handlers
+    this.renderCXPCharts(topCompras, antiguedadTotals);
+  },
+
+  renderCXPCharts(topCompras, antiguedadTotals) {
+    const self = this;
+
+    // Gráfico de Top Compras
+    const ctxCompras = document.getElementById('chartTopCompras');
+    if (ctxCompras) {
+      new Chart(ctxCompras, {
+        type: 'bar',
+        data: {
+          labels: topCompras.map(p => p.nombre.length > 20 ? p.nombre.substring(0, 20) + '...' : p.nombre),
+          datasets: [{
+            data: topCompras.map(p => p.compras_filtrado),
+            backgroundColor: topCompras.map(p => p.codigo === self.state.cxpSelectedProveedor ? '#f59f00' : '#ffc078'),
+            borderColor: topCompras.map(p => p.codigo === self.state.cxpSelectedProveedor ? '#e67700' : '#fd7e14'),
+            borderWidth: topCompras.map(p => p.codigo === self.state.cxpSelectedProveedor ? 3 : 1)
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          onClick: (event, elements) => {
+            if (elements.length > 0) {
+              const idx = elements[0].index;
+              const prov = topCompras[idx];
+              self.state.cxpSelectedProveedor = self.state.cxpSelectedProveedor === prov.codigo ? null : prov.codigo;
+              self.renderCXP();
+            }
+          },
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Gráfico de Antigüedad
+    const ctxAntiguedad = document.getElementById('chartAntiguedadCXP');
+    if (ctxAntiguedad) {
+      const labels = ['0-30', '31-60', '61-90', '>90'];
+      const colors = ['#51cf66', '#fcc419', '#ff922b', '#ff6b6b'];
+      new Chart(ctxAntiguedad, {
+        type: 'doughnut',
+        data: {
+          labels: labels.map(l => l + ' días'),
+          datasets: [{
+            data: labels.map(l => antiguedadTotals[l]),
+            backgroundColor: colors,
+            borderWidth: self.state.cxpSelectedAntiguedad ? labels.map((l, i) => l === self.state.cxpSelectedAntiguedad ? 4 : 0) : 0,
+            borderColor: '#e67700'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          onClick: (event, elements) => {
+            if (elements.length > 0) {
+              const idx = elements[0].index;
+              const range = labels[idx];
+              self.state.cxpSelectedAntiguedad = self.state.cxpSelectedAntiguedad === range ? null : range;
+              self.renderCXP();
             }
           },
           plugins: { legend: { display: false } }
@@ -1842,25 +2969,25 @@ const App = {
                   </summary>
                   <div class="h-content" style="padding: 1rem;">
                     ${(() => {
-          // Agrupar filas por cuenta_linea dentro del asiento
-          const byAccount = {};
-          sortedRows.forEach(row => {
-            const accKey = row.cuenta_linea || 'N/A';
-            if (!byAccount[accKey]) byAccount[accKey] = { rows: [], nombre: row.nombre_cuenta_linea || accKey };
-            byAccount[accKey].rows.push(row);
-          });
+            // Agrupar filas por cuenta_linea dentro del asiento
+            const byAccount = {};
+            sortedRows.forEach(row => {
+              const accKey = row.cuenta_linea || 'N/A';
+              if (!byAccount[accKey]) byAccount[accKey] = { rows: [], nombre: row.nombre_cuenta_linea || accKey };
+              byAccount[accKey].rows.push(row);
+            });
 
-          // Ordenar cuentas por total debe descendente
-          const sortedAccounts = Object.entries(byAccount).sort((a, b) => {
-            const aTotal = a[1].rows.reduce((s, r) => s + r.debe, 0);
-            const bTotal = b[1].rows.reduce((s, r) => s + r.debe, 0);
-            return bTotal - aTotal;
-          });
+            // Ordenar cuentas por total debe descendente
+            const sortedAccounts = Object.entries(byAccount).sort((a, b) => {
+              const aTotal = a[1].rows.reduce((s, r) => s + r.debe, 0);
+              const bTotal = b[1].rows.reduce((s, r) => s + r.debe, 0);
+              return bTotal - aTotal;
+            });
 
-          return sortedAccounts.map(([accNum, accData]) => {
-            const accTotal = accData.rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
-            const accNeto = accTotal.debe - accTotal.haber;
-            return `
+            return sortedAccounts.map(([accNum, accData]) => {
+              const accTotal = accData.rows.reduce((s, r) => ({ debe: s.debe + r.debe, haber: s.haber + r.haber }), { debe: 0, haber: 0 });
+              const accNeto = accTotal.debe - accTotal.haber;
+              return `
                       <details class="h-details h-level-3" style="margin-bottom: 8px;" data-cuenta="${acc}" data-asiento="${asientoId}" data-cuenta-linea="${accNum}">
                         <summary class="h-header" style="padding: 8px 12px; background: var(--bg-light); border-radius: 6px;">
                           <i class="ri-account-circle-line"></i>
@@ -1891,8 +3018,8 @@ const App = {
                             </thead>
                             <tbody>
                               ${accData.rows.map(row => {
-              const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
-              return `
+                const rowClass = row.es_linea_promo ? 'promo-line' : 'haber-line';
+                return `
                                 <tr class="${rowClass}">
                                   <td style="width: 140px;"><small style="font-family: monospace; font-size: 0.72rem;">${row.documentos}</small></td>
                                   <td style="width: 100px;"><small>${row.tipo_doc}</small></td>
@@ -1903,14 +3030,14 @@ const App = {
                                   <td style="text-align: right; width: 90px; color: var(--danger); font-weight: 600;">$${row.haber.toLocaleString()}</td>
                                 </tr>
                               `;
-            }).join('')}
+              }).join('')}
                             </tbody>
                           </table>
                         </div>
                       </details>
                     `;
-          }).join('');
-        })()}
+            }).join('');
+          })()}
                   </div>
                 </details>
               `;
@@ -2214,7 +3341,7 @@ const App = {
       ].map(v => this._escapeCSV(v)).join(','));
     });
 
-    const filename = `promocion_${years.join('-')}_${new Date().toISOString().slice(0,10)}.csv`;
+    const filename = `promocion_${years.join('-')}_${new Date().toISOString().slice(0, 10)}.csv`;
     this._downloadCSV(filename, rows.join('\n'));
   }
 };
