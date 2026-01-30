@@ -3,12 +3,8 @@
  * Supports dynamic loading of year-specific detail files
  */
 
-// Detect Production vs Local
-const IS_PROD = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-// Use corsproxy.io to bypass CORS issues with GitHub Releases
-const BASE_URL = IS_PROD
-    ? 'https://corsproxy.io/?' + encodeURIComponent('https://github.com/santiagotito/jmc_dis/releases/download/v1.0')
-    : '/data';
+// Detect Environment
+const BASE_URL = '/data';
 
 const DATA_URL = `${BASE_URL}/data.json`;
 
