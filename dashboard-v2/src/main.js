@@ -120,8 +120,14 @@ const App = {
     document.getElementById('app-container').style.display = 'flex';
     this.renderLogoutButton();
 
-    this.state.data = await dataService.load();
-    if (!this.state.data) return;
+    try {
+      this.state.data = await dataService.load();
+      if (!this.state.data) throw new Error('No se pudieron cargar los datos (dataService returned null).');
+    } catch (e) {
+      console.error(e);
+      alert(`Error cargando datos: ${e.message}. \n\nPosible causa: CORS en GitHub Releases o archivo no encontrado.`);
+      return;
+    }
 
     // Default to latest year
     const availableYears = this.state.data.metadata.available_years;
