@@ -1,69 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DISOR Analytics 2.0</title>
-    <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <div class="app-container">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <span>DISOR</span>
-        </div>
-        <nav class="menu-inner">
-          <div class="menu-item active" data-page="resumen">
-            <a href="#" class="menu-link">
-              <i class="ri-dashboard-line"></i>
-              <span>Resumen</span>
-            </a>
-          </div>
-          <div class="menu-item" data-page="promocion">
-            <a href="#" class="menu-link">
-              <i class="ri-rocket-2-line"></i>
-              <span>Promoción</span>
-            </a>
-          </div>
-          <div class="menu-item" data-page="cxc">
-            <a href="#" class="menu-link">
-              <i class="ri-money-dollar-circle-line"></i>
-              <span>Cuentas x Cobrar</span>
-            </a>
-          </div>
-          <div class="menu-item" data-page="cxp">
-            <a href="#" class="menu-link">
-              <i class="ri-shopping-cart-line"></i>
-              <span>Cuentas x Pagar</span>
-            </a>
-          </div>
-        </nav>
-      </aside>
 
-      <!-- Main Content -->
-      <main class="content">
-        <!-- Navbar -->
-        <header class="navbar">
-          <div class="navbar-content">
-            <h4 id="page-title">Resumen General</h4>
-            <div id="filter-bar" class="chips-container">
-              <!-- Years will be injected here -->
-            </div>
-          </div>
-        </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DISOR Analytics 2.0</title>
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
 
-        <!-- Viewport -->
-        <div id="app" class="viewport">
-          <!-- Views will be rendered here -->
+<body>
+  <!-- Login View -->
+  <div id="login-view" class="login-container" style="display: none;">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <i class="ri-bar-chart-grouped-line"></i>
         </div>
-      </main>
+        <h3>DISOR Analytics</h3>
+        <p>Inicia sesión para continuar</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <div class="input-wrapper">
+            <i class="ri-mail-line"></i>
+            <input type="email" id="login-email" placeholder="nombre@ejemplo.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Clave de Acceso</label>
+          <div class="input-wrapper">
+            <i class="ri-lock-password-line"></i>
+            <input type="password" id="login-key" placeholder="Tu clave única" required>
+          </div>
+        </div>
+        <div id="login-error" class="login-error"></div>
+        <button type="submit" class="btn-login" id="btn-login-submit">
+          <span>Ingresar</span>
+          <div class="spinner icon-spinner-login" style="display: none;"></div>
+        </button>
+      </form>
     </div>
-    
-    <!-- Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+  </div>
+
+  <!-- App View (Hidden by default until auth) -->
+  <div id="app-container" class="app-container" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span>DISOR</span>
+      </div>
+      <nav class="menu-inner">
+        <div class="menu-item active" data-page="resumen">
+          <a href="#" class="menu-link">
+            <i class="ri-dashboard-line"></i>
+            <span>Resumen</span>
+          </a>
+        </div>
+        <div class="menu-item" data-page="promocion">
+          <a href="#" class="menu-link">
+            <i class="ri-rocket-2-line"></i>
+            <span>Promoción</span>
+          </a>
+        </div>
+        <div class="menu-item" data-page="cxc">
+          <a href="#" class="menu-link">
+            <i class="ri-money-dollar-circle-line"></i>
+            <span>Cuentas x Cobrar</span>
+          </a>
+        </div>
+        <div class="menu-item" data-page="cxp">
+          <a href="#" class="menu-link">
+            <i class="ri-shopping-cart-line"></i>
+            <span>Cuentas x Pagar</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Navbar -->
+      <header class="navbar">
+        <div class="navbar-content">
+          <h4 id="page-title">Resumen General</h4>
+          <div id="filter-bar" class="chips-container">
+            <!-- Years will be injected here -->
+          </div>
+        </div>
+      </header>
+
+      <!-- Viewport -->
+      <div id="app" class="viewport">
+        <!-- Views will be rendered here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

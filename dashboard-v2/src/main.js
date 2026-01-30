@@ -1,4 +1,5 @@
 import { dataService } from './services/dataService';
+import { authService } from './services/authService';
 
 /**
  * App Module - Core logic and state management
@@ -22,7 +23,6 @@ const App = {
     openDetails: new Set(),
     // CXC specific state
     cxcSelectedCliente: null, // Selected client from Top 10 chart
-    cxcSelectedAntiguedad: null, // Selected aging range ('0-30', '31-60', etc)
     cxcSelectedAntiguedad: null, // Selected aging range ('0-30', '31-60', etc)
     resumenView: 'monthly', // 'monthly' or 'yearly'
     resumenVisibleSeries: ['cxc', 'cxp', 'promo'], // Visible datasets in evolution chart
@@ -106,6 +106,20 @@ const App = {
 
   async init() {
     console.log('🚀 Initializing DISOR Analytics 2.0');
+
+    // Auth Check
+    if (!authService.isAuthenticated()) {
+      document.getElementById('login-view').style.display = 'flex';
+      document.getElementById('app-container').style.display = 'none';
+      this.bindLoginEvents();
+      return;
+    }
+
+    // Authenticated
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('app-container').style.display = 'flex';
+    this.renderLogoutButton();
+
     this.state.data = await dataService.load();
     if (!this.state.data) return;
 
@@ -116,6 +130,65 @@ const App = {
     this.bindEvents();
     this.renderFilters();
     this.render();
+  },
+
+  bindLoginEvents() {
+    const form = document.getElementById('login-form');
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const key = document.getElementById('login-key').value;
+      const btn = document.getElementById('btn-login-submit');
+      const spinner = btn.querySelector('.spinner');
+      const errorDiv = document.getElementById('login-error');
+
+      // UI Loading
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Verificando...';
+      spinner.style.display = 'block';
+      errorDiv.textContent = '';
+
+      // Auth Call
+      const result = await authService.login(email, key);
+
+      if (result.success) {
+        // Reload to init app
+        window.location.reload();
+      } else {
+        // Reset UI
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Ingresar';
+        spinner.style.display = 'none';
+        errorDiv.textContent = result.message;
+      }
+    };
+  },
+
+  renderLogoutButton() {
+    const sidebar = document.querySelector('aside.sidebar');
+    if (!sidebar) return;
+
+    // Remove existing if any
+    const existing = sidebar.querySelector('.logout-container');
+    if (existing) existing.remove();
+
+    const div = document.createElement('div');
+    div.className = 'logout-container';
+    div.innerHTML = `
+      <button class="btn-logout" onclick="App.handleLogout()">
+        <i class="ri-logout-box-line"></i>
+        <span>Cerrar Sesión</span>
+      </button>
+    `;
+    sidebar.appendChild(div);
+  },
+
+  handleLogout() {
+    if (confirm('¿Estás seguro de cerrar sesión?')) {
+      authService.logout();
+    }
   },
 
   bindEvents() {
